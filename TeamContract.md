@@ -68,9 +68,9 @@ By signing below, we acknowledge that we have read, discussed, and agreed to the
 **Team Member Signatures**
 
 | Name | Signature | Date   |
-|------|--------|--------|
-| Tamako Fan |        |        |
-| Yousef Hammoudeh |Y.H يوسف| Oct 11 |
-| Diana Luo Hou |        |        |
-| He Sun |        |        |
-| Elaine Xing |        |        |
+|------|------|--------|
+| Tamako Fan |      |        |
+| Yousef Hammoudeh | Y.H يوسف | Oct 11 |
+| Diana Luo Hou | DLuo | Oct 11 |
+| He Sun |      |        |
+| Elaine Xing |      |        |
