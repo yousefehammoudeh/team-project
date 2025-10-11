@@ -1,61 +1,76 @@
 # Team Contract
 
-**Your team is free to revise this contract as your team wishes; we have scaffolded it with a recommended structure similar to the provided sample on Quercus.**
-
-After you reflect on past teamwork experiences and brainstorm a list of actions required for a positive teamwork experience, answer these questions. 
-
-Once you have all agreed on the contents of the team contract, make a PR to merge your team contract into the main branch of your team's repo on GitHub.
-
-**Please remember to remove any of the initial instruction text when your team finalizes your team contract; it should resemble the provided sample once complete, but with details specific to the expectations and norms agreed to by your entire team.**
-
----
 ## Purpose of this Contract
-
-This contract sets out shared expectations and commitments for how our team will collaborate during the course. It is designed to promote accountability, professionalism, and mutual support as we complete individual preparation, readiness assurance tests, in-class activities, and our course project.
+This contract establishes the shared expectations, communication standards, and accountability commitments of **Group 23**. It aims to promote effective collaboration, professionalism, and mutual respect as we complete all course components — including individual preparation, in-class activities, labs, and the course project.
 
 ---
+
 ## Team Norms and Expectations
 
 ### Communication
-
-* Which platform will you use for communication outside of class, when required for work on your course project? (Examples: Text message, Discord, WeChat, etc.)
-
-* Each teammate agrees to respond to messages in at most how long? 1 day? 2 days? Some other amount of time? 
-
-* What things should a teammate notify you about? (Examples: if they think they won't be able to meet a deadline, if they have to miss lecture, etc.)
-
-* Respectful and inclusive behaviour are necessary for smooth and productive communication. What are some respectful and inclusive behaviours you expect when communicating with each other during lectures, labs, or outside of class? (Examples: Actively listening to each team members ideas, giving everyone a chance to meaningfully contribute, etc.)
+* **Primary Platforms:** Discord and Instagram will be used for all team communication outside of class.
+* **Response Time:** Each member agrees to respond to messages within **24–48 hours**.
+* **Notifications:** Team members must promptly inform the group of any issues preventing them from:
+    - Meeting deadlines
+    - Attending lectures, labs, or meetings
+    - Completing their share of project work
+* **Respect and Inclusivity:**
+    - Listen actively and respectfully to all opinions.
+    - Avoid interrupting or dismissing others’ ideas.
+    - Use professional and courteous language.
+    - Ensure all members have equal opportunities to contribute.
 
 ---
 
-### [Other Categories of norms and expectations go here]
+### Attendance and Participation
+* Members are expected to attend all scheduled team meetings and actively participate.
+* If a member cannot attend, they must notify the team in advance and contribute asynchronously when possible.
+* Each member is responsible for keeping up with class materials and project updates.
 
-* Based on your previous teamwork experiences, what other behaviours do you agree upon as a team?
-    - some examples of possible additional team norms and expectations are included in the sample team contract in case your team needs some help getting ideas for what else you want to include.
+---
+
+### Work Organization and Quality
+* **Task Management:** Work will be divided and tracked through **GitHub Issues**.
+* **Code Standards:**
+    - All Pull Requests (PRs) must be **tested before submission**.
+    - Each PR must be **reviewed and approved by at least one other team member** before merging.
+* **Quality Assurance:** Deliverables should be complete, accurate, and aligned with agreed project standards.
 
 ---
 
 ## Decision Making
-
-* How will decisions about your team project be made? (Examples: By majority vote, by unanimous vote, etc.)
+* Team decisions will be made by **majority vote**.
+* Members are encouraged to discuss all options thoroughly before voting.
+* Once a decision is made, all team members agree to support the outcome and work collaboratively to implement it.
 
 ---
-## Conflict resolution
 
-* How will your team resolve conflicts? (Example: by listening to each other's side of the issue and attempting to reach a compromise. By consulting a TA or instructor as a team, if a resolution has not yet been reached.)
+## Conflict Resolution
+* Conflicts will first be addressed through **open discussion** among team members, ensuring that all perspectives are heard.
+* If a resolution cannot be reached internally, the issue will be escalated to **instructors or TAs** for mediation.
 
 ---
 
 ## Accountability
-
-* Reliability and accountability are also important aspects of teamwork. What are the responsibilities of each team member? (Example: completing their share of the work in a timely manner, seeking assistance from teammates/TAs/instructors when required, etc.)
+* Each team member is responsible for:
+    - Completing their assigned tasks on time.
+    - Communicating any obstacles early.
+    - Actively participating in discussions and reviews.
+* Failure to adhere to this contract or repeated lack of contribution may affect **peer evaluation scores**.
+* Team members agree to evaluate each other fairly and honestly during peer reviews.
 
 ---
 
+By signing below, we acknowledge that we have read, discussed, and agreed to the terms of this contract. This agreement will remain in effect for the duration of the course and may be amended with the consent of all team members.
+
 ---
 
-By signing below, we acknowledge that we have read, discussed, and agreed to these terms. We understand that this contract is binding for the duration of the course and may be revised with the agreement of all team members.
+**Team Member Signatures**
 
-Team Member Signatures:
-
-(type names here)
+| Name | Signature | Date   |
+|------|--------|--------|
+| Tamako Fan |        |        |
+| Yousef Hammoudeh |Y.H يوسف| Oct 11 |
+| Diana Luo Hou |        |        |
+| He Sun |        |        |
+| Elaine Xing |        |        |
