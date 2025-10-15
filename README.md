@@ -13,7 +13,7 @@ Key goals:
 
 ## ✅ User Stories & Owners
 
-> Keep this table up-to-date. One story per member early in the term is recommended. (You can add more later.) :contentReference[oaicite:4]{index=4}
+> Keep this table up-to-date. One story per member early in the term is recommended. (You can add more later.)
 
 | ID  | User Story (acceptance summary)                                                             | Owner | Status | PR(s) |
 |-----|---------------------------------------------------------------------------------------------|-------|---|-------|
@@ -22,11 +22,11 @@ Key goals:
 | S03 | **Search & Details:** search TMDB; show list (title/year/poster); open details panel.       | TBD   | ☐ |       |
 | S04 | **Build & Lock Shortlist (Host):** add/remove until lock; lock requires host token.         | TBD   | ☐ |       |
 | S05 | **Vote & Winner:** participants submit ranked ballots; host computes and displays winner.   | TBD   | ☐ |       |
+| S06 | *Add your own user story*                                                                   | TBA   | ☐ |       |
 | S07 | *Add your own user story*                                                                   | TBA   | ☐ |       |
 | S08 | *Add your own user story*                                                                   | TBA   | ☐ |       |
 | S09 | *Add your own user story*                                                                   | TBA   | ☐ |       |
 | S10 | *Add your own user story*                                                                   | TBA   | ☐ |       |
-| S11 | *Add your own user story*                                                                   | TBA   | ☐ |       |
 
 ---
 
