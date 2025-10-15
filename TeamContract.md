@@ -69,8 +69,8 @@ By signing below, we acknowledge that we have read, discussed, and agreed to the
 
 | Name | Signature | Date   |
 |------|-----------|--------|
-| Tamako Fan |           |        |
+| Tamako Fan | TFan      | Oct 11 |
 | Yousef Hammoudeh | Y.H يوسف  | Oct 11 |
 | Diana Luo Hou | DLuo      | Oct 11 |
-| He Sun |           |        |
+| He Sun |  He Sun  | Oct 12 |
 | Elaine Xing | EXing     | Oct 11 |
