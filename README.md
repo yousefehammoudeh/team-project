@@ -15,18 +15,18 @@ Key goals:
 
 > Keep this table up-to-date. One story per member early in the term is recommended. (You can add more later.)
 
-| ID  | User Story (acceptance summary)                                                             | Owner | Status | PR(s) |
-|-----|---------------------------------------------------------------------------------------------|-------|---|-------|
-| S01 | **Create Room (Host):** generate room code + host token; persist room; show host dashboard. | TBD   | ☐ |       |
-| S02 | **Join Room (Participant):** enter code + name; join and see current state.                 | TBD   | ☐ |       |
-| S03 | **Search & Details:** search TMDB; show list (title/year/poster); open details panel.       | TBD   | ☐ |       |
-| S04 | **Build & Lock Shortlist (Host):** add/remove until lock; lock requires host token.         | TBD   | ☐ |       |
-| S05 | **Vote & Winner:** participants submit ranked ballots; host computes and displays winner.   | TBD   | ☐ |       |
-| S06 | *Add your own user story*                                                                   | TBA   | ☐ |       |
-| S07 | *Add your own user story*                                                                   | TBA   | ☐ |       |
-| S08 | *Add your own user story*                                                                   | TBA   | ☐ |       |
-| S09 | *Add your own user story*                                                                   | TBA   | ☐ |       |
-| S10 | *Add your own user story*                                                                   | TBA   | ☐ |       |
+| ID  | User Story (acceptance summary)                                                                                                    | Owner | Status | PR(s) |
+|-----|------------------------------------------------------------------------------------------------------------------------------------|-------|---|-------|
+| S01 | **Create Room (Host):** generate room code + host token; persist room; show host dashboard.                                        | TBD   | ☐ |       |
+| S02 | **Join Room (Participant):** enter code + name; join and see current state.                                                        | TBD   | ☐ |       |
+| S03 | **Search & Details:** search TMDB; show list (title/year/poster); open details panel.                                              | TBD   | ☐ |       |
+| S04 | **Build & Lock Shortlist (Host):** add/remove until lock; lock requires host token.                                                | TBD   | ☐ |       |
+| S05 | **Vote & Winner:** participants submit ranked ballots; host computes and displays winner.                                          | TBD   | ☐ |       |
+| S06 | **Suggest Movie:** once a movie is selected and/or marked as watched, it will recommend sequels or other movies of similar genres. | TBA   | ☐ |       |
+| S07 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
+| S08 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
+| S09 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
+| S10 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
 
 ---
 
