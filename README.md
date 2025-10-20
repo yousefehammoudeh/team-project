@@ -23,7 +23,7 @@ Key goals:
 | S04 | **Build & Lock Shortlist (Host):** add/remove until lock; lock requires host token.                                                | TBD   | ☐ |       |
 | S05 | **Vote & Winner:** participants submit ranked ballots; host computes and displays winner.                                          | TBD   | ☐ |       |
 | S06 | **Suggest Movie:** once a movie is selected and/or marked as watched, it will recommend sequels or other movies of similar genres. | TBA   | ☐ |       |
-| S07 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
+| S07 | **Content Filters (Host):** apply content filters (e.g., exclude adult content, set minimum rating, language)                      | TBA   | ☐ |       |
 | S08 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
 | S09 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
 | S10 | *Add your own user story*                                                                                                          | TBA   | ☐ |       |
