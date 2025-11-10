@@ -1,9 +1,12 @@
 package use_case.suggestions;
 
-/**
- * TODO: Gateway for fetching recommendations (sequels/similar by genres).
- */
 public interface SuggestionsUserDataAccessInterface {
-    // TODO: Methods: similarTo(movieId), sequelsOf(movieId)
+    /**
+     * Return a list of movies similar to the given movie id.
+     * 
+     * @param movieId TMDB movie id
+     * @return list of movies (may be empty)
+     * @throws java.io.IOException when an IO or parsing error occurs
+     */
+    java.util.List<entity.Movie> similarTo(String movieId) throws java.io.IOException;
 }
-

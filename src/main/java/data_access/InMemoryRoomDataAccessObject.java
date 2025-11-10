@@ -10,13 +10,12 @@ import use_case.filters.FiltersUserDataAccessInterface;
 
 /**
  * TODO: In-memory gateway for prototyping all room-related data access.
- * Mirrors CA-lab pattern where one DAO implements multiple interfaces.
  *
  * Responsibilities:
  * - Store rooms, participants, shortlist, ballots, filters
  * - Provide search/suggestions gateway surface (stubbed/mocked)
  */
-public class InMemoryRoomDataAccessObject implements
+public abstract class InMemoryRoomDataAccessObject implements
         CreateRoomUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
         SearchUserDataAccessInterface,
@@ -27,6 +26,6 @@ public class InMemoryRoomDataAccessObject implements
 
     // TODO: Add in-memory maps/lists to back data
 
-    // TODO: Implement interface methods with no-op or stubbed behavior for scaffolding
+    // TODO: Implement interface methods with no-op or stubbed behavior for
+    // scaffolding
 }
-
