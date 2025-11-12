@@ -6,7 +6,7 @@ import java.util.List;
  * TODO: Output data for shortlist state.
  */
 public class ShortlistOutputData {
-    private final List<String> movieIDs; // TODO: change to list of Movies
+    private final List<String> movieIDs; // TODO: might change to list of Movies
     private final boolean locked;
 
     public ShortlistOutputData(List<String> movieIDs, boolean locked) {

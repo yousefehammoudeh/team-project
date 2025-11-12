@@ -71,8 +71,8 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         });
 
         // TODO: code below for demo and test only.
-        Random random = new Random();
-        JButton addButton = new JButton("Add");
+        final Random random = new Random();
+        final JButton addButton = new JButton("Add");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

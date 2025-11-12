@@ -1,10 +1,9 @@
 package use_case.add_movie;
 
-import interface_adapter.shortlist.ShortlistPresenter;
 import use_case.shortlist.ShortlistOutputBoundary;
 import use_case.shortlist.ShortlistOutputData;
 
-public class AddMovieInteractor implements AddMovieInputBoundary{
+public class AddMovieInteractor implements AddMovieInputBoundary {
     private final AddMovieRoomDataAccessInterface roomDataAccessObject;
     private final ShortlistOutputBoundary shortlistPresenter;
 
@@ -19,20 +18,21 @@ public class AddMovieInteractor implements AddMovieInputBoundary{
         if (roomDataAccessObject.isLocked()) {
             // Cannot add if locked.
             // TODO: implement
-            return;
         }
-        if (roomDataAccessObject.isHost()) {
+        else if (roomDataAccessObject.isHost()) {
             // Add directly and notify other users in the room.
-            boolean success = roomDataAccessObject.addMovie(movieID);
+            final boolean success = roomDataAccessObject.addMovie(movieID);
             if (success) {
                 final ShortlistOutputData shortlistOutputData =
                         new ShortlistOutputData(roomDataAccessObject.getMovieIDs(), roomDataAccessObject.isLocked());
                 shortlistPresenter.present(shortlistOutputData);
                 // TODO: notify others
-            } else {
+            }
+            else {
                 // TODO: error if the movie exists
             }
-        } else {
+        }
+        else {
             // If local user is not the host, notify the host to add.
             // TODO: implement
         }

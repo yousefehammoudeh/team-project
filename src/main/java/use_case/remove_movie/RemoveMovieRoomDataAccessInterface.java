@@ -4,7 +4,10 @@ import java.util.List;
 
 public interface RemoveMovieRoomDataAccessInterface {
     boolean isHost();
+
     boolean isLocked();
+
     boolean removeMovie(String movieID);
+
     List<String> getMovieIDs();
 }

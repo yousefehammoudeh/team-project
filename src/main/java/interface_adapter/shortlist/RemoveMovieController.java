@@ -11,7 +11,7 @@ public class RemoveMovieController {
     }
 
     public void execute(String movieID) {
-        RemoveMovieInputData removeMovieInputData = new RemoveMovieInputData(movieID);
+        final RemoveMovieInputData removeMovieInputData = new RemoveMovieInputData(movieID);
         removeMovieInteractor.execute(removeMovieInputData);
     }
 }

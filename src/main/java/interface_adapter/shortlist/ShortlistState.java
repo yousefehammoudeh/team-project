@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ShortlistState {
     private List<String> movieIDs;
-    private boolean locked = false;
+    private boolean locked;
 
     public List<String> getMovieIDs() {
         return movieIDs;

@@ -7,7 +7,7 @@ import interface_adapter.ViewModel;
  */
 public class ShortlistViewModel extends ViewModel<ShortlistState> {
     public ShortlistViewModel() {
-        ShortlistState state = new ShortlistState();
+        final ShortlistState state = new ShortlistState();
         setState(state);
     }
 }

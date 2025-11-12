@@ -11,7 +11,7 @@ public class AddMovieController {
     }
 
     public void execute(String movieID) {
-        AddMovieInputData addMovieInputData = new AddMovieInputData(movieID);
+        final AddMovieInputData addMovieInputData = new AddMovieInputData(movieID);
         addMovieInteractor.execute(addMovieInputData);
     }
 }
