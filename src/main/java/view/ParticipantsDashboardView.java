@@ -19,7 +19,7 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
         setLayout(new BorderLayout(10, 10));
 
         // Room ID
-        JPanel topPanel = new JPanel();
+        final JPanel topPanel = new JPanel();
         roomIdLabel = new JLabel("< Room ID >", SwingConstants.CENTER);
         roomIdLabel.setFont(new Font("Serif", Font.BOLD, 20));
         topPanel.add(roomIdLabel);
@@ -38,7 +38,7 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
     public void updateParticipants(List<String> names) {
         participantsPanel.removeAll();
         for (String name : names) {
-            JLabel nameLabel = new JLabel(name);
+            final JLabel nameLabel = new JLabel(name);
             nameLabel.setFont(new Font("Serif", Font.BOLD, 14));
             participantsPanel.add(nameLabel);
         }
