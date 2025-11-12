@@ -21,14 +21,14 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         setLayout(new BorderLayout(10, 10));
 
         // Room ID
-        JPanel topPanel = new JPanel();
+        final JPanel topPanel = new JPanel();
         roomIdLabel = new JLabel("< Room ID >", SwingConstants.CENTER);
         roomIdLabel.setFont(new Font("Serif", Font.BOLD, 20));
         topPanel.add(roomIdLabel);
         add(topPanel, BorderLayout.NORTH);
 
         // Search Bar
-        JPanel searchPanel = new JPanel();
+        final JPanel searchPanel = new JPanel();
         searchField = new JTextField(20);
         searchButton = new JButton("\uD83D\uDD0D");
         searchButton.addActionListener(this);
@@ -49,7 +49,7 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     public void updateParticipants(List<String> names) {
         participantsPanel.removeAll();
         for (String name : names) {
-            JLabel nameLabel = new JLabel(name);
+            final JLabel nameLabel = new JLabel(name);
             nameLabel.setFont(new Font("Serif", Font.BOLD, 14));
             participantsPanel.add(nameLabel);
         }
