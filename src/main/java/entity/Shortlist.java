@@ -30,16 +30,12 @@ public class Shortlist {
     }
 
     public boolean addMovie(String movieId) {
-        if (locked || movieId == null)
-            return false;
         if (!movieIds.contains(movieId))
             return movieIds.add(movieId);
         return false;
     }
 
     public boolean removeMovie(String movieId) {
-        if (locked || movieId == null)
-            return false;
         return movieIds.remove(movieId);
     }
 
