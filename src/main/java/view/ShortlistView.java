@@ -1,5 +1,6 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.shortlist.AddMovieController;
 import interface_adapter.shortlist.RemoveMovieController;
 import interface_adapter.shortlist.ShortlistState;
@@ -30,6 +31,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     private RemoveMovieController removeMovieController;
 
     private final JPanel shortlistPanel;
+    private ViewManagerModel viewManagerModel;
 
     public ShortlistView(ShortlistViewModel shortlistViewModel) {
         this.shortlistViewModel = shortlistViewModel;
@@ -80,6 +82,18 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
             }
         });
         shortlistPanel.add(addButton);
+        // Vote button to proceed to voting view
+        final JButton voteButton = new JButton("Vote");
+        voteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (viewManagerModel != null)
+                    viewManagerModel.setActiveViewName("Vote");
+                else
+                    JOptionPane.showMessageDialog(null, "Proceed to vote (scaffold)");
+            }
+        });
+        shortlistPanel.add(voteButton);
         // TODO: code above for demo and test only.
 
         this.add(shortlistPanel);
@@ -104,5 +118,9 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
     public void setRemoveMovieController(RemoveMovieController removeMovieController) {
         this.removeMovieController = removeMovieController;
+    }
+
+    public void setViewManagerModel(ViewManagerModel vm) {
+        this.viewManagerModel = vm;
     }
 }
