@@ -1,139 +1,82 @@
 package view;
 
-import interface_adapter.ViewManagerModel;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Voting view (ranked selection UI and winner display for host).
+ * Simplified VoteView: only displays poster images and a "Submit Vote" button.
  */
-public class VoteView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final DefaultListModel<String> model = new DefaultListModel<>();
-    private final JList<String> list = new JList<>(model);
+public class VoteView extends JPanel {
+    private final JPanel postersPanel;
     private final JButton submitButton = new JButton("Submit Vote");
-    private final JButton showWinnerButton = new JButton("Show Winner");
-    private ViewManagerModel viewManagerModel;
-
-    // Poster buttons and rank labels (one panel per candidate)
-    private final java.util.List<JButton> posterButtons = new java.util.ArrayList<>();
-    private final java.util.List<JLabel> rankLabels = new java.util.ArrayList<>();
-    // The ranking order (candidate strings) in the order the user pressed posters
-    private final java.util.List<String> rankings = new java.util.ArrayList<>();
 
     public VoteView() {
         setLayout(new BorderLayout(8, 8));
-        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        // center will hold the poster buttons (populated by setCandidates)
-        final JPanel center = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-        center.setName("candidatesPanel");
-        add(center, BorderLayout.CENTER);
+
+        postersPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        final JScrollPane scroller = new JScrollPane(postersPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroller.setPreferredSize(new Dimension(880, 320));
+        add(scroller, BorderLayout.CENTER);
+
         final JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        submitButton.addActionListener(this);
-        showWinnerButton.addActionListener(this);
+        submitButton.addActionListener(e -> {
+            // Intentionally minimal: no business logic here. Keep button visible for
+            // integration later.
+            JOptionPane.showMessageDialog(this, "Submit Vote pressed");
+        });
         bottom.add(submitButton);
-        bottom.add(showWinnerButton);
         add(bottom, BorderLayout.SOUTH);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == submitButton) {
-            // In a real app this would submit the ranked ballot to VoteController
-            JOptionPane.showMessageDialog(this, "Submitted ballot (scaffold): " + rankings);
-            if (viewManagerModel != null)
-                viewManagerModel.setActiveViewName("HostDashboard");
-        } else if (e.getSource() == showWinnerButton) {
-            // Requesting winner is out of scope for scaffolding — show placeholder
-            JOptionPane.showMessageDialog(this, "Winner: (placeholder)");
-            if (viewManagerModel != null)
-                viewManagerModel.setActiveViewName("HostDashboard");
-        }
-    }
+    /**
+     * Replace the posters panel contents with the provided poster image URLs.
+     * Images are loaded synchronously (simple, minimal). If loading fails a
+     * placeholder label is shown.
+     */
+    public void setPosterUrls(List<String> posterUrls) {
+        postersPanel.removeAll();
+        final int posterW = 140;
+        final int posterH = 210;
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update UI with voting progress and winner
-    }
+        if (posterUrls == null)
+            posterUrls = new ArrayList<>();
 
-    public void setViewManagerModel(ViewManagerModel vm) {
-        this.viewManagerModel = vm;
-    }
-
-    /** Helper to set the list of candidate movie ids or titles to rank. */
-    public void setCandidates(java.util.List<String> candidates) {
-        // Clear previous
-        model.clear();
-        posterButtons.clear();
-        rankLabels.clear();
-        rankings.clear();
-
-        // Find the center panel we added in constructor
-        Component centerComp = null;
-        for (Component c : getComponents()) {
-            if (c instanceof JPanel && "candidatesPanel".equals(c.getName())) {
-                centerComp = c;
-                break;
-            }
-        }
-        final JPanel center;
-        if (centerComp == null) {
-            center = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-            center.setName("candidatesPanel");
-            add(center, BorderLayout.CENTER);
-        } else {
-            center = (JPanel) centerComp;
-            center.removeAll();
-        }
-
-        for (String c : candidates) {
-            model.addElement(c);
-            final JPanel panel = new JPanel();
-            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-            final JButton poster = new JButton(c);
-            poster.setName("poster-" + c);
-            poster.setAlignmentX(Component.CENTER_ALIGNMENT);
-            final JLabel rankLabel = new JLabel("");
-            rankLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            poster.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // If this candidate wasn't ranked yet, append to rankings and show rank
-                    if (!rankings.contains(c)) {
-                        rankings.add(c);
-                        rankLabel.setText(Integer.toString(rankings.size()));
+        for (String url : posterUrls) {
+            JLabel lbl;
+            if (url == null || url.isBlank()) {
+                lbl = placeholderLabel(posterW, posterH);
+            } else {
+                try {
+                    BufferedImage img = ImageIO.read(URI.create(url).toURL());
+                    if (img != null) {
+                        Image scaled = img.getScaledInstance(posterW, posterH, Image.SCALE_SMOOTH);
+                        lbl = new JLabel(new ImageIcon(scaled));
+                    } else {
+                        lbl = placeholderLabel(posterW, posterH);
                     }
+                } catch (IOException ex) {
+                    lbl = placeholderLabel(posterW, posterH);
                 }
-            });
-            posterButtons.add(poster);
-            rankLabels.add(rankLabel);
-            panel.add(poster);
-            panel.add(Box.createVerticalStrut(4));
-            panel.add(rankLabel);
-            center.add(panel);
+            }
+            lbl.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            postersPanel.add(lbl);
         }
 
-        // revalidate to show changes
         revalidate();
         repaint();
     }
 
-    /** Expose poster buttons so tests can trigger clicks. */
-    public java.util.List<JButton> getPosterButtons() {
-        return java.util.Collections.unmodifiableList(posterButtons);
-    }
-
-    /** Expose rank labels for assertions in tests. */
-    public java.util.List<JLabel> getRankLabels() {
-        return java.util.Collections.unmodifiableList(rankLabels);
-    }
-
-    /** Return the current ranking order (first pressed is index 0). */
-    public java.util.List<String> getRankings() {
-        return new java.util.ArrayList<>(rankings);
+    private JLabel placeholderLabel(int w, int h) {
+        JLabel l = new JLabel("No Image", SwingConstants.CENTER);
+        l.setPreferredSize(new Dimension(w, h));
+        l.setMaximumSize(new Dimension(w, h));
+        return l;
     }
 }
