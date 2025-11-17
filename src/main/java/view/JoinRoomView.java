@@ -153,8 +153,6 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
     public void actionPerformed(ActionEvent e) {
         // TODO: Trigger join action on controller
 
-        //System.out.println("Click " + e.getActionCommand());
-
     }
 
     //if there is a change in the view model, these changes will be visible in the UI (view)
