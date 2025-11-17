@@ -7,20 +7,18 @@ import java.util.Objects;
 
 public class Room {
     private final String code;
-    private final String hostToken;
     private final List<Participant> participants;
-    private final Shortlist shortlist;
+    private final List<String> shortlist;
     private final List<Ballot> ballots;
     private String hostId;
     private boolean locked;
     private String selectedMovieId;
     private ContentFilters contentFilters;
 
-    public Room(String code, String hostToken) {
+    public Room(String code) {
         this.code = code;
-        this.hostToken = hostToken;
         this.participants = new ArrayList<>();
-        this.shortlist = new Shortlist();
+        this.shortlist = new ArrayList<>();
         this.ballots = new ArrayList<>();
         this.hostId = null;
         this.locked = false;
@@ -32,15 +30,11 @@ public class Room {
         return code;
     }
 
-    public String getHostToken() {
-        return hostToken;
-    }
-
     public List<Participant> getParticipants() {
         return Collections.unmodifiableList(participants);
     }
 
-    public Shortlist getShortlist() {
+    public List<String> getShortlist() {
         return shortlist;
     }
 
@@ -57,13 +51,16 @@ public class Room {
     }
 
     public synchronized boolean addParticipant(Participant p) {
-        if (p == null)
+        if (p == null) {
             return false;
-        if (participants.stream().anyMatch(existing -> existing.getId().equals(p.getId())))
+        }
+        if (participants.stream().anyMatch(existing -> existing.getId().equals(p.getId()))) {
             return false;
+        }
         boolean added = participants.add(p);
-        if (added && hostId == null)
+        if (added && hostId == null) {
             hostId = p.getId();
+        }
         return added;
     }
 
@@ -71,10 +68,12 @@ public class Room {
         boolean removed = participants.removeIf(p -> Objects.equals(p.getId(), participantId));
         if (removed && Objects.equals(participantId, hostId)) {
             // promote next participant if any
-            if (participants.isEmpty())
+            if (participants.isEmpty()) {
                 hostId = null;
-            else
+            }
+            else {
                 hostId = participants.get(0).getId();
+            }
         }
         // remove any ballot the participant submitted
         ballots.removeIf(b -> Objects.equals(b.getParticipantId(), participantId));
@@ -82,25 +81,19 @@ public class Room {
     }
 
     public synchronized boolean addToShortlist(String movieId) {
-        return shortlist.addMovie(movieId);
+        return shortlist.add(movieId);
     }
 
     public synchronized boolean removeFromShortlist(String movieId) {
-        return shortlist.removeMovie(movieId);
+        return shortlist.remove(movieId);
     }
 
     public void lockShortlist(String token) {
-        if (Objects.equals(this.hostToken, token)) {
-            this.shortlist.lock();
-            this.locked = true;
-        }
+        this.locked = true;
     }
 
     public void unlockShortlist(String token) {
-        if (Objects.equals(this.hostToken, token)) {
-            this.shortlist.unlock();
-            this.locked = false;
-        }
+        this.locked = false;
     }
 
     /**
@@ -116,9 +109,7 @@ public class Room {
      * 
      * @return true if selection succeeded
      */
-    public synchronized boolean selectMovieAsHost(String movieId, String hostToken) {
-        if (!Objects.equals(this.hostToken, hostToken))
-            return false;
+    public synchronized boolean selectMovieAsHost(String movieId) {
         this.selectedMovieId = movieId;
         return true;
     }
@@ -135,10 +126,12 @@ public class Room {
      * @return true if accepted, false if invalid
      */
     public synchronized boolean submitBallot(Ballot ballot) {
-        if (ballot == null)
+        if (ballot == null) {
             return false;
-        if (!ballot.isValidForShortlist(this.shortlist))
+        }
+        if (!ballot.isValidForShortlist(this.shortlist)) {
             return false;
+        }
         // remove existing ballot for participant
         ballots.removeIf(b -> Objects.equals(b.getParticipantId(), ballot.getParticipantId()));
         ballots.add(ballot);
@@ -151,10 +144,6 @@ public class Room {
 
     public String getHostId() {
         return hostId;
-    }
-
-    public boolean isHostToken(String token) {
-        return Objects.equals(this.hostToken, token);
     }
 
     public boolean isHostParticipant(String participantId) {
