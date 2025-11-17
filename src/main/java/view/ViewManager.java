@@ -13,11 +13,16 @@ public class ViewManager implements PropertyChangeListener {
 
     public ViewManager(ViewManagerModel viewManagerModel) {
         this.viewManagerModel = viewManagerModel;
-        // TODO: Subscribe to model and handle view switching
+        // Subscribe to model and handle view switching
+        this.viewManagerModel.addPropertyChangeListener(this);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Change active view in UI container
+        // In a completed app this should swap the visible card/panel in the main frame.
+        // For now, log the requested active view so composition code can respond.
+        if ("activeView".equals(evt.getPropertyName())) {
+            System.out.println("ViewManager: switch to view -> " + evt.getNewValue());
+        }
     }
 }
