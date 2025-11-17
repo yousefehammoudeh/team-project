@@ -1,6 +1,7 @@
 package data_access.room;
 
 import entity.Room;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
