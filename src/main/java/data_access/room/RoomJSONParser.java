@@ -1,6 +1,8 @@
 package data_access.room;
 
 import entity.Room;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +13,12 @@ import java.util.Map;
  * - Provide helpers to add/remove participants, ballots, filters, etc.
  * - This store backs InMemoryRoomDataAccessObject; swap with persistent version later.
  */
-public class ActiveRoomStore {
-
-    // TODO: Replace with thread-safe collection if needed
-    private final Map<String, Room> roomsByCode = new HashMap<>();
-
-    // TODO: Add CRUD methods for rooms, participants, shortlist, ballots, filters
+public class RoomJSONParser {
+    public static Room JSONToRoom(String json) throws JSONException {
+        return null;
+    }
+    public static JSONObject RoomToJSON(Room room) throws JSONException {
+        return null;
+    }
 }
 
