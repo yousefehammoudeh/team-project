@@ -1,9 +1,16 @@
 package use_case.vote;
 
 /**
- * TODO: Interactor API for submitting ballots and computing winner.
+ * Interactor API for submitting ballots and computing winner.
+ *
+ * Clean Architecture roles:
+ * - Controller -> calls these methods (input boundary)
+ * - Interactor implements these methods and uses a gateway + presenter
  */
 public interface VoteInputBoundary {
-    // TODO: Methods: submitBallot, computeWinner
-}
+    /** Submit a ranked ballot for a participant. */
+    void submitBallot(VoteInputData inputData);
 
+    /** Compute and announce the winner. Host privilege is checked by hostId. */
+    void computeWinner(String hostId);
+}
