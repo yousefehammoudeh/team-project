@@ -3,7 +3,6 @@ package data_access.room;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
-import use_case.shortlist.ShortlistOutputBoundary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface {
-    private final Room room = new Room("", "");
+    private final Room room = new Room("");
 
     public boolean isHost() {
         return true;
@@ -37,6 +36,6 @@ public class InMemoryRoomDataAccessObject implements
     }
 
     public List<String> getMovieIDs() {
-        return new ArrayList<>(room.getShortlist().getMovieIds()); // return a new list to prevent modification
+        return new ArrayList<>(room.getShortlist()); // return a new list to prevent modification
     }
 }
