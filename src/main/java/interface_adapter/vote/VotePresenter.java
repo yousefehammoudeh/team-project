@@ -15,12 +15,24 @@ public class VotePresenter implements VoteOutputBoundary {
 
     @Override
     public void present(VoteOutputData outputData) {
-        // TODO: Update state and notify
+        if (outputData == null) {
+            viewModel.getVoteState().setError("No output");
+            viewModel.firePropertyChanged();
+            return;
+        }
+        VoteState s = viewModel.getVoteState();
+        s.setBallotsReceivedCount(outputData.getBallotsReceivedCount());
+        s.setShortlistSize(outputData.getShortlistSize());
+        s.setWinnerMovieId(outputData.getWinnerMovieId());
+        s.setScores(outputData.getScores());
+        s.setError(null);
+        viewModel.firePropertyChanged();
     }
 
     @Override
     public void presentFailure(String message) {
-        // TODO: Update error state and notify
+        VoteState s = viewModel.getVoteState();
+        s.setError(message == null ? "Unknown error" : message);
+        viewModel.firePropertyChanged();
     }
 }
-
