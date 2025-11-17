@@ -15,7 +15,7 @@ public class JoinRoomViewTest {
         JoinRoomView view = new JoinRoomView(viewModel);
 
         frame.add(view);
-        frame.setSize(800, 600);
+        frame.setSize(800, 700);
         frame.pack();
         frame.setVisible(true);
     }
