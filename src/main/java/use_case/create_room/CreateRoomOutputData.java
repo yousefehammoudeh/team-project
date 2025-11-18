@@ -1,9 +1,21 @@
 package use_case.create_room;
 
 /**
- * TODO: Output data after creating a room (room code, host token, etc.).
+ * Output data after creating a room (room code, host token, etc.).
  */
 public class CreateRoomOutputData {
-    // TODO: Define fields and constructor(s)
+    // Define fields and constructor(s)
+    private final String hostName;
+    private final String roomCode;
+    private final String hostToken;
+    public CreateRoomOutputData(String hostName, String roomCode, String hostToken) {
+        this.hostName = hostName;
+        this.roomCode = roomCode;
+        this.hostToken = hostToken;
+    }
+
+    public String getRoomCode() { return roomCode; }
+    public String getHostToken() { return hostToken; }
+    public String getHostName() { return hostName; }
 }
 
