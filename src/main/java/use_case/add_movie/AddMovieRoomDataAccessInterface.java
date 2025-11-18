@@ -1,13 +1,15 @@
 package use_case.add_movie;
 
+import data_access.note_database.DataAccessException;
+
 import java.util.List;
 
 public interface AddMovieRoomDataAccessInterface {
-    boolean isHost();
+    boolean isHost() throws DataAccessException;
 
-    boolean isLocked();
+    boolean isLocked() throws DataAccessException;
 
-    boolean addMovie(String movieID);
+    boolean addMovie(String movieID) throws DataAccessException;
 
-    List<String> getMovieIDs();
+    List<String> getMovieIDs() throws DataAccessException;
 }
