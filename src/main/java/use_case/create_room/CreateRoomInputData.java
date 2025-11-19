@@ -6,12 +6,18 @@ package use_case.create_room;
 public class CreateRoomInputData {
     //Define fields and constructor(s)
     private final String hostName;
+    private final String hostId;
 
-    public CreateRoomInputData(String hostName) {
+    public CreateRoomInputData(String hostName, String hostId) {
         this.hostName = hostName;
+        this.hostId = hostId;
     }
 
     public String getHostName() {
         return hostName;
+    }
+
+    public String getHostId() {
+        return hostId;
     }
 }

@@ -18,5 +18,7 @@ public interface CreateRoomUserDataAccessInterface {
     void setCurrentRoom(String room_name);
 
     String getCurrentRoomName();
+
+    boolean verifyRoomUniquenessPerUser(String hostId);
 }
 

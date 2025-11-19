@@ -15,15 +15,19 @@ public class Room {
     private String selectedMovieId;
     private ContentFilters contentFilters;
 
-    public Room(String code) {
+    public Room(String code, String hostId) {
         this.code = code;
         this.participants = new ArrayList<>();
         this.shortlist = new ArrayList<>();
         this.ballots = new ArrayList<>();
-        this.hostId = null;
         this.locked = false;
         this.selectedMovieId = null;
         this.contentFilters = ContentFilters.defaults();
+        this.hostId = hostId;
+    }
+
+    public static Room create(String code, String hostId) {
+        return new Room(code, hostId);
     }
 
     public String getCode() {

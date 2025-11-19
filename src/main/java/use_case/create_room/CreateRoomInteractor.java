@@ -23,19 +23,24 @@ public class CreateRoomInteractor implements CreateRoomInputBoundary {
 
     public void execute(CreateRoomInputData createRoomInputData) {
         final String hostName = createRoomInputData.getHostName();
+        final String hostId = createRoomInputData.getHostId();
         final String roomCode = generateUniqueRoomCode();
         final String hostToken = generateToken();
 
         //TODO: Host cant create 2 rooms at the same time
 
-        final Room room = new Room(roomCode);
+        final Room room = Room.create(roomCode, hostId);
 
-        roomGateway.save(room);
-        roomGateway.setCurrentRoom(roomCode);
+        if(roomGateway.verifyRoomUniquenessPerUser(hostId)){
+            presenter.presentFailure("The Host already created a room.");
+        }else {
+            roomGateway.save(room);
+            roomGateway.setCurrentRoom(roomCode);
 
-        CreateRoomOutputData output = new CreateRoomOutputData(hostName, roomCode, hostToken);
+            CreateRoomOutputData output = new CreateRoomOutputData(hostName, hostId, roomCode, hostToken);
 
-        presenter.present(output);
+            presenter.present(output);
+        }
     }
 
     private String generateUniqueRoomCode() {
