@@ -16,11 +16,20 @@ import java.util.List;
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface {
-    private static final String USERNAME = "NOTE_API_USERNAME";
     private static final String ROOM_NAME_HEADER = "csc207_group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
+    private final String username;
     private Room room;
+
+    /**
+     * Create a RoomDatabase instance for the given user.
+     * 
+     * @param username The username of the current user accessing the room
+     */
+    public RoomDatabase(String username) {
+        this.username = username;
+    }
 
     private String getFormattedRoomCode() {
         return ROOM_NAME_HEADER + room.getCode();
@@ -38,17 +47,18 @@ public class RoomDatabase implements
         noteDatabase.saveNote(roomCode, password, note);
     }
 
-    private static String getLocalUsername() {
-        return System.getenv(USERNAME);
-    }
-
     public boolean isHost() throws DataAccessException {
-        refreshRoom();
-        return getLocalUsername().equals(room.getHostId());
+        // Assumes room is already loaded via createRoom/joinRoom
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
+        return username.equals(room.getHostId());
     }
 
     public boolean isLocked() throws DataAccessException {
-        refreshRoom();
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
         return room.isLocked();
     }
 
@@ -71,12 +81,16 @@ public class RoomDatabase implements
     }
 
     public List<String> getShortlist() throws DataAccessException {
-        refreshRoom();
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
         return Collections.unmodifiableList(room.getShortlist());
     }
 
     public List<String> getParticipantIDs() throws DataAccessException {
-        refreshRoom();
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
         List<Participant> participants = room.getParticipants();
         List<String> participantIDs = new ArrayList<>();
         for (Participant p : participants) {
@@ -86,7 +100,6 @@ public class RoomDatabase implements
     }
 
     public void createRoom(String roomName) throws DataAccessException {
-        String username = getLocalUsername();
         room = new Room(roomName, username);
         noteDatabase.register(getFormattedRoomCode());
         room.addParticipant(new Participant(username, username));
@@ -96,18 +109,21 @@ public class RoomDatabase implements
     public void joinRoom(String roomName) throws DataAccessException {
         room = new Room(roomName, "");
         refreshRoom();
-        String username = getLocalUsername();
         room.addParticipant(new Participant(username, username));
         saveRoom();
     }
 
     public int participantsCount() throws DataAccessException {
-        refreshRoom();
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
         return room.getParticipants().size();
     }
 
     public List<Ballot> getBallots() throws DataAccessException {
-        refreshRoom();
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
         return Collections.unmodifiableList(room.getBallots());
     }
 }
