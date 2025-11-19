@@ -14,6 +14,8 @@ public class Room {
     private String selectedMovieId;
 
     public Room(String code, String hostId) {
+
+    public Room(String code, String hostId) {
         this.code = code;
         this.hostId = hostId;
         this.locked = false;
