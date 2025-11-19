@@ -21,8 +21,9 @@ public class NoteDataAccessObject implements NoteDatabase {
     private static final String TOKEN = "token";
     private static final String INFO = "info";
 
+    private final OkHttpClient client = new OkHttpClient().newBuilder().build();
+
     public String register(String username) throws DataAccessException {
-        final OkHttpClient client = new OkHttpClient().newBuilder().build();
         final Request request = new Request.Builder()
                 .url(String.format("%s/signUp?username=%s", API_URL, username))
                 .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
@@ -51,7 +52,6 @@ public class NoteDataAccessObject implements NoteDatabase {
     }
 
     public String getPassword(String username) throws DataAccessException {
-        final OkHttpClient client = new OkHttpClient().newBuilder().build();
         final Request request = new Request.Builder()
                 .url(String.format("%s/user?username=%s", API_URL, username))
                 .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
@@ -80,7 +80,6 @@ public class NoteDataAccessObject implements NoteDatabase {
     }
 
     public String saveNote(String username, String password, String note) throws DataAccessException {
-        final OkHttpClient client = new OkHttpClient().newBuilder().build();
         final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
         final JSONObject requestBody = new JSONObject();
         requestBody.put(USERNAME, username);
@@ -118,7 +117,6 @@ public class NoteDataAccessObject implements NoteDatabase {
     }
 
     public String loadNote(String username) throws DataAccessException {
-        final OkHttpClient client = new OkHttpClient().newBuilder().build();
         final Request request = new Request.Builder()
                 .url(String.format("%s/user?username=%s", API_URL, username))
                 .addHeader(CONTENT_TYPE_LABEL, CONTENT_TYPE_JSON)
