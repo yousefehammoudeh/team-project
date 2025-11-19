@@ -36,7 +36,10 @@ public class NoteDataAccessObject implements NoteDatabase {
                 return responseBody.getString(TOKEN);
             }
             else if (responseBody.getInt(STATUS_CODE_LABEL) == CONFLICT_ERROR) {
-                throw new DataAccessException("User already exists.");
+                throw new DataAccessException("User already exists.", CONFLICT_ERROR);
+            }
+            else if (responseBody.getInt(STATUS_CODE_LABEL) == TOO_MANY_REQUESTS) {
+                throw new DataAccessException("Too many requests.", TOO_MANY_REQUESTS);
             }
             else {
                 throw new DataAccessException("Database error: " + responseBody.getString(MESSAGE));
@@ -62,7 +65,10 @@ public class NoteDataAccessObject implements NoteDatabase {
                 return responseBody.getJSONObject(USER).getString(TOKEN);
             }
             else if (responseBody.getInt(STATUS_CODE_LABEL) == NOT_FOUND_ERROR) {
-                throw new DataAccessException("User not found.");
+                throw new DataAccessException("User not found.", NOT_FOUND_ERROR);
+            }
+            else if (responseBody.getInt(STATUS_CODE_LABEL) == TOO_MANY_REQUESTS) {
+                throw new DataAccessException("Too many requests.", TOO_MANY_REQUESTS);
             }
             else {
                 throw new DataAccessException("Database error: " + responseBody.getString(MESSAGE));
@@ -98,6 +104,9 @@ public class NoteDataAccessObject implements NoteDatabase {
             }
             else if (responseBody.getInt(STATUS_CODE_LABEL) == CREDENTIAL_ERROR) {
                 throw new DataAccessException("message could not be found or password was incorrect");
+            }
+            else if (responseBody.getInt(STATUS_CODE_LABEL) == TOO_MANY_REQUESTS) {
+                throw new DataAccessException("Too many requests.", TOO_MANY_REQUESTS);
             }
             else {
                 throw new DataAccessException("database error: " + responseBody.getString(MESSAGE));
