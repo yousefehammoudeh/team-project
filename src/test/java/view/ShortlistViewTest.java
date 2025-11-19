@@ -1,4 +1,4 @@
-package shortlist;
+package view;
 
 import data_access.room.InMemoryRoomDataAccessObject;
 import interface_adapter.shortlist.AddMovieController;
@@ -10,7 +10,6 @@ import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
 import use_case.remove_movie.RemoveMovieInteractor;
 import use_case.shortlist.ShortlistOutputBoundary;
-import view.ShortlistView;
 
 import javax.swing.*;
 
@@ -18,7 +17,7 @@ public class ShortlistViewTest {
     public static void main(String[] args) {
 
         ShortlistViewModel shortlistViewModel = new ShortlistViewModel();
-        ShortlistView shortlistView = new ShortlistView(shortlistViewModel);
+        view.ShortlistView shortlistView = new view.ShortlistView(shortlistViewModel);
 
         InMemoryRoomDataAccessObject roomDataAccessObject = new InMemoryRoomDataAccessObject();
 
@@ -27,7 +26,8 @@ public class ShortlistViewTest {
         AddMovieController addMovieController = new AddMovieController(addMovieInteractor);
         shortlistView.setAddMovieController(addMovieController);
 
-        RemoveMovieInputBoundary removeMovieInteractor = new RemoveMovieInteractor(roomDataAccessObject, shortlistPresenter);
+        RemoveMovieInputBoundary removeMovieInteractor = new RemoveMovieInteractor(roomDataAccessObject,
+                shortlistPresenter);
         RemoveMovieController removeMovieController = new RemoveMovieController(removeMovieInteractor);
         shortlistView.setRemoveMovieController(removeMovieController);
 
