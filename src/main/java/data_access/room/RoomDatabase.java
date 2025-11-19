@@ -127,7 +127,8 @@ public class RoomDatabase implements
         return Collections.unmodifiableList(room.getBallots());
     }
 
-    public boolean submitBallot(Ballot ballot) throws DataAccessException {
+    public boolean submitBallot(List<String> rankedMovieIds) throws DataAccessException {
+        Ballot ballot = new Ballot(getLocalUsername(), rankedMovieIds);
         refreshRoom();
         boolean result = room.submitBallot(ballot);
         if (result) {
