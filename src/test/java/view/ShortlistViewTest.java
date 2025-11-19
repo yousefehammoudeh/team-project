@@ -1,6 +1,7 @@
 package view;
 
 import data_access.room.InMemoryRoomDataAccessObject;
+import data_access.room.RoomDatabase;
 import interface_adapter.shortlist.AddMovieController;
 import interface_adapter.shortlist.RemoveMovieController;
 import interface_adapter.shortlist.ShortlistPresenter;
@@ -19,7 +20,14 @@ public class ShortlistViewTest {
         ShortlistViewModel shortlistViewModel = new ShortlistViewModel();
         view.ShortlistView shortlistView = new view.ShortlistView(shortlistViewModel);
 
-        InMemoryRoomDataAccessObject roomDataAccessObject = new InMemoryRoomDataAccessObject();
+//        InMemoryRoomDataAccessObject roomDataAccessObject = new InMemoryRoomDataAccessObject();
+        RoomDatabase roomDataAccessObject = new RoomDatabase();
+        try {
+            roomDataAccessObject.createRoom("qu3wrboqwe3");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         ShortlistOutputBoundary shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         AddMovieInputBoundary addMovieInteractor = new AddMovieInteractor(roomDataAccessObject, shortlistPresenter);
