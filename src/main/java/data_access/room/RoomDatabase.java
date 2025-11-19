@@ -17,7 +17,7 @@ public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface {
     private static final String USERNAME = "NOTE_API_USERNAME";
-    private static final String ROOM_NAME_HEADER = "csc207_group23_room_";
+    private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
     private Room room;
@@ -109,5 +109,14 @@ public class RoomDatabase implements
     public List<Ballot> getBallots() throws DataAccessException {
         refreshRoom();
         return Collections.unmodifiableList(room.getBallots());
+    }
+
+    public boolean submitBallot(Ballot ballot) throws DataAccessException {
+        refreshRoom();
+        boolean result = room.submitBallot(ballot);
+        if (result) {
+            saveRoom();
+        }
+        return result;
     }
 }
