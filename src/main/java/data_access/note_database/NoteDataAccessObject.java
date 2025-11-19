@@ -6,11 +6,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import static data_access.HTTPCode.*;
+
 public class NoteDataAccessObject implements NoteDatabase {
-    private static final int SUCCESS_CODE = 200;
-    private static final int CREDENTIAL_ERROR = 401;
-    private static final int NOT_FOUND_ERROR = 404;
-    private static final int CONFLICT_ERROR = 409;
     private static final String API_URL = "http://vm003.teach.cs.toronto.edu:20112";
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
     private static final String CONTENT_TYPE_JSON = "application/json";
