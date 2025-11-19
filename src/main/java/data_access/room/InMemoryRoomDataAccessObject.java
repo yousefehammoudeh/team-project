@@ -39,7 +39,7 @@ public class InMemoryRoomDataAccessObject implements
         return room.removeFromShortlist(movieID);
     }
 
-    public List<String> getMovieIDs() {
+    public List<String> getShortlist() {
         return new ArrayList<>(room.getShortlist()); // return a new list to prevent modification
     }
 

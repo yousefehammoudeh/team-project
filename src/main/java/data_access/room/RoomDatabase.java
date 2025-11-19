@@ -3,6 +3,7 @@ package data_access.room;
 import data_access.note_database.DataAccessException;
 import data_access.note_database.NoteDataAccessObject;
 import data_access.note_database.NoteDatabase;
+import entity.Ballot;
 import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
@@ -69,7 +70,7 @@ public class RoomDatabase implements
         return result;
     }
 
-    public List<String> getMovieIDs() throws DataAccessException {
+    public List<String> getShortlist() throws DataAccessException {
         refreshRoom();
         return Collections.unmodifiableList(room.getShortlist());
     }
@@ -98,5 +99,15 @@ public class RoomDatabase implements
         String username = getLocalUsername();
         room.addParticipant(new Participant(username, username));
         saveRoom();
+    }
+
+    public int participantsCount() throws DataAccessException {
+        refreshRoom();
+        return room.getParticipants().size();
+    }
+
+    public List<Ballot> getBallots() throws DataAccessException {
+        refreshRoom();
+        return Collections.unmodifiableList(room.getBallots());
     }
 }

@@ -11,5 +11,5 @@ public interface AddMovieRoomDataAccessInterface {
 
     boolean addMovie(String movieID) throws DataAccessException;
 
-    List<String> getMovieIDs() throws DataAccessException;
+    List<String> getShortlist() throws DataAccessException;
 }
