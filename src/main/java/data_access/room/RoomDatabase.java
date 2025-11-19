@@ -16,7 +16,7 @@ import java.util.List;
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface {
-    private static final String ROOM_NAME_HEADER = "csc207_group23_room_";
+    private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
     private final String username;
@@ -125,5 +125,14 @@ public class RoomDatabase implements
             throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
         }
         return Collections.unmodifiableList(room.getBallots());
+    }
+
+    public boolean submitBallot(Ballot ballot) throws DataAccessException {
+        refreshRoom();
+        boolean result = room.submitBallot(ballot);
+        if (result) {
+            saveRoom();
+        }
+        return result;
     }
 }
