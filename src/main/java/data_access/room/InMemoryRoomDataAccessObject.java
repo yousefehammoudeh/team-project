@@ -19,8 +19,9 @@ import java.util.List;
  */
 public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
-        RemoveMovieRoomDataAccessInterface {
-    private final Room room = Room.create("","");
+        RemoveMovieRoomDataAccessInterface,
+        VoteUserDataAccessInterface {
+    private final Room room = new Room("", "");
 
     public boolean isHost() {
         return true;
@@ -38,7 +39,7 @@ public class InMemoryRoomDataAccessObject implements
         return room.removeFromShortlist(movieID);
     }
 
-    public List<String> getMovieIDs() {
+    public List<String> getShortlist() {
         return new ArrayList<>(room.getShortlist()); // return a new list to prevent modification
     }
 

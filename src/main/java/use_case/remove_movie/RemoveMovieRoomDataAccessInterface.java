@@ -1,13 +1,15 @@
 package use_case.remove_movie;
 
+import data_access.note_database.DataAccessException;
+
 import java.util.List;
 
 public interface RemoveMovieRoomDataAccessInterface {
-    boolean isHost();
+    boolean isHost() throws DataAccessException;
 
-    boolean isLocked();
+    boolean isLocked() throws DataAccessException;
 
-    boolean removeMovie(String movieID);
+    boolean removeMovie(String movieID) throws DataAccessException;
 
-    List<String> getMovieIDs();
+    List<String> getShortlist() throws DataAccessException;
 }

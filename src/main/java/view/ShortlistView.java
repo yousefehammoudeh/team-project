@@ -9,7 +9,6 @@ import interface_adapter.shortlist.ShortlistViewModel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -24,10 +23,10 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     private final ShortlistViewModel shortlistViewModel;
 
     private final DefaultListModel<String> movieListModel = new DefaultListModel<>();
-    private final JList<String> movieIDs;
+    private final JList<String> shortlist;
     private String selectedMovieID;
 
-    private AddMovieController addMovieController; // TODO: for demo and test only
+    private AddMovieController addMovieController;
     private RemoveMovieController removeMovieController;
 
     private final JPanel shortlistPanel;
@@ -45,9 +44,9 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         final JButton lockButton = new JButton("Lock");
         shortlistPanel.add(lockButton);
 
-        movieIDs = new JList<>(movieListModel);
-        movieIDs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        final JScrollPane scrollPane = new JScrollPane(movieIDs);
+        shortlist = new JList<>(movieListModel);
+        shortlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        final JScrollPane scrollPane = new JScrollPane(shortlist);
         shortlistPanel.add(scrollPane);
 
         removeButton.addActionListener(new ActionListener() {
@@ -65,10 +64,10 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
             }
         });
 
-        movieIDs.addListSelectionListener(new ListSelectionListener() {
+        shortlist.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                selectedMovieID = movieIDs.getSelectedValue();
+                selectedMovieID = shortlist.getSelectedValue();
             }
         });
 
@@ -108,7 +107,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     public void propertyChange(PropertyChangeEvent evt) {
         final ShortlistState state = (ShortlistState) evt.getNewValue();
         movieListModel.clear();
-        movieListModel.addAll(state.getMovieIDs());
+        movieListModel.addAll(state.getShortlist());
         // TODO: handle locked
     }
 

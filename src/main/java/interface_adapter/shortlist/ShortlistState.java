@@ -10,15 +10,15 @@ import java.util.List;
  * - error
  */
 public class ShortlistState {
-    private List<String> movieIDs;
+    private List<String> shortlist;
     private boolean locked;
 
-    public List<String> getMovieIDs() {
-        return movieIDs;
+    public List<String> getShortlist() {
+        return shortlist;
     }
 
-    public void setMovieIDs(List<String> movieIDs) {
-        this.movieIDs = movieIDs;
+    public void setShortlist(List<String> shortlist) {
+        this.shortlist = shortlist;
     }
 
     public boolean isLocked() {
