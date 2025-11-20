@@ -42,6 +42,10 @@ public class AppBuilder {
     private ShortlistViewModel shortlistViewModel;
     private ShortlistPresenter shortlistPresenter;
 
+    public AppBuilder() {
+        cardPanel.setLayout(cardLayout);
+    }
+
     public AppBuilder addShortlistView() {
         this.shortlistViewModel = new ShortlistViewModel();
         this.shortlistView = new ShortlistView(shortlistViewModel);
@@ -69,7 +73,10 @@ public class AppBuilder {
         return this;
     }
 
-    public void build() {
-
+    public JFrame build() {
+        final JFrame application = new JFrame("APP TITLE"); // TODO: give a title
+        application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        application.add(cardPanel);
+        return application;
     }
 }
