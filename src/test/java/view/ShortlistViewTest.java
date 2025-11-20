@@ -21,7 +21,7 @@ public class ShortlistViewTest {
         view.ShortlistView shortlistView = new view.ShortlistView(shortlistViewModel);
 
 //        InMemoryRoomDataAccessObject roomDataAccessObject = new InMemoryRoomDataAccessObject();
-        RoomDatabase roomDataAccessObject = new RoomDatabase();
+        RoomDatabase roomDataAccessObject = new RoomDatabase("testusername");
         try {
             roomDataAccessObject.createRoom("qu3wrboqwe3");
         }

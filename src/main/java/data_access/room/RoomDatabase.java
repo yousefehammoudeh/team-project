@@ -128,7 +128,7 @@ public class RoomDatabase implements
     }
 
     public boolean submitBallot(List<String> rankedMovieIds) throws DataAccessException {
-        Ballot ballot = new Ballot(getLocalUsername(), rankedMovieIds);
+        Ballot ballot = new Ballot(username, rankedMovieIds);
         refreshRoom();
         boolean result = room.submitBallot(ballot);
         if (result) {
