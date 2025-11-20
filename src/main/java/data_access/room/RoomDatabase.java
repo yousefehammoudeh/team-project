@@ -19,7 +19,7 @@ public class RoomDatabase implements
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
-    private final String username;
+    private String username;
     private Room room;
 
     /**
@@ -29,6 +29,10 @@ public class RoomDatabase implements
      */
     public RoomDatabase(String username) {
         this.username = username;
+    }
+
+    public RoomDatabase() {
+        this("");
     }
 
     private String getFormattedRoomCode() {
@@ -135,5 +139,13 @@ public class RoomDatabase implements
             saveRoom();
         }
         return result;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
