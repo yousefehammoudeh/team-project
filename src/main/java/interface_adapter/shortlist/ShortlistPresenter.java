@@ -23,7 +23,9 @@ public class ShortlistPresenter implements ShortlistOutputBoundary {
 
     @Override
     public void presentFailure(String message) {
-        // TODO: Update error state and notify
+        final ShortlistState shortlistState = viewModel.getState();
+        shortlistState.setError(message);
+        viewModel.firePropertyChanged();
     }
 }
 

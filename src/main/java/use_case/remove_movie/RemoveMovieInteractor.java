@@ -18,29 +18,22 @@ public class RemoveMovieInteractor implements RemoveMovieInputBoundary {
         try {
             final String movieID = removeMovieInputData.getMovieID();
             if (roomDataAccessObject.isLocked()) {
-                // Cannot remove if locked.
-                // TODO: implement
+                shortlistPresenter.presentFailure("The room is locked.");
             }
-            else if (roomDataAccessObject.isHost()) {
-                // Remove directly and notify other users in the room.
+            else {
                 final boolean success = roomDataAccessObject.removeMovie(movieID);
                 if (success) {
                     final ShortlistOutputData shortlistOutputData =
                             new ShortlistOutputData(roomDataAccessObject.getShortlist(), roomDataAccessObject.isLocked());
                     shortlistPresenter.present(shortlistOutputData);
-                    // TODO: notify others
                 }
                 else {
-                    // TODO: error if the movie exists
+                    shortlistPresenter.presentFailure("The movie is not in the shortlist.");
                 }
-            }
-            else {
-                // If local user is not the host, notify the host to remove.
-                // TODO: implement
             }
         }
         catch (DataAccessException ex) {
-            System.err.println("Error in RemoveMovieInteractor: " + ex.getMessage());
+            shortlistPresenter.presentFailure(ex.getMessage());
         }
     }
 }

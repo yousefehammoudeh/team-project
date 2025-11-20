@@ -106,9 +106,13 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final ShortlistState state = (ShortlistState) evt.getNewValue();
-        movieListModel.clear();
-        movieListModel.addAll(state.getShortlist());
-        // TODO: handle locked
+        if (state.getError() != null) {
+            JOptionPane.showMessageDialog(null, state.getError());
+        }
+        else {
+            movieListModel.clear();
+            movieListModel.addAll(state.getShortlist());
+        }
     }
 
     public void setAddMovieController(AddMovieController addMovieController) {
