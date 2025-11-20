@@ -23,7 +23,7 @@ public class ShortlistViewTest {
 //        InMemoryRoomDataAccessObject roomDataAccessObject = new InMemoryRoomDataAccessObject();
         RoomDatabase roomDataAccessObject = new RoomDatabase("testusername");
         try {
-            roomDataAccessObject.createRoom("qu3wrboqwe3");
+            roomDataAccessObject.createRoom("testRoom123");
         }
         catch (Exception e) {
             e.printStackTrace();

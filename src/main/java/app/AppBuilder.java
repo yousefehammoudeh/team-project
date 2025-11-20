@@ -22,6 +22,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 /**
  * TODO: Compose application wiring.
@@ -75,6 +76,13 @@ public class AppBuilder {
 
     public JFrame build() {
         final JFrame application = new JFrame("APP TITLE"); // TODO: give a title
+        userDataAccessObject.setUsername(UUID.randomUUID().toString()); // TODO: TEMP TEST
+        try{
+            userDataAccessObject.joinRoom("testRoom123"); // TODO: TEMP TEST
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.add(cardPanel);
         return application;
