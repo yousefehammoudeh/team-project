@@ -2,6 +2,7 @@ package view;
 
 import data_access.room.InMemoryRoomDataAccessObject;
 import data_access.room.RoomDatabase;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.shortlist.AddMovieController;
 import interface_adapter.shortlist.RemoveMovieController;
 import interface_adapter.shortlist.ShortlistPresenter;
@@ -17,8 +18,9 @@ import javax.swing.*;
 public class ShortlistViewTest {
     public static void main(String[] args) {
 
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
         ShortlistViewModel shortlistViewModel = new ShortlistViewModel();
-        view.ShortlistView shortlistView = new view.ShortlistView(shortlistViewModel);
+        view.ShortlistView shortlistView = new view.ShortlistView(viewManagerModel, shortlistViewModel);
 
 //        InMemoryRoomDataAccessObject roomDataAccessObject = new InMemoryRoomDataAccessObject();
         RoomDatabase roomDataAccessObject = new RoomDatabase("testusername");

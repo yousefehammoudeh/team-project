@@ -2,27 +2,17 @@ package app;
 
 import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
-import data_access.room.InMemoryRoomDataAccessObject;
-import interface_adapter.shortlist.AddMovieController;
-import interface_adapter.shortlist.RemoveMovieController;
-import interface_adapter.shortlist.ShortlistPresenter;
-import interface_adapter.shortlist.ShortlistViewModel;
-import interface_adapter.vote.VotePresenter;
-import interface_adapter.vote.VoteViewModel;
-import interface_adapter.vote.VoteController;
+import interface_adapter.shortlist.*;
 import use_case.add_movie.AddMovieInputBoundary;
 import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
 import use_case.remove_movie.RemoveMovieInteractor;
-import use_case.vote.VoteInteractor;
+import use_case.update_room.UpdateRoomInputBoundary;
+import use_case.update_room.UpdateRoomInteractor;
 import view.ShortlistView;
 import view.ViewManager;
-import view.VoteView;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
 
 /**
  * TODO: Compose application wiring.
@@ -49,7 +39,7 @@ public class AppBuilder {
 
     public AppBuilder addShortlistView() {
         this.shortlistViewModel = new ShortlistViewModel();
-        this.shortlistView = new ShortlistView(shortlistViewModel);
+        this.shortlistView = new ShortlistView(viewManagerModel, shortlistViewModel);
         cardPanel.add(shortlistView, shortlistView.getName());
         return this;
     }
@@ -74,15 +64,18 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addUpdateRoomUseCase() {
+        if (shortlistPresenter == null) {
+            shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
+        }
+        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(userDataAccessObject,  shortlistPresenter);
+        UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
+        shortlistView.setUpdateRoomController(updateRoomController);
+        return this;
+    }
+
     public JFrame build() {
         final JFrame application = new JFrame("APP TITLE"); // TODO: give a title
-        userDataAccessObject.setUsername(UUID.randomUUID().toString()); // TODO: TEMP TEST
-        try{
-            userDataAccessObject.joinRoom("testRoom123"); // TODO: TEMP TEST
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.add(cardPanel);
         return application;

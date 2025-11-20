@@ -1,10 +1,7 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.shortlist.AddMovieController;
-import interface_adapter.shortlist.RemoveMovieController;
-import interface_adapter.shortlist.ShortlistState;
-import interface_adapter.shortlist.ShortlistViewModel;
+import interface_adapter.shortlist.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -28,11 +25,13 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
     private AddMovieController addMovieController;
     private RemoveMovieController removeMovieController;
+    private UpdateRoomController updateRoomController;
 
     private final JPanel shortlistPanel;
     private ViewManagerModel viewManagerModel;
 
-    public ShortlistView(ShortlistViewModel shortlistViewModel) {
+    public ShortlistView(ViewManagerModel viewManagerModel, ShortlistViewModel shortlistViewModel) {
+        this.viewManagerModel = viewManagerModel;
         this.shortlistViewModel = shortlistViewModel;
         this.shortlistViewModel.addPropertyChangeListener(this);
 
@@ -93,9 +92,23 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
             }
         });
         shortlistPanel.add(voteButton);
+
         // TODO: code above for demo and test only.
 
         this.add(shortlistPanel);
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    if (getViewName().equals(viewManagerModel.getActiveViewName())) {
+                        updateRoomController.execute();
+                    }
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -125,5 +138,13 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;
+    }
+
+    public void setUpdateRoomController(UpdateRoomController updateRoomController) {
+        this.updateRoomController = updateRoomController;
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 }

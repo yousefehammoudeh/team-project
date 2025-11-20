@@ -13,6 +13,7 @@ public class Main {
                 .addShortlistView()
                 .addAddMovieUseCase()
                 .addRemoveMovieUseCase()
+                .addUpdateRoomUseCase()
                 .build();
         application.pack();
         application.setLocationRelativeTo(null);
