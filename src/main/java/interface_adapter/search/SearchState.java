@@ -1,5 +1,7 @@
 package interface_adapter.search;
 
+import entity.Movie;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,18 @@ import java.util.List;
  * - error
  */
 public class SearchState {
-    // TODO: Define fields and accessors
+    private String query;
+    private List<Movie> movies;
+    private String error;
+
+    public SearchState() {}
+
+    public String getQuery() { return this.query; }
+    public List<Movie> getMovies() { return this.movies; }
+    public String getError() { return this.error; }
+
+    public void setQuery(String query) { this.query = query; }
+    public void setMovies(List<Movie> movies) { this.movies = movies; }
+    public void setError(String error) { this.error = error; }
 }
 

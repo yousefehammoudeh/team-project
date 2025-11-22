@@ -1,9 +1,15 @@
 package use_case.search;
 
+import entity.Movie;
 import use_case.search.SearchUserDataAccessInterface;
 import use_case.search.SearchOutputBoundary;
+import view.SearchView;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -18,22 +24,36 @@ public class SearchInteractor implements SearchInputBoundary {
         this.presenter = presenter;
     }
 
-    public void execute(SearchInputData searchInputData){
+    public void execute(SearchInputData searchInputData) {
         final String movieTitle = searchInputData.getMovieTitle();
 
-        String apiKey = System.getenv("TMDB_API_KEY");
-        if (apiKey != null && !apiKey.isBlank()) {
-            try {
-                data_access.tmdb.TmdbMovieGateway gw = new data_access.tmdb.TmdbMovieGateway(apiKey, null, null);
-                java.util.List<entity.Movie> movies = gw.search(movieTitle, null);
-                // take up to 5 movies
-                if (movies.size() > 5)
-                    movies = movies.subList(0, 5);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        try {
+            data_access.tmdb.TmdbMovieGateway gw =
+                    new data_access.tmdb.TmdbMovieGateway(System.getenv("TMDB_API_KEY"), null, null);
+
+            // list of movies
+            List<Movie> movies = gw.search(movieTitle, null);
+            if (movies.size() > 5) {
+                movies = movies.subList(0, 5);
+            }
+            // poster stuff
+            List<String> posterUrls = new ArrayList<>();
+            for (entity.Movie m : movies) {
+                String p = m.getPosterPath();
+                if (p == null || p.isBlank()) continue;
+
+                String cleaned = p.startsWith("/") ? p : "/" + p;
+                posterUrls.add("https://image.tmdb.org/t/p/w200" + cleaned);
             }
 
-            // TODO: Implement search/details operations
+            // search output data
+            SearchOutputData outputData = new SearchOutputData(movies);
+
+            // presenter
+            presenter.present(outputData);
+
+        } catch (Exception e) {
+            presenter.presentFailure("Search failed: " + e.getMessage());
         }
     }
 }

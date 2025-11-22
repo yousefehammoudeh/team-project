@@ -15,12 +15,28 @@ public class SearchPresenter implements SearchOutputBoundary {
 
     @Override
     public void present(SearchOutputData outputData) {
-        // TODO: Map to state and notify
+        // Update view model fields
+        SearchState state = viewModel.getState();
+        state.setError(null);             // no error
+        state.setMovies(outputData.getMovies());  // list<Movie>
+
+        // Fire event so SearchView refreshes UI
+        viewModel.firePropertyChanged();
+
+        System.out.println("[Presenter] Updated results: " + outputData.getMovies().size());
     }
 
     @Override
     public void presentFailure(String message) {
-        // TODO: Update error state and notify
+        // Update only the error
+        SearchState state = viewModel.getState();
+        state.setError(message);
+        state.setMovies(null);  // clear results
+
+        // Fire update
+        viewModel.firePropertyChanged();
+
+        System.out.println("[Presenter] Error: " + message);
     }
 }
 

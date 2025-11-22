@@ -1,9 +1,13 @@
 package view;
 
+import entity.Movie;
 import interface_adapter.search.SearchController;
 import interface_adapter.search.SearchViewModel;
 import interface_adapter.search.SearchState;
-import interface_adapter.search.AddMovieController;
+import interface_adapter.shortlist.AddMovieController;
+
+import java.net.MalformedURLException;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 
 /**
  * TODO: Search view (search field, results list, details panel).
@@ -32,8 +37,8 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
     private SearchController searchController;
 
     private final DefaultListModel<String> movieListModel = new DefaultListModel<>();
-    private final JList<String> movieIDs;
     private String selectedMovieID;
+    private JPanel searchListPanel;
 
     private AddMovieController addMovieController;
 
@@ -41,6 +46,8 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         this.searchViewModel = searchViewModel;
         this.searchViewModel.addPropertyChangeListener(this);
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // window title
         // final JLabel title = new JLabel("Search Screen");
@@ -62,59 +69,42 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         searchComponents.add(searchButton);
 
         // search button action listener
-        searchButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (e.getSource().equals(searchButton)) {
-                            final SearchState currentState = searchViewModel.getState();
+        searchButton.addActionListener(e -> {
+            // Make sure the ViewModel has a state
+            SearchState currentState = searchViewModel.getState();
+            if (currentState == null) {
+                currentState = new SearchState();
+                searchViewModel.setState(currentState);
+            }
 
-                            searchController.execute(
-                                    currentState.getSearch()
-                            );
-                        }
-                    }
-                }
-        );
+            // Update the query from the text field
+            currentState.setQuery(searchInputField.getText());
+
+            // Fire change so other listeners (if any) update
+            searchViewModel.firePropertyChanged();
+
+            // Execute the search
+            searchController.execute(currentState.getQuery());
+        });
+
 
         // the movie list display
-        final JPanel searchListPanel = new JPanel();
+        searchListPanel = new JPanel();
+
         searchListPanel.setLayout(new BoxLayout(searchListPanel, BoxLayout.Y_AXIS));
-
-        // add movie button
-        final JButton addButton = new JButton("Add");
-        searchListPanel.add(addButton);
-
-        movieIDs = new JList<>(movieListModel);
-        movieIDs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        final JScrollPane scrollPane = new JScrollPane(movieIDs);
-        searchListPanel.add(scrollPane);
-
-        // add button action listener
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMovieController.execute(selectedMovieID);
-                selectedMovieID = null;
-            }
-        });
-
-        // add list action listener
-        movieIDs.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                selectedMovieID = movieIDs.getSelectedValue();
-            }
-        });
-
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // keeps components vertical
+        final JScrollPane scrollPane = new JScrollPane(searchListPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // this.add(title);
         this.add(header);
         this.add(searchComponents);
+        this.add(scrollPane);
         this.add(searchListPanel);
     }
-    // TODO: Wire search input and results selection to SearchController
+
+    public void setSearchController(SearchController controller) {
+        this.searchController = controller;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -123,6 +113,44 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update results list/details panel
+        SearchState state = (SearchState) evt.getNewValue();
+
+        if (state == null) {
+            return; // nothing to update yet
+        }
+
+        List<Movie> movies = state.getMovies();
+        if (movies == null) {
+            return;
+        }
+
+        searchListPanel.removeAll(); // searchListPanel = the panel that holds movie result blocks
+
+        for (Movie movie : movies) {
+            String p = movie.getPosterPath();
+            if (p == null || p.isBlank()) continue;
+
+            String cleaned = p.startsWith("/") ? p : "/" + p;
+            String fullUrl = "https://image.tmdb.org/t/p/w200" + cleaned;
+
+            try {
+                URL url = new URL(fullUrl);
+                ImageIcon icon = new ImageIcon(url);
+
+                JPanel block = new MovieResultPanel(icon, movie.getTitle());
+                searchListPanel.add(block);
+
+            } catch (MalformedURLException e) {
+                // Print the issue so you know something's wrong
+                e.printStackTrace();
+
+                // Optionally: add a placeholder panel without image
+                JPanel block = new MovieResultPanel(null, movie.getTitle());
+                searchListPanel.add(block);
+            }
+        }
+
+        searchListPanel.revalidate();
+        searchListPanel.repaint();
     }
 }
