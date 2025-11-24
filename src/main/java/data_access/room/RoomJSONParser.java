@@ -4,19 +4,17 @@ import entity.Ballot;
 import entity.Participant;
 import entity.Room;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TODO: Simple in-memory store for active rooms and their participants.
  * - Maintain mapping: roomCode -> Room aggregate
  * - Provide helpers to add/remove participants, ballots, filters, etc.
- * - This store backs InMemoryRoomDataAccessObject; swap with persistent version later.
+ * - This store backs InMemoryRoomDataAccessObject; swap with persistent version
+ * later.
  */
 public class RoomJSONParser {
     private static final String CODE = "code";
@@ -64,6 +62,7 @@ public class RoomJSONParser {
 
         return new Room(code, hostId, locked, participants, shortlist, ballots);
     }
+
     public static String RoomToJSON(Room room) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(CODE, room.getCode());
@@ -100,4 +99,3 @@ public class RoomJSONParser {
         return jsonObject.toString();
     }
 }
-

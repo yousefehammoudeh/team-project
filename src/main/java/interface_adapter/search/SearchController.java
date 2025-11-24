@@ -14,4 +14,3 @@ public class SearchController {
 
     // TODO: Method to trigger search (e.g., search(query))
 }
-

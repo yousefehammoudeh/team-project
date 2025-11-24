@@ -11,11 +11,10 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
     private final JoinRoomOutputBoundary presenter;
 
     public JoinRoomInteractor(JoinRoomUserDataAccessInterface roomGateway,
-                              JoinRoomOutputBoundary presenter) {
+            JoinRoomOutputBoundary presenter) {
         this.roomGateway = roomGateway;
         this.presenter = presenter;
     }
 
     // TODO: Implement execute(JoinRoomInputData inputData)
 }
-

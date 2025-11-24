@@ -28,7 +28,7 @@ public class VoteViewTest {
                         "dream" };
                 String query = queries[new Random().nextInt(queries.length)];
                 System.out.println("VoteViewTest: using query '" + query + "' for TMDB search");
-                java.util.List<entity.Movie> movies = gateway.search(query, null);
+                java.util.List<entity.Movie> movies = gateway.search(query);
                 // take up to 5 movies
                 if (movies.size() > 5)
                     movies = movies.subList(0, 5);
