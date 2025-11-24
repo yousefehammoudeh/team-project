@@ -31,7 +31,8 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
         // TODO: Update view model and notify
         //on success, switch to joinedRoomViewModel's state (user's dashboard)
         final JoinedRoomState joinedRoomState = joinedRoomViewModel.getState();
-        joinedRoomState.setParticipants(outputData.getRoom());
+        joinedRoomState.setParticipants(outputData.getParticipants());
+        joinedRoomState.setRoomcode(outputData.getRoomCode());
         joinedRoomViewModel.firePropertyChanged();
 
         //clear everything in the JoinRoomViewModel's state

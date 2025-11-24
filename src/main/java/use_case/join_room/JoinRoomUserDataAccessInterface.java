@@ -3,6 +3,8 @@ package use_case.join_room;
 import entity.Participant;
 import entity.Room;
 
+import java.util.List;
+
 /**
  * TODO: Gateways for join room flow (fetch room by code, add participant, etc.).
  */
@@ -13,16 +15,19 @@ public interface JoinRoomUserDataAccessInterface {
      * @param username the username to look for
      * @return true if a user with the given username exists; false otherwise
      */
-    boolean existsByName(String username);
-
-    boolean existsByCode(String roomCode);
-
-    Room get(String roomCode);
+//    boolean existsByName(String username);
+//
 
     /**
-     * Saves the user.
-     * @param user the user to save
+     * Checks if the room exists, if it does then save the user.
+     * @param roomCode the room to check existence
      */
-    void saveUser(Participant user, Room room);
+    boolean joinRoom(String roomCode);
+
+
+    void setUsername(String username);
+
+    List<String> getParticipantIDs();
+
 }
 

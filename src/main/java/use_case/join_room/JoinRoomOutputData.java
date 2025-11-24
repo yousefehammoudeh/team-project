@@ -1,23 +1,29 @@
 package use_case.join_room;
 import entity.Room;
 
+import java.util.List;
+
 /**
  * TODO: Output data after joining (room summary/current state).
  */
 public class JoinRoomOutputData {
     // TODO: Define fields and constructor(s)
     //private final String username;
-    private final Room room;
+    private final List<String> participants;
+    private final String code;
+    public JoinRoomOutputData(List<String> p, String roomCode) {
 
-    public JoinRoomOutputData(Room room) {
-        //this.username = username;
-        this.room = room;
+        this.participants = p;
+        this.code = roomCode;
     }
 
-//    public String getUsername() {
-//        return username;
-//    }
+    public String getRoomCode() {
+        return code;
+    }
 
-    public Room getRoom() { return room; }
+    public List<String> getParticipants() {
+        return participants;
+    }
+
 }
 
