@@ -16,9 +16,9 @@ import javax.swing.*;
 
 public class ShortlistViewTest {
     public static void main(String[] args) {
-        createShortlistView("testusername", "testRoom123");
-        createShortlistView("testusernamenew", "testRoom123");
+        createShortlistView("username", "testRoom123");
     }
+
     private static void createShortlistView(String username, String roomName) {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         ShortlistViewModel shortlistViewModel = new ShortlistViewModel();
