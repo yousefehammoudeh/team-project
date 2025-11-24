@@ -6,7 +6,7 @@ import java.beans.PropertyChangeSupport;
 /**
  * TODO: Holds the name of the active view for ViewManager.
  */
-public class ViewManagerModel {
+public class ViewManagerModel extends ViewModel<String> {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private String activeViewName; // TODO: decide on constants for view names
 
