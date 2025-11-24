@@ -5,6 +5,7 @@ package use_case.shortlist;
  */
 public interface ShortlistOutputBoundary {
     void present(ShortlistOutputData outputData);
+
     void presentFailure(String message);
 }
 

@@ -10,6 +10,23 @@ import java.util.List;
  * - error
  */
 public class ShortlistState {
-    // TODO: Define fields and accessors
+    private List<String> movieIDs;
+    private boolean locked;
+
+    public List<String> getMovieIDs() {
+        return movieIDs;
+    }
+
+    public void setMovieIDs(List<String> movieIDs) {
+        this.movieIDs = movieIDs;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 }
 

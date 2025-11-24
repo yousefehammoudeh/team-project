@@ -7,7 +7,10 @@ package app;
  */
 public class Main {
     public static void main(String[] args) {
-        // TODO: Launch UI on EDT and build app via AppBuilder
+        // Launch UI on Swing EDT and build app
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            AppBuilder builder = new AppBuilder();
+            builder.build();
+        });
     }
 }
-

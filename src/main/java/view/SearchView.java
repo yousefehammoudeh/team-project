@@ -1,5 +1,7 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +12,7 @@ import java.beans.PropertyChangeListener;
  * TODO: Search view (search field, results list, details panel).
  */
 public class SearchView extends JPanel implements ActionListener, PropertyChangeListener {
-    // TODO: Wire search input and results selection to SearchController
+    private ViewManagerModel viewManagerModel;
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -20,5 +22,9 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO: Update results list/details panel
+    }
+
+    public void setViewManagerModel(ViewManagerModel vm) {
+        this.viewManagerModel = vm;
     }
 }

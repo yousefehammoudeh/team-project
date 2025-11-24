@@ -24,6 +24,7 @@ Key goals:
 | S05 | **Vote & Winner:** participants submit ranked ballots; host computes and displays winner.                                          | Yousef | ☐ |       |
 | S06 | **Suggest Movie:** once a movie is selected and/or marked as watched, it will recommend sequels or other movies of similar genres. | TBA    | ☐ |       |
 | S07 | **Content Filters (Host):** apply content filters (e.g., exclude adult content, set minimum rating, language)                      | TBA    | ☐ |       |
+| S08 | **Manage Participants (Host):** host can check on participants and remove participants.                                            | TBA    | ☐ |       |
 
 ---
 
@@ -56,93 +57,66 @@ Create the following GitHub issues in order. Each issue lists sub‑issues (todo
 - [x] Document env vars (TMDB token) and setup in README
 
 2) Core Entities Defined [Easy]
-- [ ] Room fields + accessors (code, hostToken, participants, shortlist, locked, selectedMovieId, contentFilters)
-- [ ] Participant fields + accessors (id, name)
-- [ ] Movie fields + accessors (id, title, year, posterPath, genres, language, rating)
-- [ ] Ballot fields + accessors (participantId, rankedMovieIds)
-- [ ] Shortlist fields + accessors (movieIds, locked)
-- [ ] ContentFilters fields + accessors (excludeAdult, minRating, language, genre includes/excludes)
+ - [x] Room fields + accessors (code, hostToken, participants, shortlist, locked, selectedMovieId, contentFilters) — `entity/Room.java` present
+ - [x] Participant fields + accessors (id, name) — `entity/Participant.java` present
+ - [x] Movie fields + accessors (id, title, year, posterPath, genres, language, rating) — `entity/Movie.java` present
+ - [x] Ballot fields + accessors (participantId, rankedMovieIds) — `entity/Ballot.java` present
+ - [x] Shortlist fields + accessors (movieIds, locked) — `entity/Shortlist.java` present
+ - [x] ContentFilters fields + accessors (excludeAdult, minRating, language, genre includes/excludes) — `entity/ContentFilters.java` present
 
 3) View Infrastructure & Switching [Easy]
-- [ ] Finalize `interface_adapter/ViewModel` helpers and defaults
-- [ ] Add view name constants + active view to `ViewManagerModel`
-- [ ] Implement basic `view/ViewManager` switching (CardLayout or equivalent)
+ - [x] `interface_adapter/ViewModel` and `ViewManagerModel` present (`interface_adapter/ViewModel.java`, `interface_adapter/ViewManagerModel.java`)
+ - [x] `view/ViewManager` and basic view classes present (`view/ViewManager.java`, various `view/*.java`)
+ - [ ] Final polish: finalize helpers, constants and ensure smooth switching logic (in-progress)
 
 4) UI Skeletons Created [Easy]
-- [ ] JoinRoomView: inputs (code, name) and placeholder labels
-- [ ] SearchView: search field, results list, details panel placeholder
-- [ ] ShortlistView: list + add/remove buttons
-- [ ] VoteView: rankable list + submit
-- [ ] FiltersView: adult toggle, min rating, language
-- [ ] SuggestionsView: list placeholder
-- [ ] HostDashboardView: room code, host token, action buttons (lock, winner, filters)
+- [x] JoinRoomView: inputs (code, name) and placeholder labels — `view/JoinRoomView.java`
+- [x] SearchView: search field, results list, details panel placeholder — `view/SearchView.java`
+- [x] ShortlistView: list + add/remove buttons — `view/ShortlistView.java`
+- [x] VoteView: rankable list + submit — `view/VoteView.java`
+- [x] FiltersView: adult toggle, min rating, language — `view/FiltersView.java`
+- [x] SuggestionsView: list placeholder — `view/SuggestionsView.java`
+- [x] HostDashboardView: room code, host token, action buttons (lock, winner, filters) — `view/HostDashboardView.java`
+
+Note: these are UI skeletons (views and view models/presenters exist). Wiring and behavior are in progress in many places.
 
 5) In‑Memory DAO Scaffolding [Easy]
-- [ ] Declare maps/lists to hold rooms, participants, ballots, filters in `data_access/InMemoryRoomDataAccessObject`
-- [ ] Stub methods (no logic) to satisfy interfaces
+- [x] In‑memory DAO file present: `data_access/InMemoryRoomDataAccessObject.java` (maps/lists declared)
+- [ ] Implement method logic and additional persistence helpers (in-progress)
 
 6) Use Case Contracts (All Stories) [Medium]
-- [ ] Define InputBoundary method signatures for S01–S07
-- [ ] Define InputData/OutputData fields per story (roomCode, hostToken, participantId, query, filters, etc.)
-- [ ] Expand `*UserDataAccessInterface` signatures to support the above
+- [x] Many use-case interfaces and interactor classes present under `use_case/` (create_room, add_movie, search, shortlist, suggestions, vote)
+- [ ] Complete and stabilize all InputBoundary/InputData/OutputData contracts for every story (in-progress)
 
 7) App Composition Wiring [Medium]
-- [ ] `app/AppBuilder`: instantiate DAO, presenters, interactors, controllers, view models, and views per story
-- [ ] Register views with `ViewManager`; set initial active view
-- [ ] `app/Main`: launch on EDT and call builder
+- [x] `app/AppBuilder.java` and `app/Main.java` exist and provide composition entry points
+- [ ] Final wiring, dependency injection and startup ordering need validation (in-progress)
 
 8) Presenter/State Plumbing [Medium]
-- [ ] Add `error` and minimal state fields to all `*State` classes
-- [ ] Implement `present(...)` and `presentFailure(...)` to update state and call `firePropertyChanged()`
-- [ ] Hook view buttons/inputs to controllers (handlers only; still no interactor logic)
+- [x] Presenter and State classes exist for most features under `interface_adapter/*/` (e.g., `CreateRoomPresenter`, `ShortlistPresenter`, `SearchPresenter`, `VotePresenter`, etc.)
+- [ ] Finish consistent `present`/`presentFailure` implementations and event firing (in-progress)
 
 9) S01 Create Room — Implementation + Tests [Challenging]
-- [ ] Generate unique room code + host token
-- [ ] Persist room via DAO
-- [ ] Presenter maps to dashboard state
-- [ ] HostDashboardView displays code/token
-- [ ] Unit tests for interactor behavior
+ - [ ] S01 Create Room — implementation in progress (use_case + presenter/controller/view files present; add interactor tests)
 
 10) S02 Join Room — Implementation + Tests [Challenging]
-- [ ] Validate room code and participant name
-- [ ] Add participant to room via DAO
-- [ ] Presenter returns room summary
-- [ ] JoinRoomView updates and navigates to room context
-- [ ] Unit tests for interactor behavior
+ - [ ] S02 Join Room — implementation in progress (interfaces and controllers present)
 
 11) S04 Shortlist — Implementation + Tests [Challenging]
-- [ ] Add candidate movie to shortlist
-- [ ] Remove candidate movie from shortlist
-- [ ] Lock shortlist (host token required)
-- [ ] Update ShortlistView state
-- [ ] Unit tests including lock invariants
+ - [ ] S04 Shortlist — implementation in progress (shortlist presenter and controllers present)
 
 12) S03 Search & Details — Stub, Then TMDB Gateway [Challenging]
-- [ ] Implement stubbed search results in DAO for early UI integration
-- [ ] Wire SearchView to trigger interactor and update results
-- [ ] Implement TMDB gateway (env token) behind `SearchUserDataAccessInterface`
-- [ ] Map details calls and update details panel
-- [ ] Unit tests with test doubles
+ - [ ] S03 Search & Details — TMDB gateway class present (`data_access/tmdb/TmdbMovieGateway.java`); wiring and tests remain to be completed
 
 13) S05 Vote & Winner — Implementation + Tests [Challenging]
-- [ ] Submit ranked ballots and persist
-- [ ] Compute winner (Borda baseline) with tie policy
-- [ ] Presenter updates winner state; View shows winner
-- [ ] Unit tests for scoring and edge cases
+ - [ ] S05 Vote & Winner — controllers and presenter classes exist; winner computation and tests pending
 
 14) S07 Content Filters — End‑to‑End + Integration [Challenging]
-- [ ] Save filters in DAO (host token validation)
-- [ ] Apply filters in search gateway
-- [ ] Update FiltersView; ensure Search respects filters
-- [ ] Unit/integration tests
+ - [ ] S07 Content Filters — `filters` presenter and view classes exist; persistence and integration tests pending
 
 15) S06 Suggestions — Implementation + Tests [Challenging]
-- [ ] Suggest sequels and similar‑by‑genre
-- [ ] Merge/score suggestions; update view
-- [ ] Unit tests with gateway doubles
+ - [ ] S06 Suggestions — suggestion presenter and view exist; gateway scoring and tests pending
 
 16) Polish, UX, and Integration Plan [Medium]
-- [ ] Error messages across views and presenters
-- [ ] Ensure EDT updates on UI changes; add simple loading states
-- [ ] Add screenshots/GIFs and usage notes to README
-- [ ] Outline manual/integration test plan and CI hooks
+- [ ] Polish, UX, and Integration — ongoing; some unit tests and UI tests exist under `test/` (shortlist, host dashboard, participants dashboard)
+
