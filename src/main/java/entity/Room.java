@@ -2,7 +2,6 @@ package entity;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 public class Room {
@@ -13,7 +12,6 @@ public class Room {
     private final List<String> shortlist;
     private final List<Ballot> ballots;
     private String selectedMovieId;
-    private ContentFilters contentFilters;
 
     public Room(String code, String hostId) {
         this.code = code;
@@ -22,18 +20,16 @@ public class Room {
         this.participants = new ArrayList<>();
         this.shortlist = new ArrayList<>();
         this.ballots = new ArrayList<>();
-        this.contentFilters = ContentFilters.defaults();
     }
 
     public Room(String code, String hostId, boolean locked,
-                List<Participant> participants, List<String> shortlist, List<Ballot> ballots) {
+            List<Participant> participants, List<String> shortlist, List<Ballot> ballots) {
         this.code = code;
         this.hostId = hostId;
         this.locked = locked;
         this.participants = participants;
         this.shortlist = shortlist;
         this.ballots = ballots;
-        this.contentFilters = ContentFilters.defaults();
         this.hostId = hostId;
     }
 
@@ -57,10 +53,6 @@ public class Room {
         return selectedMovieId;
     }
 
-    public ContentFilters getContentFilters() {
-        return contentFilters;
-    }
-
     public synchronized boolean addParticipant(Participant p) {
         if (getParticipants().stream().anyMatch(existing -> existing.getId().equals(p.getId()))) {
             return false;
@@ -70,22 +62,6 @@ public class Room {
             hostId = p.getId();
         }
         return added;
-    }
-
-    public synchronized boolean removeParticipantById(String participantId) {
-        boolean removed = getParticipants().removeIf(p -> Objects.equals(p.getId(), participantId));
-        if (removed && Objects.equals(participantId, hostId)) {
-            // promote next participant if any
-            if (getParticipants().isEmpty()) {
-                hostId = null;
-            }
-            else {
-                hostId = getParticipants().get(0).getId();
-            }
-        }
-        // remove any ballot the participant submitted
-        getBallots().removeIf(b -> Objects.equals(b.getParticipantId(), participantId));
-        return removed;
     }
 
     public synchronized boolean addToShortlist(String movieId) {
@@ -125,11 +101,6 @@ public class Room {
         return true;
     }
 
-    public void setContentFilters(ContentFilters filters) {
-        if (filters != null)
-            this.contentFilters = filters;
-    }
-
     /**
      * Submit or replace a ballot for a participant. Validates against the current
      * shortlist.
@@ -163,7 +134,8 @@ public class Room {
 
     @Override
     public String toString() {
-        return "Room{" + "code='" + code + '\'' + ", participants=" + getParticipants().size() + ", shortlist=" + getShortlist()
+        return "Room{" + "code='" + code + '\'' + ", participants=" + getParticipants().size() + ", shortlist="
+                + getShortlist()
                 + '}';
     }
 

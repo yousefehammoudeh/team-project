@@ -17,14 +17,11 @@ Key goals:
 
 | ID  | User Story (acceptance summary)                                                                                                    | Owner  | Status | PR(s) |
 |-----|------------------------------------------------------------------------------------------------------------------------------------|--------|---|-------|
-| S01 | **Create Room (Host):** generate room code + host token; persist room; show host dashboard.                                        | Diana  | ☐ |       |
-| S02 | **Join Room (Participant):** enter code + name; join and see current state.                                                        | Elaine | ☐ |       |
+| S01 | **Create Room (Host):** generate room code; persist room; show host dashboard (HostDashboardView).                                 | Diana  | ☐ |       |
+| S02 | **Join Room (Participant):** enter code + name; join and see participant dashboard (ParticipantsDashboardView) with room code and participant list. | Elaine | ☐ |       |
 | S03 | **Search & Details:** search TMDB; show list (title/year/poster); open details panel.                                              | Tamako | ☐ |       |
-| S04 | **Build & Lock Shortlist (Host):** add/remove until lock; lock requires host token.                                                | He Sun | ☐ |       |
+| S04 | **Build & Lock Shortlist (Host):** add/remove until lock.                                                                          | He Sun | ☐ |       |
 | S05 | **Vote & Winner:** participants submit ranked ballots; host computes and displays winner.                                          | Yousef | ☐ |       |
-| S06 | **Suggest Movie:** once a movie is selected and/or marked as watched, it will recommend sequels or other movies of similar genres. | TBA    | ☐ |       |
-| S07 | **Content Filters (Host):** apply content filters (e.g., exclude adult content, set minimum rating, language)                      | TBA    | ☐ |       |
-| S08 | **Manage Participants (Host):** host can check on participants and remove participants.                                            | TBA    | ☐ |       |
 
 ---
 
@@ -57,12 +54,10 @@ Create the following GitHub issues in order. Each issue lists sub‑issues (todo
 - [x] Document env vars (TMDB token) and setup in README
 
 2) Core Entities Defined [Easy]
- - [x] Room fields + accessors (code, hostToken, participants, shortlist, locked, selectedMovieId, contentFilters) — `entity/Room.java` present
+ - [x] Room fields + accessors (code, hostId, participants, shortlist, locked, selectedMovieId) — `entity/Room.java` present
  - [x] Participant fields + accessors (id, name) — `entity/Participant.java` present
  - [x] Movie fields + accessors (id, title, year, posterPath, genres, language, rating) — `entity/Movie.java` present
  - [x] Ballot fields + accessors (participantId, rankedMovieIds) — `entity/Ballot.java` present
- - [x] Shortlist fields + accessors (movieIds, locked) — `entity/Shortlist.java` present
- - [x] ContentFilters fields + accessors (excludeAdult, minRating, language, genre includes/excludes) — `entity/ContentFilters.java` present
 
 3) View Infrastructure & Switching [Easy]
  - [x] `interface_adapter/ViewModel` and `ViewManagerModel` present (`interface_adapter/ViewModel.java`, `interface_adapter/ViewManagerModel.java`)
@@ -70,22 +65,21 @@ Create the following GitHub issues in order. Each issue lists sub‑issues (todo
  - [ ] Final polish: finalize helpers, constants and ensure smooth switching logic (in-progress)
 
 4) UI Skeletons Created [Easy]
-- [x] JoinRoomView: inputs (code, name) and placeholder labels — `view/JoinRoomView.java`
+- [x] JoinRoomView: inputs (code, name) — `view/JoinRoomView.java`
+- [x] ParticipantsDashboardView: room code display, participant list (S02) — `view/ParticipantsDashboardView.java`
+- [x] HostDashboardView: room code display, participant list, navigation to other views (S01) — `view/HostDashboardView.java`
 - [x] SearchView: search field, results list, details panel placeholder — `view/SearchView.java`
 - [x] ShortlistView: list + add/remove buttons — `view/ShortlistView.java`
 - [x] VoteView: rankable list + submit — `view/VoteView.java`
-- [x] FiltersView: adult toggle, min rating, language — `view/FiltersView.java`
-- [x] SuggestionsView: list placeholder — `view/SuggestionsView.java`
-- [x] HostDashboardView: room code, host token, action buttons (lock, winner, filters) — `view/HostDashboardView.java`
 
-Note: these are UI skeletons (views and view models/presenters exist). Wiring and behavior are in progress in many places.
+Note: these are UI skeletons. Wiring and behavior are in progress in many places.
 
 5) In‑Memory DAO Scaffolding [Easy]
 - [x] In‑memory DAO file present: `data_access/InMemoryRoomDataAccessObject.java` (maps/lists declared)
 - [ ] Implement method logic and additional persistence helpers (in-progress)
 
 6) Use Case Contracts (All Stories) [Medium]
-- [x] Many use-case interfaces and interactor classes present under `use_case/` (create_room, add_movie, search, shortlist, suggestions, vote)
+- [x] Many use-case interfaces and interactor classes present under `use_case/` (create_room, join_room, add_movie, remove_movie, search, vote)
 - [ ] Complete and stabilize all InputBoundary/InputData/OutputData contracts for every story (in-progress)
 
 7) App Composition Wiring [Medium]
@@ -93,14 +87,14 @@ Note: these are UI skeletons (views and view models/presenters exist). Wiring an
 - [ ] Final wiring, dependency injection and startup ordering need validation (in-progress)
 
 8) Presenter/State Plumbing [Medium]
-- [x] Presenter and State classes exist for most features under `interface_adapter/*/` (e.g., `CreateRoomPresenter`, `ShortlistPresenter`, `SearchPresenter`, `VotePresenter`, etc.)
+- [x] Presenter and State classes exist for core features under `interface_adapter/*/` (e.g., `CreateRoomPresenter`, `JoinRoomPresenter`, `ShortlistPresenter`, `SearchPresenter`, `VotePresenter`)
 - [ ] Finish consistent `present`/`presentFailure` implementations and event firing (in-progress)
 
 9) S01 Create Room — Implementation + Tests [Challenging]
  - [ ] S01 Create Room — implementation in progress (use_case + presenter/controller/view files present; add interactor tests)
 
 10) S02 Join Room — Implementation + Tests [Challenging]
- - [ ] S02 Join Room — implementation in progress (interfaces and controllers present)
+ - [ ] S02 Join Room — implementation in progress (JoinRoomView and ParticipantsDashboardView created; interactor and wiring needed)
 
 11) S04 Shortlist — Implementation + Tests [Challenging]
  - [ ] S04 Shortlist — implementation in progress (shortlist presenter and controllers present)
@@ -111,12 +105,6 @@ Note: these are UI skeletons (views and view models/presenters exist). Wiring an
 13) S05 Vote & Winner — Implementation + Tests [Challenging]
  - [ ] S05 Vote & Winner — controllers and presenter classes exist; winner computation and tests pending
 
-14) S07 Content Filters — End‑to‑End + Integration [Challenging]
- - [ ] S07 Content Filters — `filters` presenter and view classes exist; persistence and integration tests pending
-
-15) S06 Suggestions — Implementation + Tests [Challenging]
- - [ ] S06 Suggestions — suggestion presenter and view exist; gateway scoring and tests pending
-
-16) Polish, UX, and Integration Plan [Medium]
-- [ ] Polish, UX, and Integration — ongoing; some unit tests and UI tests exist under `test/` (shortlist, host dashboard, participants dashboard)
+14) Polish, UX, and Integration Plan [Medium]
+- [ ] Polish, UX, and Integration — ongoing; some unit tests and UI tests exist under `test/` (shortlist, host dashboard, participants dashboard, vote)
 

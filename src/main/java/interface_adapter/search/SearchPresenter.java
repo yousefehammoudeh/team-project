@@ -23,4 +23,3 @@ public class SearchPresenter implements SearchOutputBoundary {
         // TODO: Update error state and notify
     }
 }
-

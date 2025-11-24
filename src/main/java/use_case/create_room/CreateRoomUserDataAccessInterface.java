@@ -2,8 +2,6 @@ package use_case.create_room;
 
 import entity.Room;
 
-import java.util.UUID;
-
 /**
  * TODO: Gateways to persist/fetch room for create flow.
  */
@@ -21,4 +19,3 @@ public interface CreateRoomUserDataAccessInterface {
 
     boolean verifyRoomUniquenessPerUser(String hostId);
 }
-

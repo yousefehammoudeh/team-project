@@ -2,14 +2,13 @@ package use_case.search;
 
 public interface SearchUserDataAccessInterface {
     /**
-     * Search for movies matching the given query and optional filters.
+     * Search for movies matching the given query.
      * 
-     * @param query   free-text query
-     * @param filters content filters (may be null)
+     * @param query free-text query
      * @return list of movies (may be empty)
      * @throws java.io.IOException when an IO or parsing error occurs
      */
-    java.util.List<entity.Movie> search(String query, entity.ContentFilters filters) throws java.io.IOException;
+    java.util.List<entity.Movie> search(String query) throws java.io.IOException;
 
     /**
      * Fetch detailed information for a single movie by id.

@@ -14,4 +14,3 @@ public class JoinRoomController {
 
     // TODO: Method to trigger join (e.g., join(code, name))
 }
-
