@@ -57,4 +57,8 @@ public class SearchInteractor implements SearchInputBoundary {
             presenter.presentFailure("Search failed: " + e.getMessage());
         }
     }
+
+    public void switchToShortlistView() {
+        presenter.switchToShortlistView();
+    }
 }

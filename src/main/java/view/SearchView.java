@@ -60,6 +60,14 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         shortList = new JButton("shortlist");
         header.add(shortList);
 
+        shortList.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        searchController.switchToShortlistView();
+                    }
+                }
+        );
+
         // the search bar
         final JPanel searchComponents = new JPanel();
         final LabelTextPanel searchBar = new LabelTextPanel(

@@ -18,5 +18,9 @@ public class SearchController {
         final SearchInputData searchMovieInputData = new SearchInputData(movieTitle);
         searchInteractor.execute(searchMovieInputData);
     }
+
+    public void switchToShortlistView() {
+        searchInteractor.switchToShortlistView();
+    }
 }
 
