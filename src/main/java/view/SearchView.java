@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -124,11 +122,7 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         searchListPanel.removeAll(); // searchListPanel = the panel that holds movie result blocks
 
-        for (Movie movie : movies) {// TODO: link with the search results (search state)
-            // TODO: it has the list of movieIDs from the state (ideally) and now we have to pass the poster info, title,
-            //  and description information somehow. however where do we call for that... in the interactor?
-            //  Ok wait i changed it to pass like movie entities instead of the movie ids. just use the movie entities
-            //  to
+        for (Movie movie : movies) {
             String p = movie.getPosterPath();
             if (p == null || p.isBlank()) continue;
 
