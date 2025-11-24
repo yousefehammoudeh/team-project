@@ -12,6 +12,7 @@ import java.util.List;
 public class ShortlistState {
     private List<String> shortlist;
     private boolean locked;
+    private String error;
 
     public List<String> getShortlist() {
         return shortlist;
@@ -27,6 +28,14 @@ public class ShortlistState {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
 
