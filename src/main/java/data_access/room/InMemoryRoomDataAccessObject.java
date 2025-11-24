@@ -10,9 +10,7 @@ import use_case.vote.VoteUserDataAccessInterface;
 import entity.Ballot;
 
 import java.util.*;
-
 import entity.Participant;
-
 import static data_access.HTTPCode.CONFLICT_ERROR;
 import static data_access.HTTPCode.NOT_FOUND_ERROR;
 
@@ -27,7 +25,7 @@ public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
         VoteUserDataAccessInterface,
-        JoinRoomUserDataAccessInterface {
+    JoinRoomUserDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;

@@ -1,7 +1,6 @@
 package use_case.join_room;
 
 import data_access.note_database.DataAccessException;
-
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
     private final JoinRoomOutputBoundary presenter;
 
     public JoinRoomInteractor(JoinRoomUserDataAccessInterface roomGateway,
-            JoinRoomOutputBoundary presenter) {
+                              JoinRoomOutputBoundary presenter) {
         this.roomGateway = roomGateway;
         this.presenter = presenter;
     }
