@@ -16,6 +16,8 @@ import java.util.Random;
  * TODO: Shortlist view (add/remove candidates, lock if host).
  */
 public class ShortlistView extends JPanel implements ActionListener, PropertyChangeListener {
+    private final static int UPDATE_INTERVAL = 5;
+
     private final String viewName = "Shortlist";
     private final ShortlistViewModel shortlistViewModel;
 
@@ -103,9 +105,9 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
                     if (getViewName().equals(viewManagerModel.getActiveViewName())) {
                         updateRoomController.execute();
                     }
-                    Thread.sleep(3000);
+                    Thread.sleep(UPDATE_INTERVAL * 1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         }).start();
