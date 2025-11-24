@@ -14,4 +14,3 @@ public class SearchInteractor implements SearchInputBoundary {
 
     // TODO: Implement search/details operations
 }
-

@@ -7,14 +7,12 @@ import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import use_case.search.SearchUserDataAccessInterface;
-import use_case.suggestions.SuggestionsUserDataAccessInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TmdbMovieGateway implements SearchUserDataAccessInterface,
-        SuggestionsUserDataAccessInterface {
+public class TmdbMovieGateway implements SearchUserDataAccessInterface {
 
     private static final String DEFAULT_BASE = "https://api.themoviedb.org/3";
     private final String apiKey;
@@ -32,17 +30,10 @@ public class TmdbMovieGateway implements SearchUserDataAccessInterface,
     }
 
     @Override
-    public List<Movie> search(String query, entity.ContentFilters filters) throws IOException {
+    public List<Movie> search(String query) throws IOException {
         requireApiKey();
         String q = query == null ? "" : java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
-        String url = String.format("%s/search/movie?api_key=%s&query=%s", baseUrl, apiKey, q);
-        if (filters != null) {
-            url += "&include_adult=" + (filters.isExcludeAdult() ? "false" : "true");
-            if (filters.getLanguage() != null && !filters.getLanguage().isBlank()) {
-                url += "&language="
-                        + java.net.URLEncoder.encode(filters.getLanguage(), java.nio.charset.StandardCharsets.UTF_8);
-            }
-        }
+        String url = String.format("%s/search/movie?api_key=%s&query=%s&include_adult=false", baseUrl, apiKey, q);
 
         Request request = new Request.Builder().url(url).get().build();
         try (Response response = client.newCall(request).execute()) {
@@ -78,28 +69,6 @@ public class TmdbMovieGateway implements SearchUserDataAccessInterface,
             String body = response.body().string();
             JSONObject json = new JSONObject(body);
             return mapFromDetails(json);
-        }
-    }
-
-    @Override
-    public List<Movie> similarTo(String movieId) throws IOException {
-        requireApiKey();
-        String id = movieId == null ? "" : java.net.URLEncoder.encode(movieId, java.nio.charset.StandardCharsets.UTF_8);
-        String url = String.format("%s/movie/%s/similar?api_key=%s", baseUrl, id, apiKey);
-        Request request = new Request.Builder().url(url).get().build();
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null)
-                return new ArrayList<>();
-            String body = response.body().string();
-            JSONObject json = new JSONObject(body);
-            JSONArray results = json.optJSONArray("results");
-            List<Movie> out = new ArrayList<>();
-            if (results != null) {
-                for (int i = 0; i < results.length(); i++) {
-                    out.add(mapFromSearchResult(results.getJSONObject(i)));
-                }
-            }
-            return out;
         }
     }
 

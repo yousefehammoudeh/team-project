@@ -23,4 +23,3 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
         // TODO: Set error state and notify
     }
 }
-

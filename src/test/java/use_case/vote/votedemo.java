@@ -22,7 +22,7 @@ public class votedemo {
         if (apiKey != null && !apiKey.isBlank()) {
             try {
                 data_access.tmdb.TmdbMovieGateway gateway = new data_access.tmdb.TmdbMovieGateway(apiKey, null, null);
-                java.util.List<entity.Movie> movies = gateway.search("toy story", null);
+                java.util.List<entity.Movie> movies = gateway.search("toy story");
 
                 // Take up to 5 movies for the demo
                 int limit = Math.min(5, movies.size());

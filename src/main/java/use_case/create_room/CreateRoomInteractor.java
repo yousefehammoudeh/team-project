@@ -16,7 +16,7 @@ public class CreateRoomInteractor implements CreateRoomInputBoundary {
     private final CreateRoomOutputBoundary presenter;
 
     public CreateRoomInteractor(CreateRoomUserDataAccessInterface roomGateway,
-                                CreateRoomOutputBoundary presenter) {
+            CreateRoomOutputBoundary presenter) {
         this.roomGateway = roomGateway;
         this.presenter = presenter;
     }
@@ -27,13 +27,13 @@ public class CreateRoomInteractor implements CreateRoomInputBoundary {
         final String roomCode = generateUniqueRoomCode();
         final String hostToken = generateToken();
 
-        //TODO: Host cant create 2 rooms at the same time
+        // TODO: Host cant create 2 rooms at the same time
 
         final Room room = new Room(roomCode, hostId);
 
-        if(roomGateway.verifyRoomUniquenessPerUser(hostId)){
+        if (roomGateway.verifyRoomUniquenessPerUser(hostId)) {
             presenter.presentFailure("The Host already created a room.");
-        }else {
+        } else {
             roomGateway.save(room);
             roomGateway.setCurrentRoom(roomCode);
 
@@ -55,4 +55,3 @@ public class CreateRoomInteractor implements CreateRoomInputBoundary {
         return UUID.randomUUID().toString();
     }
 }
-

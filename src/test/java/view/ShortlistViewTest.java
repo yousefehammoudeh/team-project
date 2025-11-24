@@ -1,6 +1,5 @@
 package view;
 
-import data_access.room.InMemoryRoomDataAccessObject;
 import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.shortlist.*;
