@@ -27,7 +27,7 @@ class TmdbMovieGatewayTest {
         assertNotNull(apiKey, "TMDB_API_KEY not set. Export your TMDB v3 API key to run this test.");
 
         TmdbMovieGateway gw = new TmdbMovieGateway(apiKey, null, null);
-        Movie m = gw.fetchDetails("343611", null);
+        Movie m = (Movie) gw.fetchDetails("343611", null);
         assertNotNull(m);
         assertEquals("343611", m.getId());
     }

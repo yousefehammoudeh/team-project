@@ -46,7 +46,6 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         this.searchViewModel = searchViewModel;
         this.searchViewModel.addPropertyChangeListener(this);
-
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // window title
@@ -84,7 +83,7 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
             searchViewModel.firePropertyChanged();
 
             // Execute the search
-            searchController.execute(currentState.getQuery());
+            this.searchController.execute(currentState.getQuery());
         });
 
 
