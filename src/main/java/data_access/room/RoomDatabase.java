@@ -111,7 +111,7 @@ public class RoomDatabase implements
     public void createRoom(String roomName) throws DataAccessException {
         room = new Room(roomName, username);
         noteDatabase.register(getFormattedRoomCode());
-        room.addParticipant(new Participant(username, username));
+        room.addParticipant (new Participant(username, username));
         saveRoom();
     }
 
