@@ -25,7 +25,6 @@ public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
-    private ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
     private final RoomDatabase userDataAccessObject = new RoomDatabase();
 
@@ -35,6 +34,8 @@ public class AppBuilder {
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
+        // ViewManager will be used in future view switching logic
+        new ViewManager(cardPanel, cardLayout, viewManagerModel);
     }
 
     public AppBuilder addShortlistView() {
@@ -48,7 +49,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        final AddMovieInputBoundary addMovieInputBoundary = new AddMovieInteractor(userDataAccessObject, shortlistPresenter);
+        final AddMovieInputBoundary addMovieInputBoundary = new AddMovieInteractor(userDataAccessObject,
+                shortlistPresenter);
         final AddMovieController addMovieController = new AddMovieController(addMovieInputBoundary);
         shortlistView.setAddMovieController(addMovieController);
         return this;
@@ -58,7 +60,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        final RemoveMovieInputBoundary removeMovieInputBoundary = new RemoveMovieInteractor(userDataAccessObject, shortlistPresenter);
+        final RemoveMovieInputBoundary removeMovieInputBoundary = new RemoveMovieInteractor(userDataAccessObject,
+                shortlistPresenter);
         final RemoveMovieController removeMovieController = new RemoveMovieController(removeMovieInputBoundary);
         shortlistView.setRemoveMovieController(removeMovieController);
         return this;
