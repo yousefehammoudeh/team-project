@@ -5,7 +5,7 @@ import entity.Room;
 import java.util.List;
 
 public class JoinedRoomState {
-    private List<Participant> participants;
+    private List<String> participants;
     private String roomcode = "";
 
 
@@ -16,12 +16,12 @@ public class JoinedRoomState {
 
     public JoinedRoomState() {}
 
-    public List<Participant> getParticipants() {
+    public List<String> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(Room room) {
-        this.participants = room.getParticipants();
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
     }
 
     public void setRoomcode(String password) {
