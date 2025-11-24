@@ -123,8 +123,10 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
             JOptionPane.showMessageDialog(null, state.getError());
         }
         else {
+            String selectedID = shortlist.getSelectedValue();
             movieListModel.clear();
             movieListModel.addAll(state.getShortlist());
+            shortlist.setSelectedValue(selectedID, true);
         }
     }
 
