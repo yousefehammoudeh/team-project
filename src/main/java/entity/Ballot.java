@@ -27,16 +27,15 @@ public class Ballot {
      * Quick validation helper: ensure there are no duplicate movie ids and that
      * all movie ids are contained in the provided shortlist.
      */
-    public boolean isValidForShortlist(Shortlist shortlist) {
+    public boolean isValidForShortlist(List<String> shortlist) {
         if (shortlist == null)
             return false;
-        List<String> allowed = shortlist.getMovieIds();
         // check duplicates
         java.util.Set<String> seen = new java.util.HashSet<>();
         for (String id : rankedMovieIds) {
             if (id == null)
                 return false;
-            if (!allowed.contains(id))
+            if (!shortlist.contains(id))
                 return false;
             if (!seen.add(id))
                 return false; // duplicate

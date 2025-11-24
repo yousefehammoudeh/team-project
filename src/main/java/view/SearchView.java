@@ -1,5 +1,7 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
+
 import entity.Movie;
 import interface_adapter.search.SearchController;
 import interface_adapter.search.SearchViewModel;
@@ -24,6 +26,7 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
     private final String viewName = "Search View";
     private final SearchViewModel searchViewModel;
+    private ViewManagerModel viewManagerModel;
 
     private final JLabel roomId;
     private final JButton shortList;
@@ -149,5 +152,9 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         searchListPanel.revalidate();
         searchListPanel.repaint();
+    }
+
+    public void setViewManagerModel(ViewManagerModel vm) {
+        this.viewManagerModel = vm;
     }
 }
