@@ -37,6 +37,7 @@ public class SearchInteractor implements SearchInputBoundary {
                 movies = movies.subList(0, 5);
             }
             // poster stuff
+            // don't know if this is necessary actually
             List<String> posterUrls = new ArrayList<>();
             for (entity.Movie m : movies) {
                 String p = m.getPosterPath();
@@ -47,7 +48,7 @@ public class SearchInteractor implements SearchInputBoundary {
             }
 
             // search output data
-            SearchOutputData outputData = new SearchOutputData(movies);
+            SearchOutputData outputData = new SearchOutputData(movies, posterUrls);
 
             // presenter
             presenter.present(outputData);

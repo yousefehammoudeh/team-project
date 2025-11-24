@@ -1,5 +1,6 @@
 package view;
 
+import entity.Movie;
 import interface_adapter.shortlist.AddMovieController;
 
 import javax.swing.*;
@@ -10,9 +11,8 @@ import java.awt.event.ActionListener;
 public class MovieResultPanel extends JPanel {
 
     private AddMovieController addMovieController;
-    private String selectedMovieID;
 
-    public MovieResultPanel(ImageIcon poster, String title) {
+    public MovieResultPanel(ImageIcon poster, Movie movie) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -25,7 +25,7 @@ public class MovieResultPanel extends JPanel {
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
         // title
-        JLabel titleLabel = new JLabel(title);
+        JLabel titleLabel = new JLabel(movie.getTitle());
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         textPanel.add(titleLabel);
 
@@ -42,15 +42,19 @@ public class MovieResultPanel extends JPanel {
         textPanel.add(addButton);
 
         // add button action listener
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMovieController.execute(selectedMovieID);
-                selectedMovieID = null;
+        addButton.addActionListener((e -> {
+            if (addMovieController != null) {
+                addMovieController.execute(movie.getId());
+            } else {
+                System.err.println("AddMovieController is not set!");
             }
-        });
+        }));
 
         add(textPanel, BorderLayout.CENTER);
+    }
+
+    public void setAddMovieController(AddMovieController controller) {
+        this.addMovieController = controller;
     }
 }
 

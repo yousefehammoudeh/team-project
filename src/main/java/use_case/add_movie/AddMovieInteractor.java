@@ -16,8 +16,7 @@ public class AddMovieInteractor implements AddMovieInputBoundary {
     public void execute(AddMovieInputData addMovieInputData) {
         final String movieID = addMovieInputData.getMovieID();
         if (roomDataAccessObject.isLocked()) {
-            // Cannot add if locked.
-            // TODO: implement
+            shortlistPresenter.presentFailure("Shortlist is locked.");
         }
         else if (roomDataAccessObject.isHost()) {
             // Add directly and notify other users in the room.
@@ -29,12 +28,11 @@ public class AddMovieInteractor implements AddMovieInputBoundary {
                 // TODO: notify others
             }
             else {
-                // TODO: error if the movie exists
+                shortlistPresenter.presentFailure("Movie already in shortlist.");
             }
         }
         else {
-            // If local user is not the host, notify the host to add.
-            // TODO: implement
+            // TODO: notify host?
         }
     }
 }

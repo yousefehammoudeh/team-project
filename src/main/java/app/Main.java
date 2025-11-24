@@ -8,6 +8,7 @@ package app;
 public class Main {
     public static void main(String[] args) {
         // TODO: Launch UI on EDT and build app via AppBuilder
+
     }
 }
 

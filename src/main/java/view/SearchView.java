@@ -99,7 +99,6 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         this.add(header);
         this.add(searchComponents);
         this.add(scrollPane);
-        this.add(searchListPanel);
     }
 
     public void setSearchController(SearchController controller) {
@@ -126,7 +125,11 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         searchListPanel.removeAll(); // searchListPanel = the panel that holds movie result blocks
 
-        for (Movie movie : movies) {
+        for (Movie movie : movies) {// TODO: link with the search results (search state)
+            // TODO: it has the list of movieIDs from the state (ideally) and now we have to pass the poster info, title,
+            //  and description information somehow. however where do we call for that... in the interactor?
+            //  Ok wait i changed it to pass like movie entities instead of the movie ids. just use the movie entities
+            //  to
             String p = movie.getPosterPath();
             if (p == null || p.isBlank()) continue;
 
@@ -137,15 +140,16 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
                 URL url = new URL(fullUrl);
                 ImageIcon icon = new ImageIcon(url);
 
-                JPanel block = new MovieResultPanel(icon, movie.getTitle());
+                MovieResultPanel block = new MovieResultPanel(icon, movie);
+                block.setAddMovieController(addMovieController);
                 searchListPanel.add(block);
 
             } catch (MalformedURLException e) {
-                // Print the issue so you know something's wrong
                 e.printStackTrace();
 
-                // Optionally: add a placeholder panel without image
-                JPanel block = new MovieResultPanel(null, movie.getTitle());
+                // add a placeholder panel without image
+                MovieResultPanel block = new MovieResultPanel(null, movie);
+                block.setAddMovieController(addMovieController);
                 searchListPanel.add(block);
             }
         }
