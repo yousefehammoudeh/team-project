@@ -34,6 +34,7 @@ public class Room {
         this.shortlist = shortlist;
         this.ballots = ballots;
         this.contentFilters = ContentFilters.defaults();
+        this.hostId = hostId;
     }
 
     public String getCode() {
