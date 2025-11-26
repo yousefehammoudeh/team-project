@@ -23,4 +23,3 @@ public class SearchController {
         searchInteractor.switchToShortlistView();
     }
 }
-

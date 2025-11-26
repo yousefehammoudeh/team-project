@@ -10,15 +10,16 @@ import java.util.List;
  * - error
  */
 public class ShortlistState {
-    private List<String> movieIDs;
+    private List<String> shortlist;
     private boolean locked;
+    private String error;
 
-    public List<String> getMovieIDs() {
-        return movieIDs;
+    public List<String> getShortlist() {
+        return shortlist;
     }
 
-    public void setMovieIDs(List<String> movieIDs) {
-        this.movieIDs = movieIDs;
+    public void setShortlist(List<String> shortlist) {
+        this.shortlist = shortlist;
     }
 
     public boolean isLocked() {
@@ -27,6 +28,14 @@ public class ShortlistState {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
 

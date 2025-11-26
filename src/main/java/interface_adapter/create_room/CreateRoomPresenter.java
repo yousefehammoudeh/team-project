@@ -23,4 +23,3 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
         // TODO: Update error state and fire change
     }
 }
-

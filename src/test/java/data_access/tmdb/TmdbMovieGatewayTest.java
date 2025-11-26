@@ -1,6 +1,5 @@
 package data_access.tmdb;
 
-import entity.ContentFilters;
 import entity.Movie;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ class TmdbMovieGatewayTest {
         assertNotNull(apiKey, "TMDB_API_KEY not set. Export your TMDB v3 API key to run this test.");
 
         TmdbMovieGateway gw = new TmdbMovieGateway(apiKey, null, null);
-        List<Movie> results = gw.search("lion", ContentFilters.defaults());
+        List<Movie> results = gw.search("lion");
         assertNotNull(results);
         assertFalse(results.isEmpty(), "Expected at least one search result for 'lion'");
     }

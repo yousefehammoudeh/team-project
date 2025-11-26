@@ -1,6 +1,18 @@
 package app;
 
+import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.shortlist.*;
+import use_case.add_movie.AddMovieInputBoundary;
+import use_case.add_movie.AddMovieInteractor;
+import use_case.remove_movie.RemoveMovieInputBoundary;
+import use_case.remove_movie.RemoveMovieInteractor;
+import use_case.update_room.UpdateRoomInputBoundary;
+import use_case.update_room.UpdateRoomInteractor;
+import view.ShortlistView;
+import view.ViewManager;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * TODO: Compose application wiring.
@@ -10,24 +22,65 @@ import interface_adapter.ViewManagerModel;
  * - Register views to ViewManager and set initial active view
  */
 public class AppBuilder {
-
-    // TODO: Declare shared models (e.g., ViewManagerModel)
+    private final JPanel cardPanel = new JPanel();
+    private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
 
+    private final RoomDatabase userDataAccessObject = new RoomDatabase();
+
+    private ShortlistView shortlistView;
+    private ShortlistViewModel shortlistViewModel;
+    private ShortlistPresenter shortlistPresenter;
+
     public AppBuilder() {
-        // TODO: Initialize dependency graph for all 7 user stories
-        // - Create Room (Host)
-        // - Join Room (Participant)
-        // - Search & Details
-        // - Build & Lock Shortlist (Host)
-        // - Vote & Winner
-        // - Suggest Movie
-        // - Content Filters (Host)
+        cardPanel.setLayout(cardLayout);
+        // ViewManager will be used in future view switching logic
+        new ViewManager(cardPanel, cardLayout, viewManagerModel);
     }
 
-    public void build() {
-        // TODO: Construct and connect controllers, presenters, interactors, and views
-        // TODO: Register views with a ViewManager and set initial view
+    public AppBuilder addShortlistView() {
+        this.shortlistViewModel = new ShortlistViewModel();
+        this.shortlistView = new ShortlistView(viewManagerModel, shortlistViewModel);
+        cardPanel.add(shortlistView, shortlistView.getName());
+        return this;
+    }
+
+    public AppBuilder addAddMovieUseCase() {
+        if (shortlistPresenter == null) {
+            shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
+        }
+        final AddMovieInputBoundary addMovieInputBoundary = new AddMovieInteractor(userDataAccessObject,
+                shortlistPresenter);
+        final AddMovieController addMovieController = new AddMovieController(addMovieInputBoundary);
+        shortlistView.setAddMovieController(addMovieController);
+        return this;
+    }
+
+    public AppBuilder addRemoveMovieUseCase() {
+        if (shortlistPresenter == null) {
+            shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
+        }
+        final RemoveMovieInputBoundary removeMovieInputBoundary = new RemoveMovieInteractor(userDataAccessObject,
+                shortlistPresenter);
+        final RemoveMovieController removeMovieController = new RemoveMovieController(removeMovieInputBoundary);
+        shortlistView.setRemoveMovieController(removeMovieController);
+        return this;
+    }
+
+    public AppBuilder addUpdateRoomUseCase() {
+        if (shortlistPresenter == null) {
+            shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
+        }
+        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(userDataAccessObject,  shortlistPresenter);
+        UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
+        shortlistView.setUpdateRoomController(updateRoomController);
+        return this;
+    }
+
+    public JFrame build() {
+        final JFrame application = new JFrame("APP TITLE"); // TODO: give a title
+        application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        application.add(cardPanel);
+        return application;
     }
 }
-

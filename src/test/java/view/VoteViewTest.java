@@ -28,33 +28,35 @@ public class VoteViewTest {
                         "dream" };
                 String query = queries[new Random().nextInt(queries.length)];
                 System.out.println("VoteViewTest: using query '" + query + "' for TMDB search");
-                java.util.List<entity.Movie> movies = gateway.search(query, null);
+                java.util.List<entity.Movie> movies = gateway.search(query);
                 // take up to 5 movies
                 if (movies.size() > 5)
                     movies = movies.subList(0, 5);
                 java.util.List<String> posterUrls = new ArrayList<>();
+                java.util.List<String> movieIds = new ArrayList<>();
                 for (entity.Movie m : movies) {
                     String p = m.getPosterPath();
                     if (p == null || p.isBlank())
                         continue;
                     String cleaned = p.startsWith("/") ? p : "/" + p;
                     posterUrls.add(String.format("https://image.tmdb.org/t/p/w200%s", cleaned));
+                    movieIds.add(m.getId());
                     if (posterUrls.size() >= 5)
                         break;
                 }
                 if (posterUrls.isEmpty()) {
                     // no poster paths found -> show placeholders
-                    view.setPosterUrls(Arrays.asList("", "", "", "", ""));
+                    view.setPosterUrls(Arrays.asList("", "", "", "", ""), Arrays.asList("m1", "m2", "m3", "m4", "m5"));
                     JOptionPane.showMessageDialog(null, "No posters found for query — showing placeholders.");
                 } else {
-                    view.setPosterUrls(posterUrls);
+                    view.setPosterUrls(posterUrls, movieIds);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                view.setPosterUrls(Arrays.asList("", "", "", "", ""));
+                view.setPosterUrls(Arrays.asList("", "", "", "", ""), Arrays.asList("m1", "m2", "m3", "m4", "m5"));
             }
         } else {
-            view.setPosterUrls(Arrays.asList("", "", "", "", ""));
+            view.setPosterUrls(Arrays.asList("", "", "", "", ""), Arrays.asList("m1", "m2", "m3", "m4", "m5"));
             JOptionPane.showMessageDialog(null,
                     "TMDB_API_KEY not set — running with placeholders. Set TMDB_API_KEY in environment to load real posters.");
         }

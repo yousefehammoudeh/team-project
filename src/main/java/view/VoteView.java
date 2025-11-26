@@ -7,7 +7,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Simplified VoteView: only displays poster images and a "Submit Vote" button.
@@ -15,6 +18,10 @@ import java.util.List;
 public class VoteView extends JPanel {
     private final JPanel postersPanel;
     private final JButton submitButton = new JButton("Submit Vote");
+    // mapping of label -> movie id and current ranked selection
+    private final Map<JLabel, String> labelToMovieId = new HashMap<>();
+    private final List<String> rankedSelection = new ArrayList<>();
+    private Consumer<List<String>> onSubmit;
 
     public VoteView() {
         setLayout(new BorderLayout(8, 8));
@@ -27,9 +34,13 @@ public class VoteView extends JPanel {
 
         final JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         submitButton.addActionListener(e -> {
-            // Intentionally minimal: no business logic here. Keep button visible for
-            // integration later.
-            JOptionPane.showMessageDialog(this, "Submit Vote pressed");
+            if (onSubmit != null) {
+                onSubmit.accept(new ArrayList<>(rankedSelection));
+                // Optionally clear selection after submit
+                clearSelection();
+            } else {
+                JOptionPane.showMessageDialog(this, "Submit Vote pressed (no handler attached)");
+            }
         });
         bottom.add(submitButton);
         add(bottom, BorderLayout.SOUTH);
@@ -40,15 +51,26 @@ public class VoteView extends JPanel {
      * Images are loaded synchronously (simple, minimal). If loading fails a
      * placeholder label is shown.
      */
-    public void setPosterUrls(List<String> posterUrls) {
+    /**
+     * Provide poster URLs and corresponding movie ids. The order of the two lists
+     * must match.
+     */
+    public void setPosterUrls(List<String> posterUrls, List<String> movieIds) {
         postersPanel.removeAll();
         final int posterW = 140;
         final int posterH = 210;
 
         if (posterUrls == null)
             posterUrls = new ArrayList<>();
+        if (movieIds == null)
+            movieIds = new ArrayList<>();
 
-        for (String url : posterUrls) {
+        labelToMovieId.clear();
+        rankedSelection.clear();
+
+        for (int i = 0; i < posterUrls.size(); i++) {
+            String url = posterUrls.get(i);
+            String movieId = i < movieIds.size() ? movieIds.get(i) : null;
             JLabel lbl;
             if (url == null || url.isBlank()) {
                 lbl = placeholderLabel(posterW, posterH);
@@ -65,10 +87,90 @@ public class VoteView extends JPanel {
                     lbl = placeholderLabel(posterW, posterH);
                 }
             }
-            lbl.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-            postersPanel.add(lbl);
+            // String newText = base.replaceAll(" \\(\\d+ pts\\)", "");
+            lbl.setHorizontalTextPosition(SwingConstants.CENTER);
+            lbl.setVerticalTextPosition(SwingConstants.BOTTOM);
+            // store mapping and create a final reference for listener closure
+            final JLabel clickable = lbl;
+            if (movieId != null) {
+                labelToMovieId.put(clickable, movieId);
+            }
+            // clickable: toggle selection and maintain rankedSelection
+            clickable.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    String id = labelToMovieId.get(clickable);
+                    if (id == null)
+                        return;
+                    if (rankedSelection.contains(id)) {
+                        rankedSelection.remove(id);
+                    } else {
+                        rankedSelection.add(id);
+                    }
+                    updateSelectionDecorations();
+                }
+            });
+            postersPanel.add(clickable);
         }
 
+        revalidate();
+        repaint();
+    }
+
+    private void updateSelectionDecorations() {
+        // apply rank numbers and border highlight
+        for (Map.Entry<JLabel, String> e : labelToMovieId.entrySet()) {
+            JLabel lbl = e.getKey();
+            String id = e.getValue();
+            int idx = rankedSelection.indexOf(id);
+            if (idx >= 0) {
+                lbl.setText("#" + (idx + 1));
+                lbl.setBorder(BorderFactory.createLineBorder(Color.BLUE, 3));
+            } else {
+                lbl.setText("");
+                lbl.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            }
+        }
+        revalidate();
+        repaint();
+    }
+
+    private void clearSelection() {
+        rankedSelection.clear();
+        updateSelectionDecorations();
+    }
+
+    /**
+     * Attach a submit handler that receives the ranked movie id list in selection
+     * order.
+     * The handler should call the application's `VoteController.submitBallot(...)`.
+     */
+    public void setOnSubmit(Consumer<List<String>> handler) {
+        this.onSubmit = handler;
+    }
+
+    /** Update UI to display the computed scores for each movie id. */
+    public void displayScores(Map<String, Integer> scores) {
+        if (scores == null) {
+            return;
+        }
+        for (Map.Entry<JLabel, String> e : labelToMovieId.entrySet()) {
+            JLabel lbl = e.getKey();
+            String id = e.getValue();
+            int pts = scores.getOrDefault(id, 0);
+            String base = lbl.getText();
+            if (base == null)
+                base = "";
+            // Replace any existing points suffix like " (X pts)"
+            String newText = base.replaceAll(" \\([0-9]+ pts\\)", "");
+            if (!newText.isBlank()) {
+                newText = newText + " (" + pts + " pts)";
+            } else {
+                newText = "(" + pts + " pts)";
+            }
+            lbl.setText(newText);
+            lbl.setToolTipText(pts + " pts");
+        }
         revalidate();
         repaint();
     }

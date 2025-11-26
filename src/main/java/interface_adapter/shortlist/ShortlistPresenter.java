@@ -16,14 +16,17 @@ public class ShortlistPresenter implements ShortlistOutputBoundary {
     @Override
     public void present(ShortlistOutputData outputData) {
         final ShortlistState shortlistState = viewModel.getState();
-        shortlistState.setMovieIDs(outputData.getMovieIDs());
+        shortlistState.setShortlist(outputData.getShortlist());
         shortlistState.setLocked(outputData.isLocked());
+        shortlistState.setError(null);
         viewModel.firePropertyChanged();
     }
 
     @Override
     public void presentFailure(String message) {
-        // TODO: Update error state and notify
+        final ShortlistState shortlistState = viewModel.getState();
+        shortlistState.setError(message);
+        viewModel.firePropertyChanged();
     }
 }
 

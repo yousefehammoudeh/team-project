@@ -27,4 +27,3 @@ public class SearchState {
     public void setMovies(List<Movie> movies) { this.movies = movies; }
     public void setError(String error) { this.error = error; }
 }
-

@@ -1,19 +1,14 @@
 package use_case.search;
 
-import entity.Movie;
-
-import java.util.List;
-
 public interface SearchUserDataAccessInterface {
     /**
-     * Search for movies matching the given query and optional filters.
+     * Search for movies matching the given query.
      * 
-     * @param query   free-text query
-     * @param filters content filters (may be null)
+     * @param query free-text query
      * @return list of movies (may be empty)
      * @throws java.io.IOException when an IO or parsing error occurs
      */
-    List<Movie> search(String query, entity.ContentFilters filters) throws java.io.IOException;
+    java.util.List<entity.Movie> search(String query) throws java.io.IOException;
 
     /**
      * Fetch detailed information for a single movie by id.
@@ -24,5 +19,5 @@ public interface SearchUserDataAccessInterface {
      * @return Movie details or null if not found
      * @throws java.io.IOException when an IO or parsing error occurs
      */
-    List<Movie> fetchDetails(String movieId, String appendToResponse) throws java.io.IOException;
+    entity.Movie fetchDetails(String movieId, String appendToResponse) throws java.io.IOException;
 }

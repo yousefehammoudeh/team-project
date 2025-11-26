@@ -1,5 +1,6 @@
 package use_case.add_movie;
 
+import data_access.note_database.DataAccessException;
 import use_case.shortlist.ShortlistOutputBoundary;
 import use_case.shortlist.ShortlistOutputData;
 
@@ -14,24 +15,25 @@ public class AddMovieInteractor implements AddMovieInputBoundary {
     }
 
     public void execute(AddMovieInputData addMovieInputData) {
-        final String movieID = addMovieInputData.getMovieID();
-        if (roomDataAccessObject.isLocked()) {
-            shortlistPresenter.presentFailure("Shortlist is locked.");
-        }
-        else if (roomDataAccessObject.isHost()) {
-            // Add directly and notify other users in the room.
-            final boolean success = roomDataAccessObject.addMovie(movieID);
-            if (success) {
-                final ShortlistOutputData shortlistOutputData =
-                        new ShortlistOutputData(roomDataAccessObject.getMovieIDs(), roomDataAccessObject.isLocked());
-                shortlistPresenter.present(shortlistOutputData);
+        try{
+            final String movieID = addMovieInputData.getMovieID();
+            if (roomDataAccessObject.isLocked()) {
+                shortlistPresenter.presentFailure("The shortlist is locked.");
             }
             else {
-                shortlistPresenter.presentFailure("Movie already in shortlist.");
+                final boolean success = roomDataAccessObject.addMovie(movieID);
+                if (success) {
+                    final ShortlistOutputData shortlistOutputData =
+                            new ShortlistOutputData(roomDataAccessObject.getShortlist(), roomDataAccessObject.isLocked());
+                    shortlistPresenter.present(shortlistOutputData);
+                }
+                else {
+                    shortlistPresenter.presentFailure("The movie already exists.");
+                }
             }
         }
-        else {
-            // TODO: notify host?
+        catch (DataAccessException ex) {
+            shortlistPresenter.presentFailure(ex.getMessage());
         }
     }
 }

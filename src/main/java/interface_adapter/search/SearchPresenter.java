@@ -49,4 +49,3 @@ public class SearchPresenter implements SearchOutputBoundary {
         viewManagerModel.setActiveViewName("Shortlist");
     }
 }
-
