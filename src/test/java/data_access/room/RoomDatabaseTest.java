@@ -15,11 +15,12 @@ class RoomDatabaseTest {
     @Test
     public void testCreateRoom() {
         String userName = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
         RoomDatabase roomDatabase = new RoomDatabase(userName);
         try {
-            String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
             roomDatabase.createRoom(roomName);
-        } catch (DataAccessException e) {
+        }
+        catch (DataAccessException e) {
             e.printStackTrace();
             Assertions.fail(e.getMessage());
         }
@@ -28,8 +29,8 @@ class RoomDatabaseTest {
     @Test
     public void testCreateRoomDuplicate() {
         String userName = UUID.randomUUID().toString();
-        RoomDatabase roomDatabase = new RoomDatabase(userName);
         String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+        RoomDatabase roomDatabase = new RoomDatabase(userName);
         try {
             roomDatabase.createRoom(roomName);
         }
@@ -53,13 +54,14 @@ class RoomDatabaseTest {
     public void testJoinRoom() {
         String userName1 = UUID.randomUUID().toString();
         String userName2 = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
         RoomDatabase roomDatabase1 = new RoomDatabase(userName1);
         RoomDatabase roomDatabase2 = new RoomDatabase(userName2);
         try {
-            String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
             roomDatabase1.createRoom(roomName);
             roomDatabase2.joinRoom(roomName);
-        } catch (DataAccessException e) {
+        }
+        catch (DataAccessException e) {
             e.printStackTrace();
             Assertions.fail(e.getMessage());
         }
@@ -68,9 +70,9 @@ class RoomDatabaseTest {
     @Test
     public void testJoinNonexistentRoom() {
         String userName = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
         RoomDatabase roomDatabase = new RoomDatabase(userName);
         try {
-            String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
             roomDatabase.joinRoom(roomName);
         }
         catch (DataAccessException e) {
@@ -84,16 +86,17 @@ class RoomDatabaseTest {
     @Test
     public void testGetParticipantSelf() {
         String userName = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
         RoomDatabase roomDatabase = new RoomDatabase(userName);
         try {
-            String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
             roomDatabase.createRoom(roomName);
             List<String> participants = roomDatabase.getParticipantIDs();
 
             Assertions.assertEquals(1, roomDatabase.participantsCount());
             Assertions.assertEquals(1, participants.size());
             Assertions.assertEquals(userName, participants.get(0));
-        } catch (DataAccessException e) {
+        }
+        catch (DataAccessException e) {
             e.printStackTrace();
             Assertions.fail(e.getMessage());
         }
@@ -120,7 +123,87 @@ class RoomDatabaseTest {
             Assertions.assertEquals(participants1, participants2);
             Assertions.assertTrue(participants1.contains(userName1));
             Assertions.assertTrue(participants1.contains(userName2));
-        } catch (DataAccessException e) {
+        }
+        catch (DataAccessException e) {
+            e.printStackTrace();
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAddMovie() {
+        String userName = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+        RoomDatabase roomDatabase = new RoomDatabase(userName);
+        try {
+            roomDatabase.createRoom(roomName);
+            String movieID = UUID.randomUUID().toString();
+            boolean addFirst = roomDatabase.addMovie(movieID);
+            Assertions.assertTrue(addFirst);
+            boolean addSecond = roomDatabase.addMovie(movieID);
+            Assertions.assertFalse(addSecond);
+        }
+        catch (DataAccessException e) {
+            e.printStackTrace();
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testRemoveMovie() {
+        String userName = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+        RoomDatabase roomDatabase = new RoomDatabase(userName);
+        try {
+            roomDatabase.createRoom(roomName);
+            String movieID = UUID.randomUUID().toString();
+            boolean removeEmpty = roomDatabase.removeMovie(movieID);
+            Assertions.assertFalse(removeEmpty);
+            roomDatabase.addMovie(movieID);
+            boolean removeFirst = roomDatabase.removeMovie(movieID);
+            Assertions.assertTrue(removeFirst);
+            boolean removeSecond = roomDatabase.removeMovie(movieID);
+            Assertions.assertFalse(removeSecond);
+        }
+        catch (DataAccessException e) {
+            e.printStackTrace();
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetShortlist() {
+        String userName = UUID.randomUUID().toString();
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+        RoomDatabase roomDatabase = new RoomDatabase(userName);
+        try {
+            roomDatabase.createRoom(roomName);
+            List<String> shortlist = roomDatabase.getShortlist();
+            Assertions.assertEquals(0, shortlist.size());
+
+            String MovieID1 = UUID.randomUUID().toString();
+            String MovieID2 = UUID.randomUUID().toString();
+            roomDatabase.addMovie(MovieID1);
+            shortlist = roomDatabase.getShortlist();
+            Assertions.assertEquals(1, shortlist.size());
+            Assertions.assertEquals(MovieID1, shortlist.get(0));
+
+            roomDatabase.addMovie(MovieID2);
+            shortlist = roomDatabase.getShortlist();
+            Assertions.assertEquals(2, shortlist.size());
+            Assertions.assertTrue(shortlist.contains(MovieID1));
+            Assertions.assertTrue(shortlist.contains(MovieID2));
+
+            roomDatabase.removeMovie(MovieID1);
+            shortlist = roomDatabase.getShortlist();
+            Assertions.assertEquals(1, shortlist.size());
+            Assertions.assertEquals(MovieID2, shortlist.get(0));
+
+            roomDatabase.removeMovie(MovieID2);
+            shortlist = roomDatabase.getShortlist();
+            Assertions.assertEquals(0, shortlist.size());
+        }
+        catch (DataAccessException e) {
             e.printStackTrace();
             Assertions.fail(e.getMessage());
         }
