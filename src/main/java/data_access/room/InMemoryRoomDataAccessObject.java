@@ -28,7 +28,7 @@ public class InMemoryRoomDataAccessObject implements
         JoinRoomUserDataAccessInterface,
         JoinedRoomUserDataAccessInterface {
     private final Room room = new Room("c4a760", "");
-    private final Participant participant = new Participant("Alice");
+    //private final Participant participant = new Participant("Alice");
 
     public InMemoryRoomDataAccessObject() {
         room.addParticipant(participant);
@@ -80,15 +80,15 @@ public class InMemoryRoomDataAccessObject implements
      * if successfully added. This lets tests set the host.
      */
     public boolean addParticipant(String id, String name) {
-        return room.addParticipant(new entity.Participant(id, name));
+        return room.addParticipant(new Participant(id, name));
     }
 
     public boolean addParticipant(String name) {
-        return room.addParticipant(new entity.Participant(name));
+        return room.addParticipant(new Participant(name));
     }
 
     public void removeParticipant(String name) {
-        room.removeParticipant(new entity.Participant(name));
+        room.removeParticipant(new Participant(name));
     }
 
     public boolean joinRoom(String roomCode) {
