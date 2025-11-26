@@ -2,14 +2,13 @@ package app;
 
 import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.shortlist.AddMovieController;
-import interface_adapter.shortlist.RemoveMovieController;
-import interface_adapter.shortlist.ShortlistPresenter;
-import interface_adapter.shortlist.ShortlistViewModel;
+import interface_adapter.shortlist.*;
 import use_case.add_movie.AddMovieInputBoundary;
 import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
 import use_case.remove_movie.RemoveMovieInteractor;
+import use_case.update_room.UpdateRoomInputBoundary;
+import use_case.update_room.UpdateRoomInteractor;
 import view.ShortlistView;
 import view.ViewManager;
 import javax.swing.*;
@@ -41,7 +40,7 @@ public class AppBuilder {
 
     public AppBuilder addShortlistView() {
         this.shortlistViewModel = new ShortlistViewModel();
-        this.shortlistView = new ShortlistView(shortlistViewModel);
+        this.shortlistView = new ShortlistView(viewManagerModel, shortlistViewModel);
         cardPanel.add(shortlistView, shortlistView.getName());
         return this;
     }
@@ -65,6 +64,16 @@ public class AppBuilder {
                 shortlistPresenter);
         final RemoveMovieController removeMovieController = new RemoveMovieController(removeMovieInputBoundary);
         shortlistView.setRemoveMovieController(removeMovieController);
+        return this;
+    }
+
+    public AppBuilder addUpdateRoomUseCase() {
+        if (shortlistPresenter == null) {
+            shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
+        }
+        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(userDataAccessObject,  shortlistPresenter);
+        UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
+        shortlistView.setUpdateRoomController(updateRoomController);
         return this;
     }
 
