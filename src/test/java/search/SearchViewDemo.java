@@ -2,12 +2,14 @@ package search;
 
 import javax.swing.*;
 import data_access.tmdb.TmdbMovieGateway;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.search.SearchController;
 import interface_adapter.search.SearchPresenter;
 import interface_adapter.search.SearchState;
 import interface_adapter.search.SearchViewModel;
 import use_case.search.SearchInteractor;
 import view.SearchView;
+import view.ShortlistView;
 
 public class SearchViewDemo {
     public static void main(String[] args) {
@@ -17,10 +19,11 @@ public class SearchViewDemo {
 
             // Initialize view model with initial state
             SearchViewModel viewModel = new SearchViewModel();
+            ViewManagerModel viewManagerModel = new ViewManagerModel();
             viewModel.setState(new SearchState());
 
             // Wire up the Clean Architecture layers
-            SearchPresenter presenter = new SearchPresenter(viewModel);
+            SearchPresenter presenter = new SearchPresenter(viewModel, viewManagerModel);
 
             // Get TMDB API key from environment variable
             String apiKey = System.getenv("TMDB_API_KEY");
@@ -35,6 +38,8 @@ public class SearchViewDemo {
             // Create view and inject controller
             SearchView searchView = new SearchView(viewModel);
             searchView.setSearchController(controller);
+
+
 
             frame.setContentPane(searchView);
             frame.pack();
