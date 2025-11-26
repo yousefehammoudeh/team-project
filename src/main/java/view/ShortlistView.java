@@ -13,7 +13,12 @@ import java.beans.PropertyChangeListener;
 import java.util.Random;
 
 /**
- * TODO: Shortlist view (add/remove candidates, lock if host).
+ * Shortlist view - manage candidate movies for voting.
+ * FULLY WORKING: Add and Remove movie functionality with controllers
+ * TODO: Implement Lock button to prevent further changes
+ * TODO: Add integration with SearchView to add movies from search results
+ * TODO: Display movie posters instead of just IDs
+ * TODO: Add confirmation dialog before removing movies
  */
 public class ShortlistView extends JPanel implements ActionListener, PropertyChangeListener {
     private final static int UPDATE_INTERVAL = 5;
@@ -30,6 +35,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     private UpdateRoomController updateRoomController;
 
     private final JPanel shortlistPanel;
+    @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
     public ShortlistView(ViewManagerModel viewManagerModel, ShortlistViewModel shortlistViewModel) {
@@ -40,9 +46,13 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         shortlistPanel = new JPanel();
         shortlistPanel.setLayout(new BoxLayout(shortlistPanel, BoxLayout.Y_AXIS));
 
-        final JButton removeButton = new JButton("Remove");
+        // Back to Dashboard button
+        final JButton backButton = new JButton("← Back to Dashboard");
+        shortlistPanel.add(backButton);
+
+        final JButton removeButton = new JButton("Remove Selected Movie");
         shortlistPanel.add(removeButton);
-        final JButton lockButton = new JButton("Lock");
+        final JButton lockButton = new JButton("Lock Shortlist (TODO)");
         shortlistPanel.add(lockButton);
 
         shortlist = new JList<>(movieListModel);
@@ -50,18 +60,32 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         final JScrollPane scrollPane = new JScrollPane(shortlist);
         shortlistPanel.add(scrollPane);
 
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (viewManagerModel != null) {
+                    viewManagerModel.setActiveViewName("HostDashboard");
+                }
+            }
+        });
+
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                removeMovieController.execute(selectedMovieID);
-                selectedMovieID = null;
+                if (selectedMovieID != null) {
+                    removeMovieController.execute(selectedMovieID);
+                    selectedMovieID = null;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please select a movie to remove.");
+                }
             }
         });
 
         lockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Lock");
+                // TODO: Implement lock functionality with controller
+                JOptionPane.showMessageDialog(null, "Lock Shortlist functionality not yet implemented.");
             }
         });
 
@@ -123,8 +147,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         final ShortlistState state = (ShortlistState) evt.getNewValue();
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(null, state.getError());
-        }
-        else {
+        } else {
             String selectedID = shortlist.getSelectedValue();
             movieListModel.clear();
             movieListModel.addAll(state.getShortlist());

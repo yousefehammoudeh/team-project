@@ -13,9 +13,16 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Simplified VoteView: only displays poster images and a "Submit Vote" button.
+ * Vote view - displays shortlisted movies and allows ranked voting.
+ * WORKING: UI for ranking movies by clicking posters, displays rankings
+ * TODO: Wire up VoteController to submit ballots to backend
+ * TODO: Load actual shortlisted movies from RoomDatabase instead of stub data
+ * TODO: Add VoteViewModel integration for property change updates
+ * TODO: Display winner after all participants have voted
+ * TODO: Show vote counts/results to host after voting completes
  */
 public class VoteView extends JPanel {
+    private final String viewName = "Vote";
     private final JPanel postersPanel;
     private final JButton submitButton = new JButton("Submit Vote");
     // mapping of label -> movie id and current ranked selection
@@ -180,5 +187,9 @@ public class VoteView extends JPanel {
         l.setPreferredSize(new Dimension(w, h));
         l.setMaximumSize(new Dimension(w, h));
         return l;
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 }

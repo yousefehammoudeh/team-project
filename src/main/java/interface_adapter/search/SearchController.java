@@ -6,6 +6,7 @@ import use_case.search.SearchInputBoundary;
  * TODO: Accepts search queries and delegates to interactor.
  */
 public class SearchController {
+    @SuppressWarnings("unused")
     private final SearchInputBoundary interactor;
 
     public SearchController(SearchInputBoundary interactor) {

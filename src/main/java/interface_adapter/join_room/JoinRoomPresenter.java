@@ -7,6 +7,7 @@ import use_case.join_room.JoinRoomOutputData;
  * TODO: Presents room state after joining.
  */
 public class JoinRoomPresenter implements JoinRoomOutputBoundary {
+    @SuppressWarnings("unused")
     private final JoinRoomViewModel viewModel;
 
     public JoinRoomPresenter(JoinRoomViewModel viewModel) {

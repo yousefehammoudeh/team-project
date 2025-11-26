@@ -7,6 +7,7 @@ import use_case.search.SearchOutputData;
  * TODO: Presents search results and details to the view model.
  */
 public class SearchPresenter implements SearchOutputBoundary {
+    @SuppressWarnings("unused")
     private final SearchViewModel viewModel;
 
     public SearchPresenter(SearchViewModel viewModel) {

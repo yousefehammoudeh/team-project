@@ -11,10 +11,15 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
- * TODO: Host dashboard (shows room code, host token, controls for lock, compute
- * winner, apply filters, etc.).
+ * Host dashboard - shows room code, participants, and host-specific controls.
+ * WORKING: Navigation to Search, Shortlist, and Vote views
+ * TODO: Add CreateRoomViewModel integration for real room data
+ * TODO: Add "Lock Shortlist" button
+ * TODO: Add "Compute Winner" button (after all votes are in)
+ * TODO: Add real-time participant updates via property change listener
  */
 public class HostDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+    private final String viewName = "HostDashboard";
     private JLabel roomIdLabel;
     private JTextField searchField;
     private JButton searchButton;
@@ -71,14 +76,17 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src == searchButton) {
-            if (viewManagerModel != null)
+            if (viewManagerModel != null) {
                 viewManagerModel.setActiveViewName("Search");
+            }
         } else if (src == shortlistButton) {
-            if (viewManagerModel != null)
+            if (viewManagerModel != null) {
                 viewManagerModel.setActiveViewName("Shortlist");
+            }
         } else if (src == voteButton) {
-            if (viewManagerModel != null)
+            if (viewManagerModel != null) {
                 viewManagerModel.setActiveViewName("Vote");
+            }
         }
     }
 
@@ -93,5 +101,9 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
      */
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 }

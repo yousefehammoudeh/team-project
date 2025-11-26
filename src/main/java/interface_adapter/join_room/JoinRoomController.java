@@ -6,6 +6,7 @@ import use_case.join_room.JoinRoomInputBoundary;
  * TODO: Accepts code + name to join a room and delegates to interactor.
  */
 public class JoinRoomController {
+    @SuppressWarnings("unused")
     private final JoinRoomInputBoundary interactor;
 
     public JoinRoomController(JoinRoomInputBoundary interactor) {

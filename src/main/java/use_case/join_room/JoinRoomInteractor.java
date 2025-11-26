@@ -7,7 +7,9 @@ package use_case.join_room;
  * - Return current room state
  */
 public class JoinRoomInteractor implements JoinRoomInputBoundary {
+    @SuppressWarnings("unused")
     private final JoinRoomUserDataAccessInterface roomGateway;
+    @SuppressWarnings("unused")
     private final JoinRoomOutputBoundary presenter;
 
     public JoinRoomInteractor(JoinRoomUserDataAccessInterface roomGateway,
