@@ -2,6 +2,8 @@ package data_access.room;
 
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
@@ -9,6 +11,8 @@ import entity.Ballot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import entity.Participant;
 
 /**
  * TODO: In-memory gateway for prototyping all room-related data access.
@@ -20,8 +24,15 @@ import java.util.List;
 public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
-        VoteUserDataAccessInterface {
-    private final Room room = new Room("", "");
+        VoteUserDataAccessInterface,
+        JoinRoomUserDataAccessInterface,
+        JoinedRoomUserDataAccessInterface {
+    private final Room room = new Room("c4a760", "");
+    //private final Participant participant = new Participant("Alice");
+
+    // public InMemoryRoomDataAccessObject() {
+    //     room.addParticipant(participant);
+    // }
 
     public boolean isHost() {
         return true;
@@ -69,6 +80,28 @@ public class InMemoryRoomDataAccessObject implements
      * if successfully added. This lets tests set the host.
      */
     public boolean addParticipant(String id, String name) {
-        return room.addParticipant(new entity.Participant(id, name));
+        return room.addParticipant(new Participant(id, name));
+    }
+
+    public boolean addParticipant(String name) {
+        return room.addParticipant(new Participant(name));
+    }
+
+    public void removeParticipant(String name) {
+        room.removeParticipant(new Participant(name));
+    }
+
+    public boolean joinRoom(String roomCode) {
+        return room.getCode().equals(roomCode);
+    }
+
+    public List<String> getParticipantIDs() {
+        List<Participant> p = room.getParticipants();
+        List<String> pID = new ArrayList<>();
+        for (Participant participant : p) {
+            pID.add(participant.getName());
+        }
+
+        return pID;
     }
 }
