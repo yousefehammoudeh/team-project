@@ -30,9 +30,9 @@ public class InMemoryRoomDataAccessObject implements
     private final Room room = new Room("c4a760", "");
     //private final Participant participant = new Participant("Alice");
 
-    public InMemoryRoomDataAccessObject() {
-        room.addParticipant(participant);
-    }
+    // public InMemoryRoomDataAccessObject() {
+    //     room.addParticipant(participant);
+    // }
 
     public boolean isHost() {
         return true;
