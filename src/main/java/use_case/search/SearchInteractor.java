@@ -1,14 +1,9 @@
 package use_case.search;
 
 import entity.Movie;
-import use_case.search.SearchUserDataAccessInterface;
-import use_case.search.SearchOutputBoundary;
-import view.SearchView;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,7 +27,7 @@ public class SearchInteractor implements SearchInputBoundary {
                     new data_access.tmdb.TmdbMovieGateway(System.getenv("TMDB_API_KEY"), null, null);
 
             // list of movies
-            List<Movie> movies = gw.search(movieTitle, null);
+            List<Movie> movies = gw.search(movieTitle);
             if (movies.size() > 5) {
                 movies = movies.subList(0, 5);
             }
