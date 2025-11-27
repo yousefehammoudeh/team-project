@@ -21,10 +21,8 @@ public interface JoinRoomUserDataAccessInterface {
      * Checks if the room exists, if it does then save the user.
      * @param roomCode the room to check existence
      */
-    boolean joinRoom(String roomCode);
+    boolean joinRoom(String roomCode) throws DataAccessException;
 
-    boolean addParticipant(String name);
-
-    List<String> getParticipantIDs();
+    List<String> getParticipantIDs() throws DataAccessException;
 
 }

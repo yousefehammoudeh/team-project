@@ -1,5 +1,6 @@
 package use_case.vote;
 
+import data_access.note_database.DataAccessException;
 import entity.Ballot;
 
 import java.util.List;
@@ -12,13 +13,13 @@ import java.util.List;
  */
 public interface VoteUserDataAccessInterface {
     /** Save or replace a ballot for a participant. */
-    boolean saveBallot(Ballot ballot);
+    boolean saveBallot(Ballot ballot) throws DataAccessException;
 
     /** Return all currently submitted ballots. */
-    List<Ballot> fetchBallots();
+    List<Ballot> getBallots() throws DataAccessException;
 
     /** Return the current shortlist movie ids (order matters for tie-breaking). */
-    List<String> fetchShortlist();
+    List<String> getShortlist() throws DataAccessException;
 
     /** Return number of participants in the room. Used to show expected ballots. */
     int participantCount();
@@ -26,5 +27,5 @@ public interface VoteUserDataAccessInterface {
     /**
      * Check whether the given participantId is the host (used for privileged ops).
      */
-    boolean isHostParticipant(String participantId);
+    boolean isHost() throws DataAccessException;
 }
