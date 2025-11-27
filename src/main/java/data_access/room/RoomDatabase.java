@@ -114,11 +114,18 @@ public class RoomDatabase implements
         saveRoom();
     }
 
-    public void joinRoom(String roomName) throws DataAccessException {
+    public boolean joinRoom(String roomName) throws DataAccessException {
         room = new Room(roomName, "");
         refreshRoom();
-        room.addParticipant(new Participant(username, username));
-        saveRoom();
+        boolean added = room.addParticipant(new Participant(username, username));
+        if (added) {
+            saveRoom();
+        }
+        else {
+            // Do not join the room if a user with the same name exists
+            room = null;
+        }
+        return added;
     }
 
     public int participantsCount() throws DataAccessException {
