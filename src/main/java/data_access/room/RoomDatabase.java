@@ -141,6 +141,9 @@ public class RoomDatabase implements
     }
 
     public boolean submitBallot(List<String> rankedMovieIds) throws DataAccessException {
+        if (room == null) {
+            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+        }
         Ballot ballot = new Ballot(username, rankedMovieIds);
         refreshRoom();
         boolean result = room.submitBallot(ballot);
