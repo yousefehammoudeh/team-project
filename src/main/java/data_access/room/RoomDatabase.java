@@ -7,8 +7,10 @@ import entity.Ballot;
 import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
+import use_case.vote.VoteUserDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,8 @@ import java.util.List;
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
+        VoteUserDataAccessInterface,
+        JoinRoomUserDataAccessInterface,
         UpdateRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
@@ -120,6 +124,16 @@ public class RoomDatabase implements
     public int participantsCount() throws DataAccessException {
         checkRoomLoaded();
         return room.getParticipants().size();
+    }
+
+    public boolean saveBallot(Ballot ballot) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        boolean result = room.submitBallot(ballot);
+        if (result) {
+            saveRoom();
+        }
+        return result;
     }
 
     public List<Ballot> getBallots() throws DataAccessException {
