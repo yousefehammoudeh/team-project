@@ -4,7 +4,6 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.shortlist.ShortlistViewModel;
 import use_case.search.SearchOutputBoundary;
 import use_case.search.SearchOutputData;
-import interface_adapter.ViewManagerModel;
 
 /**
  * TODO: Presents search results and details to the view model.
