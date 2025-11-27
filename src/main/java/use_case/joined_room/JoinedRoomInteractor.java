@@ -1,5 +1,6 @@
 package use_case.joined_room;
 
+import data_access.note_database.DataAccessException;
 import data_access.room.InMemoryRoomDataAccessObject;
 import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 
@@ -14,9 +15,10 @@ public class JoinedRoomInteractor implements JoinedRoomInputBoundary{
     };
 
     @Override
-    public void execute(String username) {
-        roomGateway.removeParticipant(username);
+    public void execute(String roomCode) {
+
+        roomGateway.leaveRoom(roomCode);
         presenter.prepareSuccessView();
-        
+
     }
 }

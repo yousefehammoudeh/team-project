@@ -16,10 +16,6 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 
-
-/**
- * TODO: Participants dashboard (shows room code).
- */
 public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
     private JLabel roomIdLabel;
     private JLabel roomTitle;
@@ -61,7 +57,7 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(toExit)) {
                     final JoinedRoomState currentState = joinedRoomViewModel.getState();
-                    joinedRoomController.execute(currentState.getCurrentUser()); //need to get the current user
+                    joinedRoomController.execute(currentState.getRoomcode()); //need to get the current user
                 }
             }
         });

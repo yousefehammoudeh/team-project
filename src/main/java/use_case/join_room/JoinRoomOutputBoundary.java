@@ -1,8 +1,5 @@
 package use_case.join_room;
 
-/**
- * TODO: Presenter API for join room.
- */
 public interface JoinRoomOutputBoundary {
     /**
      * Prepares the success view for the Join Room Case.
