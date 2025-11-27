@@ -30,19 +30,8 @@ public class SearchInteractor implements SearchInputBoundary {
                 movies = movies.subList(0, 5);
             }
 
-            // poster stuff
-            // don't know if this is necessary actually
-            List<String> posterUrls = new ArrayList<>();
-            for (entity.Movie m : movies) {
-                String p = m.getPosterPath();
-                if (p == null || p.isBlank()) continue;
-
-                String cleaned = p.startsWith("/") ? p : "/" + p;
-                posterUrls.add("https://image.tmdb.org/t/p/w200" + cleaned);
-            }
-
             // search output data
-            SearchOutputData outputData = new SearchOutputData(movies, posterUrls);
+            SearchOutputData outputData = new SearchOutputData(movies);
 
             // presenter
             presenter.present(outputData);

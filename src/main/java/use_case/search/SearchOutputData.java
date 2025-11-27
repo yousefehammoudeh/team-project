@@ -10,18 +10,12 @@ import java.util.List;
  */
 public class SearchOutputData {
     private final List<Movie> movies;
-    private final List<String> posterUrls;
 
-    public SearchOutputData(List<Movie> movies, List<String> posterUrls) {
+    public SearchOutputData(List<Movie> movies) {
         this.movies = movies;
-        this.posterUrls = posterUrls;
     }
 
     public List<Movie> getMovies() {
         return movies;
-    }
-
-    public List<String> getPosterUrls() {
-        return posterUrls;
     }
 }
