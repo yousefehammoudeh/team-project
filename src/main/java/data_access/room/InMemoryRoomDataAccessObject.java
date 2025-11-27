@@ -105,7 +105,7 @@ public class InMemoryRoomDataAccessObject implements
         return added;
     }
 
-    public int participantCount() throws DataAccessException {
+    public int participantsCount() throws DataAccessException {
         checkRoomLoaded();
         return room.getParticipants().size();
     }
