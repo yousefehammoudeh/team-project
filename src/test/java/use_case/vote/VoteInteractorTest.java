@@ -40,7 +40,7 @@ public class VoteInteractorTest {
         VoteInputData input = new VoteInputData("p1", Arrays.asList("m2", "m1"));
         interactor.submitBallot(input);
 
-        List<Ballot> ballots = dao.fetchBallots();
+        List<Ballot> ballots = dao.getBallots();
         assertEquals(1, ballots.size(), "Ballot should be saved in DAO");
         assertNotNull(presenter.lastOutput, "Presenter should receive output update");
         assertEquals(1, presenter.lastOutput.getBallotsReceivedCount());
@@ -57,7 +57,7 @@ public class VoteInteractorTest {
         VoteInputData input = new VoteInputData("p1", Arrays.asList("nonexistent"));
         interactor.submitBallot(input);
 
-        List<Ballot> ballots = dao.fetchBallots();
+        List<Ballot> ballots = dao.getBallots();
         assertEquals(0, ballots.size(), "Invalid ballot should not be saved");
         assertNotNull(presenter.lastFailure, "Presenter should receive failure");
     }

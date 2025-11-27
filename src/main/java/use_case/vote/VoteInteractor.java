@@ -32,7 +32,7 @@ public class VoteInteractor implements VoteInputBoundary {
         }
         Ballot ballot = inputData.toBallot();
         // Validate against current shortlist via the Room gateway
-        List<String> shortlist = gateway.fetchShortlist();
+        List<String> shortlist = gateway.getShortlist();
         if (!ballot.isValidForShortlist(shortlist)) {
             presenter.presentFailure("Ballot invalid for current shortlist");
             return;
@@ -43,19 +43,19 @@ public class VoteInteractor implements VoteInputBoundary {
             return;
         }
         // Present a lightweight update (no winner yet)
-        int ballotsReceived = gateway.fetchBallots().size();
+        int ballotsReceived = gateway.getBallots().size();
         VoteOutputData out = new VoteOutputData(null, new HashMap<>(), ballotsReceived, shortlist.size());
         presenter.present(out);
     }
 
     @Override
     public void computeWinner(String hostId) {
-        if (!gateway.isHostParticipant(hostId)) {
+        if (!gateway.isHost()) {
             presenter.presentFailure("Only host may compute winner");
             return;
         }
-        List<String> shortlist = gateway.fetchShortlist();
-        List<Ballot> ballots = gateway.fetchBallots();
+        List<String> shortlist = gateway.getShortlist();
+        List<Ballot> ballots = gateway.getBallots();
         int n = shortlist.size();
         Map<String, Integer> scores = new HashMap<>();
         // initialize scores
