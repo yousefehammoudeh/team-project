@@ -22,7 +22,7 @@ class AddMovieInteractorTest {
 
         AddMovieInputData inputData = new AddMovieInputData("MovieID");
 
-        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistPresenter(null) {
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
             @Override
             public void present(ShortlistOutputData outputData) {
                 assertEquals("MovieID", outputData.getShortlist().get(0));
@@ -48,7 +48,7 @@ class AddMovieInteractorTest {
 
         AddMovieInputData inputData = new AddMovieInputData("Movie3");
 
-        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistPresenter(null) {
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
             @Override
             public void present(ShortlistOutputData outputData) {
                 assertEquals(3, outputData.getShortlist().size());
@@ -76,7 +76,7 @@ class AddMovieInteractorTest {
 
         AddMovieInputData inputData = new AddMovieInputData("MovieID");
 
-        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistPresenter(null) {
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
             @Override
             public void present(ShortlistOutputData outputData) {
                 fail("Added a movie that already exists in the shortlist.");

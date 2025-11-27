@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RemoveMovieInteractorTest {
+class RemoveMovieInteractorTest {
     @Test
     void testRemoveMovie() throws DataAccessException {
         Map<String, Room> rooms = new HashMap<>();
@@ -24,7 +24,7 @@ public class RemoveMovieInteractorTest {
 
         RemoveMovieInputData inputData = new RemoveMovieInputData("Movie2");
 
-        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistPresenter(null) {
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
             @Override
             public void present(ShortlistOutputData outputData) {
                 assertEquals(1, outputData.getShortlist().size());
@@ -50,7 +50,7 @@ public class RemoveMovieInteractorTest {
 
         RemoveMovieInputData inputData = new RemoveMovieInputData("OtherMovie");
 
-        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistPresenter(null) {
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
             @Override
             public void present(ShortlistOutputData outputData) {
                 fail("Removed a movie that does not exist in the shortlist.");
