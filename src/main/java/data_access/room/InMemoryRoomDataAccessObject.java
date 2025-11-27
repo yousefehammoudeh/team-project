@@ -28,8 +28,7 @@ public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
         VoteUserDataAccessInterface,
-        JoinRoomUserDataAccessInterface,
-        JoinedRoomUserDataAccessInterface {
+        JoinRoomUserDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;
@@ -111,20 +110,14 @@ public class InMemoryRoomDataAccessObject implements
         return room.getParticipants().size();
     }
 
-    public boolean saveBallot(Ballot ballot) {
+    public boolean saveBallot(Ballot ballot) throws DataAccessException {
+        checkRoomLoaded();
         return room.submitBallot(ballot);
     }
 
     public List<Ballot> getBallots() throws DataAccessException {
         checkRoomLoaded();
         return Collections.unmodifiableList(room.getBallots());
-    }
-
-    public boolean submitBallot(List<String> rankedMovieIds) throws DataAccessException {
-        checkRoomLoaded();
-        Ballot ballot = new Ballot(username, rankedMovieIds);
-        boolean result = room.submitBallot(ballot);
-        return result;
     }
 
     public String getUsername() {
