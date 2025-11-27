@@ -44,45 +44,39 @@ public class InMemoryRoomDataAccessObject implements
         this("", new HashMap<>());
     }
 
-    public boolean isHost() throws DataAccessException {
+    private void checkRoomLoaded() throws DataAccessException {
         if (room == null) {
             throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
         }
+    }
+
+    public boolean isHost() throws DataAccessException {
+        checkRoomLoaded();
         return username.equals(room.getHostId());
     }
 
     public boolean isLocked() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return room.isLocked();
     }
 
     public boolean addMovie(String movieID) throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return room.addToShortlist(movieID);
     }
 
     public boolean removeMovie(String movieID) throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return room.removeFromShortlist(movieID);
     }
 
     public List<String> getShortlist() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return Collections.unmodifiableList(room.getShortlist());
     }
 
     public List<String> getParticipantIDs() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         List<Participant> participants = room.getParticipants();
         List<String> participantIDs = new ArrayList<>();
         for (Participant p : participants) {
@@ -113,9 +107,7 @@ public class InMemoryRoomDataAccessObject implements
     }
 
     public int participantCount() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return room.getParticipants().size();
     }
 
@@ -124,16 +116,12 @@ public class InMemoryRoomDataAccessObject implements
     }
 
     public List<Ballot> getBallots() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return Collections.unmodifiableList(room.getBallots());
     }
 
     public boolean submitBallot(List<String> rankedMovieIds) throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         Ballot ballot = new Ballot(username, rankedMovieIds);
         boolean result = room.submitBallot(ballot);
         return result;
