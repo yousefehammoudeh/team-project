@@ -1,19 +1,14 @@
 package use_case.create_room;
 
-import entity.Room;
+import data_access.note_database.DataAccessException;
 
 /**
  * Gateways to persist/fetch room for create flow.
  */
 public interface CreateRoomUserDataAccessInterface {
-    // Methods to save new room, ensure code uniqueness, generate tokens, etc.
-    boolean existsByRoomCode(String roomCode);
+    boolean verifyRoomUniquenessPerUser(String hostId) throws DataAccessException;
 
-    //
-    void save(Room room);
+    void createRoom(String roomCode) throws DataAccessException;
 
-    void setCurrentRoom(String roomName);
-
-    //
-    boolean verifyRoomUniquenessPerUser(String hostId);
+    String getUsername();
 }

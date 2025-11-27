@@ -7,6 +7,7 @@ import entity.Ballot;
 import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
@@ -16,10 +17,12 @@ import use_case.vote.VoteUserDataAccessInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
+        CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
         UpdateRoomDataAccessInterface,
@@ -111,7 +114,7 @@ public class RoomDatabase implements
     public void createRoom(String roomName) throws DataAccessException {
         room = new Room(roomName, username);
         noteDatabase.register(getFormattedRoomCode());
-        room.addParticipant (new Participant(username, username));
+        room.addParticipant(new Participant(username, username));
         saveRoom();
     }
 
@@ -167,14 +170,14 @@ public class RoomDatabase implements
         return username;
     }
 
-    /**
-     * TODO: Properly implement leaveRoom in RoomDatabase with correct logic to:
-     * 1. Load the current room state (refreshRoom)
-     * 2. Find and remove the participant with matching username
-     * 3. Save the updated room state
-     * 4. Handle edge cases (last participant, host leaving, etc.)
-     */
-    public void leaveRoom(String roomCode) {
-        throw new UnsupportedOperationException("leaveRoom not yet implemented");
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean verifyRoomUniquenessPerUser(String hostId) {
+        if (room != null && room.getHostId() != null) {
+            return room.getHostId().equals(hostId);
+        }
+        return false;
     }
 }

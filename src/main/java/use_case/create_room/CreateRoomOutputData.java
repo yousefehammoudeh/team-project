@@ -6,13 +6,11 @@ package use_case.create_room;
 public class CreateRoomOutputData {
     // Define fields and constructor(s)
     private final String hostName;
-    private final String hostId;
     private final String roomCode;
     private final String hostToken;
 
-    public CreateRoomOutputData(String hostName, String hostId, String roomCode, String hostToken) {
+    public CreateRoomOutputData(String hostName, String roomCode, String hostToken) {
         this.hostName = hostName;
-        this.hostId = hostId;
         this.roomCode = roomCode;
         this.hostToken = hostToken;
     }
@@ -28,4 +26,5 @@ public class CreateRoomOutputData {
     public String getHostName() {
         return hostName;
     }
+
 }

@@ -1,8 +1,7 @@
 package use_case.create_room;
 
+import data_access.note_database.DataAccessException;
 import entity.Room;
-
-import java.util.UUID;
 
 /**
  * Implements create room use case.
@@ -11,47 +10,38 @@ import java.util.UUID;
  * - Return dashboard initial state
  */
 public class CreateRoomInteractor implements CreateRoomInputBoundary {
-    // Implement execute(CreateRoomInputData inputData)
-    // Implement execute(CreateRoomInputData inputData)
-    private final CreateRoomUserDataAccessInterface roomGateway;
+    private final CreateRoomUserDataAccessInterface roomDataAccess;
+    private final Room room;
     private final CreateRoomOutputBoundary presenter;
 
-    public CreateRoomInteractor(CreateRoomUserDataAccessInterface roomGateway,
+    public CreateRoomInteractor(CreateRoomUserDataAccessInterface roomDataAccess, Room room,
             CreateRoomOutputBoundary presenter) {
-        this.roomGateway = roomGateway;
+        this.roomDataAccess = roomDataAccess;
+        this.room = room;
         this.presenter = presenter;
     }
 
     public void execute(CreateRoomInputData createRoomInputData) {
         final String hostName = createRoomInputData.getHostName();
-        final String hostId = createRoomInputData.getHostId();
-        final String roomCode = roomGateway.generateUniqueRoomCode();
-        final String hostToken = roomGateway.generateToken();
 
-        // Host cant create 2 rooms at the same time
-        final Room room = new Room(roomCode, hostId);
+        final String hostId = roomDataAccess.getUsername();
 
-        if (roomGateway.verifyRoomUniquenessPerUser(hostId)) {
-            presenter.presentFailure("The Host already created a room.");
-        } else {
-            roomGateway.save(room);
-            roomGateway.setCurrentRoom(roomCode);
+        try {
+            if (roomDataAccess.verifyRoomUniquenessPerUser(hostId)) {
+                presenter.presentFailure("The Host already created a room.");
+                return;
+            }
 
-            CreateRoomOutputData output = new CreateRoomOutputData(hostName, hostId, roomCode, hostToken);
+            final String roomCode = room.generateUniqueRoomCode();
+            final String hostToken = room.generateToken();
 
+            roomDataAccess.createRoom(roomCode);
+
+            CreateRoomOutputData output = new CreateRoomOutputData(hostName, roomCode, hostToken);
             presenter.present(output);
+
+        } catch (DataAccessException e) {
+            presenter.presentFailure("Error creating room: " + e.getMessage());
         }
-    }
-
-    private String generateUniqueRoomCode() {
-        String code;
-        do {
-            code = UUID.randomUUID().toString().replace("-", "").substring(0, 6);
-        } while (roomGateway.existsByRoomCode(code));
-        return code;
-    }
-
-    private String generateToken() {
-        return UUID.randomUUID().toString();
     }
 }

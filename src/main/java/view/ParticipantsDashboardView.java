@@ -12,14 +12,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+/**
+ * Participants dashboard (shows room code).
+ */
 public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
-    private JLabel roomIdLabel;
-    private JLabel roomTitle;
-    private JPanel participantsPanel;
-    private final JButton toExit;
-    private JoinedRoomController joinedRoomController = null;
-    @SuppressWarnings("unused")
-    private final JoinedRoomViewModel joinedRoomViewModel;
+    private final JLabel roomIdLabel;
+    private final JPanel participantsPanel;
 
     public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
         this.joinedRoomViewModel = joinedRoomViewModel;
