@@ -113,6 +113,10 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         this.searchController = controller;
     }
 
+    public void setAddMovieController(AddMovieController controller) {
+        this.addMovieController = controller;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO: Trigger search via controller
@@ -122,45 +126,38 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
     public void propertyChange(PropertyChangeEvent evt) {
         SearchState state = (SearchState) evt.getNewValue();
 
-        if (state == null) {
-            return; // nothing to update yet
-        }
+        if (state == null) return;
 
         List<Movie> movies = state.getMovies();
-        if (movies == null) {
-            return;
-        }
+        if (movies == null) return;
 
-        searchListPanel.removeAll(); // searchListPanel = the panel that holds movie result blocks
+        searchListPanel.removeAll();
 
         for (Movie movie : movies) {
-            String p = movie.getPosterPath();
-            if (p == null || p.isBlank()) continue;
+            String posterPath = movie.getPosterPath();
+            ImageIcon icon = null;
 
-            String cleaned = p.startsWith("/") ? p : "/" + p;
-            String fullUrl = "https://image.tmdb.org/t/p/w200" + cleaned;
-
-            try {
-                URL url = new URL(fullUrl);
-                ImageIcon icon = new ImageIcon(url);
-
-                MovieResultPanel block = new MovieResultPanel(icon, movie);
-                block.setAddMovieController(addMovieController);
-                searchListPanel.add(block);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-
-                // add a placeholder panel without image
-                MovieResultPanel block = new MovieResultPanel(null, movie);
-                block.setAddMovieController(addMovieController);
-                searchListPanel.add(block);
+            if (posterPath != null && !posterPath.isBlank()) {
+                try {
+                    String cleaned = posterPath.startsWith("/") ? posterPath : "/" + posterPath;
+                    URL url = new URL("https://image.tmdb.org/t/p/w200" + cleaned);
+                    icon = new ImageIcon(url);
+                } catch (Exception ignored) {}
             }
+
+            MovieResultPanel block = new MovieResultPanel(icon, movie);
+            block.setAddMovieController(addMovieController);
+
+            JPanel wrapper = new JPanel(new BorderLayout());
+            wrapper.add(block, BorderLayout.NORTH);
+
+            searchListPanel.add(wrapper);
         }
 
         searchListPanel.revalidate();
         searchListPanel.repaint();
     }
+
 
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;

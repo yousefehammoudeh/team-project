@@ -39,8 +39,6 @@ public class SearchViewDemo {
             SearchView searchView = new SearchView(viewModel);
             searchView.setSearchController(controller);
 
-
-
             frame.setContentPane(searchView);
             frame.pack();
             frame.setVisible(true);

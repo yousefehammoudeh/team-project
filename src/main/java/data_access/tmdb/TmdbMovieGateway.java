@@ -10,7 +10,6 @@ import use_case.search.SearchUserDataAccessInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TmdbMovieGateway implements SearchUserDataAccessInterface {
@@ -54,7 +53,7 @@ public class TmdbMovieGateway implements SearchUserDataAccessInterface {
     }
 
     @Override
-    public List<Movie> fetchDetails(String movieId, String appendToResponse) throws IOException {
+    public Movie fetchDetails(String movieId, String appendToResponse) throws IOException {
         requireApiKey();
         String id = movieId == null ? "" : java.net.URLEncoder.encode(movieId, java.nio.charset.StandardCharsets.UTF_8);
         StringBuilder sb = new StringBuilder();
@@ -69,7 +68,7 @@ public class TmdbMovieGateway implements SearchUserDataAccessInterface {
                 return null;
             String body = response.body().string();
             JSONObject json = new JSONObject(body);
-            return Collections.singletonList(mapFromDetails(json));
+            return mapFromDetails(json);
         }
     }
 

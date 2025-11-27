@@ -23,14 +23,13 @@ public class SearchInteractor implements SearchInputBoundary {
         final String movieTitle = searchInputData.getMovieTitle();
 
         try {
-            data_access.tmdb.TmdbMovieGateway gw =
-                    new data_access.tmdb.TmdbMovieGateway(System.getenv("TMDB_API_KEY"), null, null);
+            List<Movie> movies = gateway.search(movieTitle);
 
             // list of movies
-            List<Movie> movies = gw.search(movieTitle);
             if (movies.size() > 5) {
                 movies = movies.subList(0, 5);
             }
+
             // poster stuff
             // don't know if this is necessary actually
             List<String> posterUrls = new ArrayList<>();

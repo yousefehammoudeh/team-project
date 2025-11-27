@@ -18,6 +18,7 @@ public class MovieResultPanel extends JPanel {
 
         // poster on the left
         JLabel posterLabel = new JLabel(poster);
+        posterLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 15)); // adds space to the right
         add(posterLabel, BorderLayout.WEST);
 
         // panel for the title & description & add button on the right
