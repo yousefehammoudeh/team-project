@@ -1,0 +1,44 @@
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Winner view: shows the winning movie poster and details.
+ * Currently a simple placeholder; wiring can set content via setters.
+ */
+public class WinnerView extends JPanel {
+    private final JLabel titleLabel = new JLabel("Winner: ", SwingConstants.CENTER);
+    private final JLabel posterLabel = new JLabel();
+    private final JTextArea detailsArea = new JTextArea();
+
+    public WinnerView() {
+        setLayout(new BorderLayout(10, 10));
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        add(titleLabel, BorderLayout.NORTH);
+
+        posterLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(posterLabel, BorderLayout.CENTER);
+
+        detailsArea.setEditable(false);
+        detailsArea.setLineWrap(true);
+        detailsArea.setWrapStyleWord(true);
+        add(new JScrollPane(detailsArea), BorderLayout.SOUTH);
+    }
+
+    public String getViewName() {
+        return "Winner";
+    }
+
+    public void setWinnerTitle(String title) {
+        titleLabel.setText("Winner: " + (title == null ? "" : title));
+    }
+
+    public void setPoster(ImageIcon icon) {
+        posterLabel.setIcon(icon);
+    }
+
+    public void setDetails(String details) {
+        detailsArea.setText(details == null ? "" : details);
+    }
+}

@@ -9,4 +9,6 @@ public interface CreateRoomUserDataAccessInterface {
     void createRoom(String roomCode) throws DataAccessException;
 
     String getUsername();
+
+    void setUsername(String username);
 }

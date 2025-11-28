@@ -22,11 +22,10 @@ public class CreateRoomInteractor implements CreateRoomInputBoundary {
     public void execute(CreateRoomInputData createRoomInputData) {
         final String hostName = createRoomInputData.getHostName();
 
-        // Currently not used beyond identity fetch; retained for future use-case rules.
-        @SuppressWarnings("unused")
-        final String hostId = roomDataAccess.getUsername();
-
         try {
+            // Set the username for the host before creating the room
+            roomDataAccess.setUsername(hostName);
+
             String roomCode;
             while (true) {
                 roomCode = generateUniqueRoomCode();

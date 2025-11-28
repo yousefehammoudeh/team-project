@@ -58,9 +58,10 @@ public class SearchView extends JPanel implements PropertyChangeListener {
 
         // header; room id, button to the shortlist
         final JPanel header = new JPanel();
-        roomId = new JLabel("room code");
+        roomId = new JLabel("Room ID: ");
+        roomId.setFont(new Font("Serif", Font.BOLD, 16));
         header.add(roomId);
-        shortList = new JButton("shortlist");
+        shortList = new JButton("Shortlist");
         header.add(shortList);
 
         shortList.addActionListener(
@@ -124,6 +125,11 @@ public class SearchView extends JPanel implements PropertyChangeListener {
 
         if (state == null)
             return;
+
+        // Update room ID if present
+        if (state.getRoomId() != null) {
+            roomId.setText("Room ID: " + state.getRoomId());
+        }
 
         List<Movie> movies = state.getMovies();
         if (movies == null)
