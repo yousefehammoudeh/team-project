@@ -72,6 +72,7 @@ public class RoomDatabase implements
         return username.equals(room.getHostId());
     }
 
+
     public boolean isLocked() throws DataAccessException {
         checkRoomLoaded();
         return room.isLocked();
@@ -123,7 +124,8 @@ public class RoomDatabase implements
         boolean added = room.addParticipant(new Participant(username, username));
         if (added) {
             saveRoom();
-        } else {
+        }
+        else {
             // Do not join the room if a user with the same name exists
             room = null;
         }
