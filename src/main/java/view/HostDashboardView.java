@@ -11,7 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
- * Host dashboard (shows room code, host token, controls for lock, compute
+ * Host dashboard (shows room code, controls for lock, compute
  * winner, apply filters, etc.).
  */
 public class HostDashboardView extends JPanel implements ActionListener, PropertyChangeListener {

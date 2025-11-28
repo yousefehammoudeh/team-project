@@ -17,7 +17,6 @@ import use_case.vote.VoteUserDataAccessInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
@@ -180,10 +179,4 @@ public class RoomDatabase implements
         throw new UnsupportedOperationException("leaveRoom not yet implemented");
     }
 
-    public boolean verifyRoomUniquenessPerUser(String hostId) {
-        if (room != null && room.getHostId() != null) {
-            return room.getHostId().equals(hostId);
-        }
-        return false;
-    }
 }

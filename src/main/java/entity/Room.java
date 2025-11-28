@@ -3,7 +3,6 @@ package entity;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Room {
     private final String code;
@@ -147,19 +146,4 @@ public class Room {
         this.locked = locked;
     }
 
-    // Token and Room Code Generators
-    public String generateToken() {
-        return UUID.randomUUID().toString();
-    }
-
-    public String generateUniqueRoomCode() {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        java.util.Random random = new java.util.Random();
-        StringBuilder code = new StringBuilder();
-
-        for (int i = 0; i < 6; i++) {
-            code.append(characters.charAt(random.nextInt(characters.length())));
-        }
-        return code.toString();
-    }
 }

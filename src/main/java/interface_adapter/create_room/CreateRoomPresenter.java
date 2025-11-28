@@ -20,7 +20,6 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
 
         state.setHostName(outputData.getHostName());
         state.setRoomCode(outputData.getRoomCode());
-        state.setHostToken(outputData.getHostToken());
         state.setError(null);
 
         viewModel.firePropertyChanged();

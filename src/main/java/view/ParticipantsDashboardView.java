@@ -15,6 +15,7 @@ import java.util.List;
  * Participants dashboard (shows room code).
  */
 public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+    @SuppressWarnings("unused")
     private final JoinedRoomViewModel joinedRoomViewModel;
     private final JLabel roomIdLabel;
     private final JPanel participantsPanel;

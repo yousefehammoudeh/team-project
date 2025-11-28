@@ -4,13 +4,11 @@ package interface_adapter.create_room;
  * Holds UI state for create room flow.
  * Fields to consider:
  * - roomCode
- * - hostToken
  * - error
  */
 public class CreateRoomState {
     private String hostName = "";
     private String roomCode = "";
-    private String hostToken = "";
     private String error = null;
 
     public String getHostName() {
@@ -29,14 +27,6 @@ public class CreateRoomState {
         this.roomCode = roomCode;
     }
 
-    public String getHostToken() {
-        return hostToken;
-    }
-
-    public void setHostToken(String hostToken) {
-        this.hostToken = hostToken;
-    }
-
     public String getError() {
         return error;
     }
@@ -45,4 +35,3 @@ public class CreateRoomState {
         this.error = error;
     }
 }
-
