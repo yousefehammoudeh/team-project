@@ -1,6 +1,5 @@
 package view;
 
-import interface_adapter.joined_room.JoinedRoomController;
 import interface_adapter.joined_room.JoinedRoomState;
 import interface_adapter.joined_room.JoinedRoomViewModel;
 
@@ -16,6 +15,7 @@ import java.util.List;
  * Participants dashboard (shows room code).
  */
 public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+    private final JoinedRoomViewModel joinedRoomViewModel;
     private final JLabel roomIdLabel;
     private final JPanel participantsPanel;
 
@@ -30,31 +30,10 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
         topPanel.add(roomIdLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // Room title i.e. waiting for host to select shortlist
-        final JPanel titlePanel = new JPanel();
-        roomTitle = new JLabel(JoinedRoomViewModel.TITLE_LABEL);
-        roomTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titlePanel.add(roomTitle);
-        add(titlePanel, BorderLayout.NORTH);
-
         // Participants Names
         participantsPanel = new JPanel();
         participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        add(participantsPanel, BorderLayout.SOUTH);
-
-        final JPanel buttons = new JPanel();
-        toExit = new JButton(JoinedRoomViewModel.EXIT_BUTTON_LABEL);
-        buttons.add(toExit);
-        add(buttons);
-
-        toExit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                if (evt.getSource().equals(toExit)) {
-                    final JoinedRoomState currentState = joinedRoomViewModel.getState();
-                    joinedRoomController.execute(currentState.getRoomcode()); // need to get the current user
-                }
-            }
-        });
+        add(participantsPanel, BorderLayout.CENTER);
 
     }
 
@@ -75,8 +54,7 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: Dispatch actions to appropriate controllers (lock, compute winner,
-        // apply filters)
+        // No-op: hook for future controls
     }
 
     @Override

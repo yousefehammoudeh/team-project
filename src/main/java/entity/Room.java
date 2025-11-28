@@ -1,7 +1,5 @@
 package entity;
 
-import data_access.note_database.DataAccessException;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -15,8 +13,6 @@ public class Room {
     private final List<String> shortlist;
     private final List<Ballot> ballots;
     private String selectedMovieId;
-
-    public Room(String code, String hostId) {
 
     public Room(String code, String hostId) {
         this.code = code;
@@ -35,7 +31,6 @@ public class Room {
         this.participants = participants;
         this.shortlist = shortlist;
         this.ballots = ballots;
-        this.hostId = hostId;
     }
 
     public String getCode() {

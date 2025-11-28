@@ -22,14 +22,6 @@ public class ViewModel<T> {
         this.name = name;
     }
 
-    protected ViewModel() {
-        this.name = "";
-    }
-
-    protected ViewModel(String name) {
-        this.name = name;
-    }
-
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         // TODO: delegate to support
         support.addPropertyChangeListener(listener);

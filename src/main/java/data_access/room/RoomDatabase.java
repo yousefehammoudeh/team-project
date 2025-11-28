@@ -170,8 +170,14 @@ public class RoomDatabase implements
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    /**
+     * TODO: Properly implement leaveRoom with:
+     * - Load current room
+     * - Remove participant matching username
+     * - Save updated room
+     */
+    public void leaveRoom(String roomCode) {
+        throw new UnsupportedOperationException("leaveRoom not yet implemented");
     }
 
     public boolean verifyRoomUniquenessPerUser(String hostId) {
