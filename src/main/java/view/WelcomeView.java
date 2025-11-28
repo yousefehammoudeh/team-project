@@ -1,0 +1,63 @@
+package view;
+
+import interface_adapter.ViewManagerModel;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Welcome screen - entry point for creating or joining a room.
+ */
+public class WelcomeView extends JPanel {
+    private final String viewName = "Welcome";
+    @SuppressWarnings("unused")
+    private final ViewManagerModel viewManagerModel;
+
+    public WelcomeView(ViewManagerModel viewManagerModel) {
+        this.viewManagerModel = viewManagerModel;
+
+        setLayout(new BorderLayout(20, 20));
+        setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+
+        // Title
+        final JLabel title = new JLabel("Movie Night Voting App", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 28));
+        add(title, BorderLayout.NORTH);
+
+        // Buttons panel
+        final JPanel buttonsPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+
+        final JButton createRoomButton = new JButton("Create New Room (Host)");
+        createRoomButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        createRoomButton.addActionListener(e -> {
+            // TODO: Replace this stub with navigation to CreateRoomView
+            // TODO: CreateRoomView should have form for host name and preferences
+            // TODO: After room creation, navigate to HostDashboard with actual room data
+            JOptionPane.showMessageDialog(this,
+                    "Create Room functionality coming soon!\n\nFor now, navigating to Host Dashboard...");
+            viewManagerModel.setActiveViewName("HostDashboard");
+        });
+
+        final JButton joinRoomButton = new JButton("Join Existing Room");
+        joinRoomButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        joinRoomButton.addActionListener(e -> {
+            // TODO: Replace this stub with navigation to JoinRoomView
+            // TODO: JoinRoomView should have form for room code and participant name
+            // TODO: After successful join, navigate to ParticipantsDashboard with actual
+            // room data
+            JOptionPane.showMessageDialog(this,
+                    "Join Room functionality coming soon!\n\nFor now, navigating to Participants Dashboard...");
+            viewManagerModel.setActiveViewName("ParticipantsDashboard");
+        });
+        buttonsPanel.add(createRoomButton);
+        buttonsPanel.add(joinRoomButton);
+
+        final JPanel centerWrapper = new JPanel(new GridBagLayout());
+        centerWrapper.add(buttonsPanel);
+        add(centerWrapper, BorderLayout.CENTER);
+    }
+
+    public String getViewName() {
+        return viewName;
+    }
+}
