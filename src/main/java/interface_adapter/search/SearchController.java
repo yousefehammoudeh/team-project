@@ -21,4 +21,7 @@ public class SearchController {
     public void switchToShortlistView() {
         searchInputBoundary.switchToShortlistView();
     }
+    public void switchToHostDashboardView() {
+        searchInputBoundary.switchToHostDashboardView();
+    }
 }

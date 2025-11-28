@@ -28,7 +28,7 @@ public class SearchView extends JPanel implements PropertyChangeListener {
     @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
-    private final JLabel roomId;
+    private final JButton dashboard;
     private final JButton shortList;
 
     private final JTextField searchInputField = new JTextField(15);
@@ -63,6 +63,13 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         header.add(roomId);
         shortList = new JButton("Shortlist");
         header.add(shortList);
+
+        dashboard.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        searchController.switchToHostDashboardView();
+                    }
+                });
 
         shortList.addActionListener(
                 new ActionListener() {
