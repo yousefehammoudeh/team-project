@@ -42,16 +42,18 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
         shortlistPanel.setLayout(new BoxLayout(shortlistPanel, BoxLayout.Y_AXIS));
 
-        final JButton removeButton = new JButton("Remove");
-        shortlistPanel.add(removeButton);
-        final JButton lockButton = new JButton("Lock");
-        shortlistPanel.add(lockButton);
-
         shortlist = new JList<>(movieListModel);
         shortlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        shortlist.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedMovieID = shortlist.getSelectedValue();
+            }
+        });
         final JScrollPane scrollPane = new JScrollPane(shortlist);
         shortlistPanel.add(scrollPane);
 
+        final JButton removeButton = new JButton("Remove");
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,48 +64,47 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
                 }
             }
         });
+        shortlistPanel.add(removeButton);
 
+        final JButton lockButton = new JButton("Lock");
         lockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleLockRoomController.execute();
             }
         });
+        shortlistPanel.add(lockButton);
 
-        shortlist.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                selectedMovieID = shortlist.getSelectedValue();
-            }
-        });
-
-        // TODO: code below for demo and test only.
-        final Random random = new Random();
-        final JButton addButton = new JButton("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMovieController.execute(Integer.toString(random.nextInt(100)));
-            }
-        });
-        shortlistPanel.add(addButton);
-        // Vote button to proceed to voting view
         final JButton voteButton = new JButton("Vote");
         voteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (viewManagerModel != null)
+                if (viewManagerModel != null) {
                     viewManagerModel.setActiveViewName("Vote");
-                else
+                }
+                else {
                     JOptionPane.showMessageDialog(null, "Proceed to vote (scaffold)");
+                }
+            }
+        });
+        shortlistPanel.add(voteButton);
+
+        final JButton searchButton = new JButton("Search");
+        voteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (viewManagerModel != null) {
+                    viewManagerModel.setActiveViewName("Search View");
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Proceed to search (scaffold)");
+                }
             }
         });
         shortlistPanel.add(voteButton);
 
         lockedText.setText("Not Locked");
         shortlistPanel.add(lockedText);
-
-        // TODO: code above for demo and test only.
 
         this.add(shortlistPanel);
 
@@ -119,6 +120,16 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
                 }
             }
         }).start();
+
+//        final Random random = new Random();
+//        final JButton addButton = new JButton("Add");
+//        addButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                addMovieController.execute(Integer.toString(random.nextInt(100)));
+//            }
+//        });
+//        shortlistPanel.add(addButton);
     }
 
     @Override
