@@ -1,15 +1,9 @@
 package interface_adapter.join_room;
 
 /**
- * TODO: Holds UI state for join room flow.
- * Fields to consider:
- * - roomCode
- * - participantName
- * - currentRoomState summary
- * - error
+ * Holds UI state for the join room flow.
  */
 public class JoinRoomState {
-    // TODO: Define fields and accessors
     private String username = "";
     private String usernameError;
     private String roomcode = "";

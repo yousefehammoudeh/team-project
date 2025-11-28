@@ -18,9 +18,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * TODO: Search view (search field, results list, details panel).
+ * Search view: query input, results list and add-to-shortlist actions.
  */
-public class SearchView extends JPanel implements ActionListener, PropertyChangeListener {
+public class SearchView extends JPanel implements PropertyChangeListener {
 
     @SuppressWarnings("unused")
     private final String viewName = "Search View";
@@ -29,6 +29,7 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
     private ViewManagerModel viewManagerModel;
 
     private final JButton dashboard;
+    private final JLabel roomId;
     private final JButton shortList;
 
     private final JTextField searchInputField = new JTextField(15);
@@ -58,6 +59,9 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         // header; room id, button to the shortlist
         final JPanel header = new JPanel();
+        roomId = new JLabel("Room ID: ");
+        roomId.setFont(new Font("Serif", Font.BOLD, 16));
+        header.add(roomId);
         dashboard = new JButton("Dashboard");
         header.add(dashboard);
         shortList = new JButton("Shortlist");
@@ -130,18 +134,17 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
                     "placeholder.png not found in resources"
     );
 
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Trigger search via controller
-    }
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         SearchState state = (SearchState) evt.getNewValue();
 
         if (state == null)
             return;
+
+        // Update room ID if present
+        if (state.getRoomId() != null) {
+            roomId.setText("Room ID: " + state.getRoomId());
+        }
 
         List<Movie> movies = state.getMovies();
         if (movies == null)

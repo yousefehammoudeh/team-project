@@ -1,7 +1,7 @@
 package use_case.search;
 
 /**
- * TODO: Input data for search queries.
+ * Input data for search queries.
  */
 public class SearchInputData {
     private final String movieTitle;
@@ -13,6 +13,4 @@ public class SearchInputData {
     public String getMovieTitle() {
         return movieTitle;
     }
-    // TODO: Define fields and constructor(s)
 }
-

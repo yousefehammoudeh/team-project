@@ -8,12 +8,11 @@ import interface_adapter.joined_room.JoinedRoomState;
 import interface_adapter.joined_room.JoinedRoomViewModel;
 
 /**
- * TODO: Presents room state after joining.
+ * Presents join-room outcomes: updates view models and navigates accordingly.
  */
 public class JoinRoomPresenter implements JoinRoomOutputBoundary {
     private final JoinRoomViewModel joinRoomViewModel;
     private final JoinedRoomViewModel joinedRoomViewModel;
-    @SuppressWarnings("unused")
     private final CreateRoomViewModel createRoomViewModel;
     private final ViewManagerModel viewManagerModel;
 
@@ -29,7 +28,6 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
 
     @Override
     public void prepareSuccessView(JoinRoomOutputData outputData) {
-        // TODO: Update view model and notify
         // on success, switch to joinedRoomViewModel's state (user's dashboard)
         final JoinedRoomState joinedRoomState = joinedRoomViewModel.getState();
         joinedRoomState.setParticipants(outputData.getParticipants());
@@ -42,20 +40,16 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
 
         // switch to the joined room view
         this.viewManagerModel.setActiveViewName(joinedRoomViewModel.getViewName());
-        this.viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void presentFailure(String message) {
-        // TODO: Set error state and notify
         final JoinRoomState joinRoomState = joinRoomViewModel.getState();
         joinRoomState.setUsernameError(message);
         joinRoomViewModel.firePropertyChanged();
     }
 
     public void switchToCreateRoomView() {
-        // viewManagerModel.setActiveViewName(createRoomViewModel.getViewName());
-        viewManagerModel.setActiveViewName("create room");
-        viewManagerModel.firePropertyChanged();
+        viewManagerModel.setActiveViewName(createRoomViewModel.getViewName());
     }
 }

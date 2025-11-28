@@ -4,14 +4,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * TODO: Mirror CA-lab ViewModel helper for property change support.
- * - Hold state T
- * - Delegate add/remove listener and firePropertyChange
+ * Simple generic ViewModel with property change support and a typed state.
  */
 public class ViewModel<T> {
-    // TODO: replicate structure from ca-lab with TODO stubs
     protected final PropertyChangeSupport support = new PropertyChangeSupport(this);
-    @SuppressWarnings("unused")
     private final String name;
     protected T state;
 
@@ -23,18 +19,19 @@ public class ViewModel<T> {
         this.name = name;
     }
 
+    public String getViewName() {
+        return this.name;
+    }
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        // TODO: delegate to support
         support.addPropertyChangeListener(listener);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        // TODO: delegate to support
         support.removePropertyChangeListener(listener);
     }
 
     public void firePropertyChanged() {
-        // TODO: fire a generic change (no specific property)
         support.firePropertyChange("state", null, this.state);
     }
 

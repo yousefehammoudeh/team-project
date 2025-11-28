@@ -3,21 +3,26 @@ package app;
 import javax.swing.*;
 
 /**
- * TODO: Application entry point.
- * - Initialize UI (Swing) event thread if applicable
+ * Application entry point.
+ * - Initialize UI (Swing) event thread
  * - Delegate to AppBuilder to construct views and use cases
  */
 public class Main {
     public static void main(String[] args) {
-        JFrame application = new AppBuilder()
-                .addShortlistView()
-                .addAddMovieUseCase()
-                .addRemoveMovieUseCase()
-                .addUpdateRoomUseCase()
-                .addToggleLockRoomUseCase()
-                .build();
-        application.pack();
-        application.setLocationRelativeTo(null);
-        application.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            JFrame application = new AppBuilder()
+                    .addWelcomeAndDashboards()
+                    .addJoinAndCreateFlows()
+                    .addShortlistView()
+                    .addSearchUseCase()
+                    .addAddMovieUseCase()
+                    .addRemoveMovieUseCase()
+                    .addUpdateRoomUseCase()
+                    .addToggleLockRoomUseCase()
+                    .build();
+            application.pack();
+            application.setLocationRelativeTo(null);
+            application.setVisible(true);
+        });
     }
 }

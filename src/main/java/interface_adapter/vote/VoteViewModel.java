@@ -10,8 +10,9 @@ import interface_adapter.ViewModel;
  * - Provide convenience methods for views to read/update state
  */
 public class VoteViewModel extends ViewModel<VoteState> {
+
     public VoteViewModel() {
-        super();
+        super("Vote");
         VoteState s = new VoteState();
         s.setBallotsReceivedCount(0);
         s.setShortlistSize(0);
@@ -24,4 +25,6 @@ public class VoteViewModel extends ViewModel<VoteState> {
     public VoteState getVoteState() {
         return this.state;
     }
+
+    // Uses base getViewName()
 }

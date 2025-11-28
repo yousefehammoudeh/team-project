@@ -1,6 +1,8 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.host_dashboard.HostDashboardState;
+import interface_adapter.host_dashboard.HostDashboardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,10 +21,17 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     private final JButton searchButton;
     private final JButton shortlistButton;
     private final JButton voteButton;
+    private JButton computeWinnerButton;
+    private interface_adapter.winner.WinnerController computeWinnerController;
     private final JPanel participantsPanel;
     private ViewManagerModel viewManagerModel;
+    private final HostDashboardViewModel viewModel;
+    private interface_adapter.host_dashboard.HostRefreshController hostRefreshController;
+    private interface_adapter.search.SearchViewModel searchViewModel;
 
-    public HostDashboardView() {
+    public HostDashboardView(HostDashboardViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(10, 10));
 
         // Room ID
@@ -32,25 +41,47 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         topPanel.add(roomIdLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // Search Bar
-        final JPanel searchPanel = new JPanel();
-        JTextField searchField = new JTextField(20);
-        searchButton = new JButton("\uD83D\uDD0D");
+        // Navigation buttons
+        final JPanel navigationPanel = new JPanel();
+        searchButton = new JButton("Search");
         searchButton.addActionListener(this);
-        searchPanel.add(searchField);
-        searchPanel.add(searchButton);
+        navigationPanel.add(searchButton);
         shortlistButton = new JButton("Shortlist");
         shortlistButton.addActionListener(this);
-        searchPanel.add(shortlistButton);
+        navigationPanel.add(shortlistButton);
         voteButton = new JButton("Vote");
         voteButton.addActionListener(this);
-        searchPanel.add(voteButton);
-        add(searchPanel, BorderLayout.CENTER);
+        navigationPanel.add(voteButton);
+        // Host-only control: compute winner navigates to Winner view
+        computeWinnerButton = new JButton("Compute Winner");
+        computeWinnerButton.addActionListener(this);
+        final JPanel bottomPanel = new JPanel();
+        bottomPanel.add(computeWinnerButton);
+        add(bottomPanel, BorderLayout.SOUTH);
+        add(navigationPanel, BorderLayout.CENTER);
 
         // Participants Names
         participantsPanel = new JPanel();
         participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.SOUTH);
+
+        // Optional: background refresh for participants
+        new Thread(() -> {
+            try {
+                while (true) {
+                    if (hostRefreshController != null) {
+                        hostRefreshController.execute();
+                    }
+                    Thread.sleep(5000);
+                }
+            } catch (InterruptedException ignored) {
+            }
+        }).start();
+    }
+
+    // Backwards-compatible no-arg constructor for existing tests
+    public HostDashboardView() {
+        this(new HostDashboardViewModel());
     }
 
     public void setRoomId(String id) {
@@ -70,6 +101,16 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src == searchButton) {
+            // Update SearchViewModel with current room ID before navigating
+            if (searchViewModel != null && viewModel.getState() != null) {
+                interface_adapter.search.SearchState searchState = searchViewModel.getState();
+                if (searchState == null) {
+                    searchState = new interface_adapter.search.SearchState();
+                    searchViewModel.setState(searchState);
+                }
+                searchState.setRoomId(viewModel.getState().getRoomId());
+                searchViewModel.firePropertyChanged();
+            }
             if (viewManagerModel != null)
                 viewManagerModel.setActiveViewName("Search");
         } else if (src == shortlistButton) {
@@ -78,12 +119,34 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         } else if (src == voteButton) {
             if (viewManagerModel != null)
                 viewManagerModel.setActiveViewName("Vote");
+        } else if (src == computeWinnerButton) {
+            if (computeWinnerController != null) {
+                computeWinnerController.execute();
+            }
+            if (viewManagerModel != null) {
+                viewManagerModel.setActiveViewName("Winner");
+            }
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update UI based on ViewModel changes
+        HostDashboardState state = (HostDashboardState) evt.getNewValue();
+        if (state == null)
+            return;
+        if (state.getRoomId() != null) {
+            setRoomId(state.getRoomId());
+        }
+        if (state.getParticipants() != null) {
+            updateParticipants(state.getParticipants());
+        }
+        // Auto-navigate to Vote view if room is locked
+        if (state.isLocked() && viewManagerModel != null &&
+                !ViewManagerModel.VOTE_VIEW.equals(viewManagerModel.getActiveViewName())) {
+            viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
+        }
+        participantsPanel.revalidate();
+        participantsPanel.repaint();
     }
 
     /**
@@ -92,5 +155,17 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
      */
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;
+    }
+
+    public void setHostRefreshController(interface_adapter.host_dashboard.HostRefreshController c) {
+        this.hostRefreshController = c;
+    }
+
+    public void setSearchViewModel(interface_adapter.search.SearchViewModel searchViewModel) {
+        this.searchViewModel = searchViewModel;
+    }
+
+    public void setComputeWinnerController(interface_adapter.winner.WinnerController c) {
+        this.computeWinnerController = c;
     }
 }
