@@ -10,12 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Random;
 
 /**
- * TODO: Shortlist view (add/remove candidates, lock if host).
+ * Shortlist view: add/remove candidates, lock if host.
  */
-public class ShortlistView extends JPanel implements ActionListener, PropertyChangeListener {
+public class ShortlistView extends JPanel implements PropertyChangeListener {
     private final static int UPDATE_INTERVAL = 5;
 
     private final String viewName = "Shortlist";
@@ -77,23 +76,14 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
             }
         });
 
-        // TODO: code below for demo and test only.
-        final Random random = new Random();
-        final JButton addButton = new JButton("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMovieController.execute(Integer.toString(random.nextInt(100)));
-            }
-        });
-        shortlistPanel.add(addButton);
+        // Add movies from SearchView via AddMovieController; no demo add button
         // Vote button to proceed to voting view
         final JButton voteButton = new JButton("Vote");
         voteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (viewManagerModel != null)
-                    viewManagerModel.setActiveViewName("Vote");
+                    viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
                 else
                     JOptionPane.showMessageDialog(null, "Proceed to vote (scaffold)");
             }
@@ -102,8 +92,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
         lockedText.setText("Not Locked");
         shortlistPanel.add(lockedText);
-
-        // TODO: code above for demo and test only.
+    // End controls
 
         this.add(shortlistPanel);
 
@@ -119,11 +108,6 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
                 }
             }
         }).start();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Handle add/remove/lock actions
     }
 
     @Override

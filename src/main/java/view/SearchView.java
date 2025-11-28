@@ -18,9 +18,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * TODO: Search view (search field, results list, details panel).
+ * Search view: query input, results list and add-to-shortlist actions.
  */
-public class SearchView extends JPanel implements ActionListener, PropertyChangeListener {
+public class SearchView extends JPanel implements PropertyChangeListener {
 
     @SuppressWarnings("unused")
     private final String viewName = "Search View";
@@ -116,11 +116,6 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
     public void setAddMovieController(AddMovieController controller) {
         this.addMovieController = controller;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Trigger search via controller
     }
 
     @Override

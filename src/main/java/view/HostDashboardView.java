@@ -1,6 +1,8 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.host_dashboard.HostDashboardState;
+import interface_adapter.host_dashboard.HostDashboardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +23,11 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     private final JButton voteButton;
     private final JPanel participantsPanel;
     private ViewManagerModel viewManagerModel;
+    private final HostDashboardViewModel viewModel;
 
-    public HostDashboardView() {
+    public HostDashboardView(HostDashboardViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(10, 10));
 
         // Room ID
@@ -51,6 +56,11 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         participantsPanel = new JPanel();
         participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.SOUTH);
+    }
+
+    // Backwards-compatible no-arg constructor for existing tests
+    public HostDashboardView() {
+        this(new HostDashboardViewModel());
     }
 
     public void setRoomId(String id) {
@@ -83,7 +93,17 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update UI based on ViewModel changes
+        HostDashboardState state = (HostDashboardState) evt.getNewValue();
+        if (state == null)
+            return;
+        if (state.getRoomId() != null) {
+            setRoomId(state.getRoomId());
+        }
+        if (state.getParticipants() != null) {
+            updateParticipants(state.getParticipants());
+        }
+        participantsPanel.revalidate();
+        participantsPanel.repaint();
     }
 
     /**

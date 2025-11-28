@@ -1,6 +1,5 @@
 package view;
 
-import interface_adapter.ViewManagerModel;
 import interface_adapter.create_room.CreateRoomController;
 import interface_adapter.create_room.CreateRoomState;
 import interface_adapter.create_room.CreateRoomViewModel;
@@ -21,15 +20,13 @@ public class CreateRoomView extends JPanel implements ActionListener, PropertyCh
     private final String viewName = "create room";
 
     private final CreateRoomViewModel viewModel;
-    private final ViewManagerModel viewManagerModel;
 
     private final JTextField hostNameField = new JTextField(16);
     private final JButton createButton = new JButton("Create Room");
     private CreateRoomController controller;
 
-    public CreateRoomView(CreateRoomViewModel vm, ViewManagerModel viewManagerModel) {
+    public CreateRoomView(CreateRoomViewModel vm) {
         this.viewModel = vm;
-        this.viewManagerModel = viewManagerModel;
         this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -67,9 +64,17 @@ public class CreateRoomView extends JPanel implements ActionListener, PropertyCh
                 viewModel.setState(state);
             }
 
-            public void insertUpdate(DocumentEvent e) { sync(); }
-            public void removeUpdate(DocumentEvent e) { sync(); }
-            public void changedUpdate(DocumentEvent e) { sync(); }
+            public void insertUpdate(DocumentEvent e) {
+                sync();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                sync();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                sync();
+            }
         });
     }
 

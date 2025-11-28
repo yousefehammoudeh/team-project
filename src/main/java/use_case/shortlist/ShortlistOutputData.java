@@ -3,7 +3,7 @@ package use_case.shortlist;
 import java.util.List;
 
 /**
- * TODO: Output data for shortlist state.
+ * Output data for shortlist state.
  */
 public class ShortlistOutputData {
     private final List<String> shortlist; // TODO: might change to list of Movies
@@ -22,4 +22,3 @@ public class ShortlistOutputData {
         return locked;
     }
 }
-
