@@ -11,7 +11,16 @@ import java.beans.PropertyChangeSupport;
 public class ViewModel<T> {
     // TODO: replicate structure from ca-lab with TODO stubs
     protected final PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private final String name;
     protected T state;
+
+    protected ViewModel() {
+        this.name = "";
+    }
+
+    protected ViewModel(String name) {
+        this.name = name;
+    }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         // TODO: delegate to support
