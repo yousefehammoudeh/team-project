@@ -30,6 +30,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     private UpdateRoomController updateRoomController;
 
     private final JPanel shortlistPanel;
+    @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
     public ShortlistView(ViewManagerModel viewManagerModel, ShortlistViewModel shortlistViewModel) {
@@ -123,8 +124,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         final ShortlistState state = (ShortlistState) evt.getNewValue();
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(null, state.getError());
-        }
-        else {
+        } else {
             String selectedID = shortlist.getSelectedValue();
             movieListModel.clear();
             movieListModel.addAll(state.getShortlist());

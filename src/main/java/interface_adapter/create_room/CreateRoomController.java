@@ -6,6 +6,7 @@ import use_case.create_room.CreateRoomInputBoundary;
  * TODO: Accepts UI input to create a room and delegates to interactor.
  */
 public class CreateRoomController {
+    @SuppressWarnings("unused")
     private final CreateRoomInputBoundary interactor;
 
     public CreateRoomController(CreateRoomInputBoundary interactor) {

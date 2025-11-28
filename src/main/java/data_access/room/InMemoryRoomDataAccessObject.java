@@ -4,15 +4,13 @@ import data_access.note_database.DataAccessException;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
-
-import java.util.*;
-
 import entity.Participant;
-
+import java.util.*;
 import static data_access.HTTPCode.CONFLICT_ERROR;
 import static data_access.HTTPCode.NOT_FOUND_ERROR;
 
@@ -27,7 +25,8 @@ public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
         VoteUserDataAccessInterface,
-        JoinRoomUserDataAccessInterface {
+        JoinRoomUserDataAccessInterface,
+        JoinedRoomUserDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;
@@ -109,6 +108,14 @@ public class InMemoryRoomDataAccessObject implements
         return room.getParticipants().size();
     }
 
+    // Support vote demo/tests without changing production interfaces
+    public boolean addParticipant(String id, String name) {
+        if (room == null) {
+            room = new Room("demo", "");
+        }
+        return room.addParticipant(new Participant(id, name));
+    }
+
     public boolean saveBallot(Ballot ballot) throws DataAccessException {
         checkRoomLoaded();
         return room.submitBallot(ballot);
@@ -125,5 +132,14 @@ public class InMemoryRoomDataAccessObject implements
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * TODO: Stub implementation for leaveRoom.
+     * Should remove the current user from the room's participant list.
+     */
+    public void leaveRoom(String roomCode) {
+        // Stub: Not yet implemented for in-memory testing
+        throw new UnsupportedOperationException("leaveRoom not yet implemented");
     }
 }

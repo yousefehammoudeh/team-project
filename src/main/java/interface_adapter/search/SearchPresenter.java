@@ -1,7 +1,6 @@
 package interface_adapter.search;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.shortlist.ShortlistViewModel;
 import use_case.search.SearchOutputBoundary;
 import use_case.search.SearchOutputData;
 
@@ -21,8 +20,8 @@ public class SearchPresenter implements SearchOutputBoundary {
     public void present(SearchOutputData outputData) {
         // Update view model fields
         SearchState state = viewModel.getState();
-        state.setError(null);             // no error
-        state.setMovies(outputData.getMovies());  // list<Movie>
+        state.setError(null); // no error
+        state.setMovies(outputData.getMovies()); // list<Movie>
 
         // Fire event so SearchView refreshes UI
         viewModel.firePropertyChanged();
@@ -35,7 +34,7 @@ public class SearchPresenter implements SearchOutputBoundary {
         // Update only the error
         SearchState state = viewModel.getState();
         state.setError(message);
-        state.setMovies(null);  // clear results
+        state.setMovies(null); // clear results
 
         // Fire update
         viewModel.firePropertyChanged();

@@ -7,6 +7,7 @@ import use_case.create_room.CreateRoomOutputData;
  * TODO: Translates interactor output to view model updates.
  */
 public class CreateRoomPresenter implements CreateRoomOutputBoundary {
+    @SuppressWarnings("unused")
     private final CreateRoomViewModel viewModel;
 
     public CreateRoomPresenter(CreateRoomViewModel viewModel) {

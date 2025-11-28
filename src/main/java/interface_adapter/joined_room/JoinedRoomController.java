@@ -1,6 +1,6 @@
 package interface_adapter.joined_room;
 
-import use_case.joined_room.JoinedRoomInputBoundary;
+// removed unused import
 
 import use_case.joined_room.JoinedRoomInputBoundary;
 
@@ -15,7 +15,6 @@ public class JoinedRoomController {
     }
 
     // TODO: Method to trigger join (e.g., join(code, name))
-
 
     public void execute(String username) {
         interactor.execute(username);

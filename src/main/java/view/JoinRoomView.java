@@ -13,11 +13,8 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-/**
- * TODO: Join room screen (enter code + name; show current room state after join).
- */
+
 public class JoinRoomView extends JPanel implements ActionListener, PropertyChangeListener {
-    // TODO: Wire inputs and actions to JoinRoomController
     private final String viewName = "join";
 
     private final JoinRoomViewModel joinRoomViewModel;
@@ -151,7 +148,6 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: Trigger join action on controller
 
         //System.out.println("Click " + e.getActionCommand());
 
@@ -161,7 +157,7 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
     //fire property in ViewModel prevents infinite loop
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update fields based on ViewModel changes
+
         final JoinRoomState state = (JoinRoomState) evt.getNewValue();
 
         //set UI text

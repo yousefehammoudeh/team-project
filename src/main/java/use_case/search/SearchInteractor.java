@@ -2,10 +2,8 @@ package use_case.search;
 
 import entity.Movie;
 
-import javax.swing.*;
-import java.util.ArrayList;
+//
 import java.util.List;
-
 
 /**
  * TODO: Implements search & details use case.

@@ -1,6 +1,5 @@
 package view;
 
-import interface_adapter.join_room.JoinRoomViewModel;
 import interface_adapter.joined_room.JoinedRoomViewModel;
 
 import javax.swing.*;

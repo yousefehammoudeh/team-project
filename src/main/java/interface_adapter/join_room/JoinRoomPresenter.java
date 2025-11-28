@@ -13,13 +13,14 @@ import interface_adapter.joined_room.JoinedRoomViewModel;
 public class JoinRoomPresenter implements JoinRoomOutputBoundary {
     private final JoinRoomViewModel joinRoomViewModel;
     private final JoinedRoomViewModel joinedRoomViewModel;
+    @SuppressWarnings("unused")
     private final CreateRoomViewModel createRoomViewModel;
     private final ViewManagerModel viewManagerModel;
 
     public JoinRoomPresenter(JoinRoomViewModel joinRoomViewModel,
-                             JoinedRoomViewModel joinedRoomViewModel,
-                             CreateRoomViewModel createRoomViewModel,
-                             ViewManagerModel viewManagerModel) {
+            JoinedRoomViewModel joinedRoomViewModel,
+            CreateRoomViewModel createRoomViewModel,
+            ViewManagerModel viewManagerModel) {
         this.joinRoomViewModel = joinRoomViewModel;
         this.joinedRoomViewModel = joinedRoomViewModel;
         this.createRoomViewModel = createRoomViewModel;
@@ -29,14 +30,14 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
     @Override
     public void prepareSuccessView(JoinRoomOutputData outputData) {
         // TODO: Update view model and notify
-        //on success, switch to joinedRoomViewModel's state (user's dashboard)
+        // on success, switch to joinedRoomViewModel's state (user's dashboard)
         final JoinedRoomState joinedRoomState = joinedRoomViewModel.getState();
         joinedRoomState.setParticipants(outputData.getParticipants());
         joinedRoomState.setRoomcode(outputData.getRoomCode());
         joinedRoomState.setCurrentUser(outputData.getCurrentUser());
         this.joinedRoomViewModel.firePropertyChanged();
 
-        //clear everything in the JoinRoomViewModel's state
+        // clear everything in the JoinRoomViewModel's state
         joinRoomViewModel.setState(new JoinRoomState());
 
         // switch to the joined room view
@@ -53,7 +54,7 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
     }
 
     public void switchToCreateRoomView() {
-        //viewManagerModel.setActiveViewName(createRoomViewModel.getViewName());
+        // viewManagerModel.setActiveViewName(createRoomViewModel.getViewName());
         viewManagerModel.setActiveViewName("create room");
         viewManagerModel.firePropertyChanged();
     }

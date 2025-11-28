@@ -1,11 +1,9 @@
 package use_case.join_room;
 
 import data_access.note_database.DataAccessException;
-
 import java.util.List;
 
 /**
- * TODO: Implements join room use case.
  * - Validate code and name
  * - Add participant to room
  * - Return current room state
@@ -32,11 +30,9 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
         // check if inputs are valid
         else {
             try {
-                // check if the room exists, if it does add a participant
-                // first set the username in the data access object
                 roomGateway.setUsername(joinRoomInputData.getUsername());
                 boolean added = roomGateway.joinRoom(joinRoomInputData.getRoomcode());
-                if (!added) { // participant username already used
+                if (!added) {
                     presenter.presentFailure("User already exists.");
                 } else {
                     List<String> p = roomGateway.getParticipantIDs();
@@ -46,7 +42,7 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
                     presenter.prepareSuccessView(joinRoomOutputData);
                 }
             } catch (DataAccessException e) {
-                presenter.presentFailure("Room doesn't exist.");
+                presenter.presentFailure(e.getMessage());
             }
 
         }

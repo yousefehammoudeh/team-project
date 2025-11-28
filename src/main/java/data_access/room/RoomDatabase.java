@@ -8,6 +8,7 @@ import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
@@ -21,7 +22,8 @@ public class RoomDatabase implements
         RemoveMovieRoomDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        UpdateRoomDataAccessInterface {
+        UpdateRoomDataAccessInterface,
+        JoinedRoomUserDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
@@ -163,5 +165,16 @@ public class RoomDatabase implements
 
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * TODO: Properly implement leaveRoom in RoomDatabase with correct logic to:
+     * 1. Load the current room state (refreshRoom)
+     * 2. Find and remove the participant with matching username
+     * 3. Save the updated room state
+     * 4. Handle edge cases (last participant, host leaving, etc.)
+     */
+    public void leaveRoom(String roomCode) {
+        throw new UnsupportedOperationException("leaveRoom not yet implemented");
     }
 }

@@ -29,7 +29,6 @@ import use_case.remove_movie.RemoveMovieInputData;
 import use_case.update_room.UpdateRoomInputBoundary;
 
 import use_case.shortlist.ShortlistOutputData;
-import use_case.shortlist.ShortlistOutputBoundary;
 
 import okhttp3.OkHttpClient;
 
@@ -42,7 +41,8 @@ import java.util.List;
  * Demo launcher that wires SearchView and ShortlistView so you can test both.
  *
  * - Uses your TMDB gateway for Search (requires TMDB_API_KEY env var).
- * - Uses small in-memory implementations of Add/Remove/Update input boundaries so Shortlist works.
+ * - Uses small in-memory implementations of Add/Remove/Update input boundaries
+ * so Shortlist works.
  */
 public class DemoLauncher {
 
@@ -62,7 +62,8 @@ public class DemoLauncher {
             SearchViewModel searchViewModel = new SearchViewModel();
             searchViewModel.setState(new SearchState());
 
-            // Presenter that updates the SearchViewModel (assumes your constructor accepts these params)
+            // Presenter that updates the SearchViewModel (assumes your constructor accepts
+            // these params)
             SearchPresenter searchPresenter = new SearchPresenter(searchViewModel, viewManagerModel);
 
             // TMDB gateway; requires env var TMDB_API_KEY
@@ -84,9 +85,10 @@ public class DemoLauncher {
 
             // In-memory data store backing the demo shortlist:
             final List<String> shortlistStore = new ArrayList<>();
-            final boolean[] lockedFlag = new boolean[]{false}; // mutable holder
+            final boolean[] lockedFlag = new boolean[] { false }; // mutable holder
 
-            // Implement ShortlistOutputBoundary using your presenter (we already have shortlistPresenter),
+            // Implement ShortlistOutputBoundary using your presenter (we already have
+            // shortlistPresenter),
             // but the input-boundaries below will call shortlistPresenter directly.
 
             // --- AddMovieInputBoundary (in-memory) ---
@@ -94,7 +96,8 @@ public class DemoLauncher {
                 @Override
                 public void execute(AddMovieInputData addMovieInputData) {
                     String id = addMovieInputData.getMovieID();
-                    // mimic AddMovieInteractor behaviour: check locked, duplicate, return output presenter
+                    // mimic AddMovieInteractor behaviour: check locked, duplicate, return output
+                    // presenter
                     if (lockedFlag[0]) {
                         shortlistPresenter.presentFailure("The shortlist is locked.");
                         return;
@@ -132,7 +135,8 @@ public class DemoLauncher {
             UpdateRoomInputBoundary updateRoomBoundary = new UpdateRoomInputBoundary() {
                 @Override
                 public void execute() {
-                    // In real interactor, there might be rate-limits and DataAccessException handling.
+                    // In real interactor, there might be rate-limits and DataAccessException
+                    // handling.
                     ShortlistOutputData out = new ShortlistOutputData(new ArrayList<>(shortlistStore), lockedFlag[0]);
                     shortlistPresenter.present(out);
                 }
@@ -149,7 +153,8 @@ public class DemoLauncher {
             searchView.setViewManagerModel(viewManagerModel);
             searchView.setAddMovieController(addMovieController);
 
-            // Shortlist view: pass viewManagerModel and shortlistViewModel (your constructor)
+            // Shortlist view: pass viewManagerModel and shortlistViewModel (your
+            // constructor)
             ShortlistView shortlistView = new ShortlistView(viewManagerModel, shortlistViewModel);
             shortlistView.setAddMovieController(addMovieController);
             shortlistView.setRemoveMovieController(removeMovieController);
@@ -171,7 +176,8 @@ public class DemoLauncher {
             });
             toolbar.add(backButton);
 
-            // Also add a button to go to shortlist (for convenience) — the SearchView already has a shortlist button,
+            // Also add a button to go to shortlist (for convenience) — the SearchView
+            // already has a shortlist button,
             // but adding this here ensures the demo always has navigation available.
             JButton toShortlistBtn = new JButton("Open Shortlist");
             toShortlistBtn.addActionListener(e -> viewManagerModel.setActiveViewName("Shortlist"));
