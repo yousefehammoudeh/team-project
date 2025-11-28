@@ -7,8 +7,10 @@ import entity.Ballot;
 import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
+import use_case.vote.VoteUserDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,8 @@ import java.util.List;
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
+        VoteUserDataAccessInterface,
+        JoinRoomUserDataAccessInterface,
         UpdateRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
@@ -53,18 +57,19 @@ public class RoomDatabase implements
         noteDatabase.saveNote(roomCode, password, note);
     }
 
-    public boolean isHost() throws DataAccessException {
-        // Assumes room is already loaded via createRoom/joinRoom
+    private void checkRoomLoaded() throws DataAccessException {
         if (room == null) {
             throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
         }
+    }
+
+    public boolean isHost() throws DataAccessException {
+        checkRoomLoaded();
         return username.equals(room.getHostId());
     }
 
     public boolean isLocked() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return room.isLocked();
     }
 
@@ -87,16 +92,12 @@ public class RoomDatabase implements
     }
 
     public List<String> getShortlist() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return Collections.unmodifiableList(room.getShortlist());
     }
 
     public List<String> getParticipantIDs() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         List<Participant> participants = room.getParticipants();
         List<String> participantIDs = new ArrayList<>();
         for (Participant p : participants) {
@@ -118,8 +119,7 @@ public class RoomDatabase implements
         boolean added = room.addParticipant(new Participant(username, username));
         if (added) {
             saveRoom();
-        }
-        else {
+        } else {
             // Do not join the room if a user with the same name exists
             room = null;
         }
@@ -127,20 +127,31 @@ public class RoomDatabase implements
     }
 
     public int participantsCount() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
-        }
+        checkRoomLoaded();
         return room.getParticipants().size();
     }
 
-    public List<Ballot> getBallots() throws DataAccessException {
-        if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean saveBallot(Ballot ballot) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        boolean result = room.submitBallot(ballot);
+        if (result) {
+            saveRoom();
         }
+        return result;
+    }
+
+    public List<Ballot> getBallots() throws DataAccessException {
+        checkRoomLoaded();
         return Collections.unmodifiableList(room.getBallots());
     }
 
     public boolean submitBallot(List<String> rankedMovieIds) throws DataAccessException {
+        checkRoomLoaded();
         Ballot ballot = new Ballot(username, rankedMovieIds);
         refreshRoom();
         boolean result = room.submitBallot(ballot);
@@ -152,9 +163,5 @@ public class RoomDatabase implements
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 }
