@@ -11,16 +11,15 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
- * TODO: Host dashboard (shows room code, host token, controls for lock, compute
+ * Host dashboard (shows room code, controls for lock, compute
  * winner, apply filters, etc.).
  */
 public class HostDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
-    private JLabel roomIdLabel;
-    private JTextField searchField;
-    private JButton searchButton;
-    private JButton shortlistButton;
-    private JButton voteButton;
-    private JPanel participantsPanel;
+    private final JLabel roomIdLabel;
+    private final JButton searchButton;
+    private final JButton shortlistButton;
+    private final JButton voteButton;
+    private final JPanel participantsPanel;
     private ViewManagerModel viewManagerModel;
 
     public HostDashboardView() {
@@ -35,7 +34,7 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
 
         // Search Bar
         final JPanel searchPanel = new JPanel();
-        searchField = new JTextField(20);
+        JTextField searchField = new JTextField(20);
         searchButton = new JButton("\uD83D\uDD0D");
         searchButton.addActionListener(this);
         searchPanel.add(searchField);

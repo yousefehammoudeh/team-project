@@ -1,17 +1,25 @@
 package interface_adapter.create_room;
 
 import use_case.create_room.CreateRoomInputBoundary;
+import use_case.create_room.CreateRoomInputData;
 
 /**
- * TODO: Accepts UI input to create a room and delegates to interactor.
+ * Accepts UI input to create a room and delegates to interactor.
  */
 public class CreateRoomController {
     @SuppressWarnings("unused")
     private final CreateRoomInputBoundary interactor;
 
     public CreateRoomController(CreateRoomInputBoundary interactor) {
-        this.interactor = interactor; // TODO: Add null checks if needed
+        this.interactor = interactor;
     }
 
-    // TODO: Method to trigger room creation (e.g., createRoom())
+    public void execute(String hostName) {
+        if (hostName == null || hostName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Host name cannot be null or empty");
+        }
+
+        final CreateRoomInputData inputData = new CreateRoomInputData(hostName.trim());
+        interactor.execute(inputData);
+    }
 }
