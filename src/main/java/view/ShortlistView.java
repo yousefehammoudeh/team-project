@@ -30,6 +30,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
     private UpdateRoomController updateRoomController;
 
     private final JPanel shortlistPanel;
+    @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
     public ShortlistView(ViewManagerModel viewManagerModel, ShortlistViewModel shortlistViewModel) {
