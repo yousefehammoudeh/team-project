@@ -9,9 +9,7 @@ import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
 import entity.Participant;
-
 import java.util.*;
-import entity.Participant;
 import static data_access.HTTPCode.CONFLICT_ERROR;
 import static data_access.HTTPCode.NOT_FOUND_ERROR;
 
@@ -25,9 +23,8 @@ import static data_access.HTTPCode.NOT_FOUND_ERROR;
 public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
-<<<<<<< HEAD
         VoteUserDataAccessInterface,
-    JoinRoomUserDataAccessInterface {
+        JoinRoomUserDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;
@@ -41,11 +38,6 @@ public class InMemoryRoomDataAccessObject implements
     public InMemoryRoomDataAccessObject() {
         this("", new HashMap<>());
     }
-=======
-        VoteUserDataAccessInterface
-         {
-        private final Room room = new Room("c4a760", "");
->>>>>>> 19e83f2 (S02 use case - fixed the interactor to match room database)
 
     private void checkRoomLoaded() throws DataAccessException {
         if (room == null) {
@@ -114,12 +106,19 @@ public class InMemoryRoomDataAccessObject implements
         return room.getParticipants().size();
     }
 
+    // Support vote demo/tests without changing production interfaces
+    public boolean addParticipant(String id, String name) {
+        if (room == null) {
+            room = new Room("demo", "");
+        }
+        return room.addParticipant(new Participant(id, name));
+    }
+
     public boolean saveBallot(Ballot ballot) throws DataAccessException {
         checkRoomLoaded();
         return room.submitBallot(ballot);
     }
 
-<<<<<<< HEAD
     public List<Ballot> getBallots() throws DataAccessException {
         checkRoomLoaded();
         return Collections.unmodifiableList(room.getBallots());
@@ -131,35 +130,5 @@ public class InMemoryRoomDataAccessObject implements
 
     public void setUsername(String username) {
         this.username = username;
-=======
-    /**
-     * Test / composition helper: add a participant to the room. Returns true
-     * if successfully added. This lets tests set the host.
-     */
-    public boolean addParticipant(String id, String name) {
-        return room.addParticipant(new Participant(id, name));
-    }
-
-    public boolean addParticipant(String name) {
-        return room.addParticipant(new Participant(name));
-    }
-
-    public void removeParticipant(String name) {
-        room.removeParticipant(new Participant(name));
-    }
-
-    public boolean joinRoom(String roomCode) {
-        return room.getCode().equals(roomCode);
-    }
-
-    public List<String> getParticipantIDs() {
-        List<Participant> p = room.getParticipants();
-        List<String> pID = new ArrayList<>();
-        for (Participant participant : p) {
-            pID.add(participant.getName());
-        }
-
-        return pID;
->>>>>>> 19e83f2 (S02 use case - fixed the interactor to match room database)
     }
 }

@@ -5,8 +5,6 @@ import interface_adapter.shortlist.AddMovieController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MovieResultPanel extends JPanel {
 
@@ -31,12 +29,12 @@ public class MovieResultPanel extends JPanel {
         textPanel.add(titleLabel);
 
         // description
-//        JTextArea descriptionLabel = new JTextArea(description);
-//        descriptionLabel.setLineWrap(true);
-//        descriptionLabel.setWrapStyleWord(true);
-//        descriptionLabel.setEditable(false);
-//        descriptionLabel.setOpaque(false);
-//        textPanel.add(descriptionLabel);
+        // JTextArea descriptionLabel = new JTextArea(description);
+        // descriptionLabel.setLineWrap(true);
+        // descriptionLabel.setWrapStyleWord(true);
+        // descriptionLabel.setEditable(false);
+        // descriptionLabel.setOpaque(false);
+        // textPanel.add(descriptionLabel);
 
         // add button
         final JButton addButton = new JButton("Add");
@@ -58,4 +56,3 @@ public class MovieResultPanel extends JPanel {
         this.addMovieController = controller;
     }
 }
-

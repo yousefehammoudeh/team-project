@@ -2,7 +2,6 @@ package use_case.search;
 
 import entity.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -8,7 +8,6 @@ import interface_adapter.search.SearchViewModel;
 import interface_adapter.search.SearchState;
 import interface_adapter.shortlist.AddMovieController;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.swing.*;
@@ -17,27 +16,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URL;
 
 /**
  * TODO: Search view (search field, results list, details panel).
  */
 public class SearchView extends JPanel implements ActionListener, PropertyChangeListener {
 
+    @SuppressWarnings("unused")
     private final String viewName = "Search View";
     private final SearchViewModel searchViewModel;
+    @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
     private final JLabel roomId;
     private final JButton shortList;
 
     private final JTextField searchInputField = new JTextField(15);
+    @SuppressWarnings("unused")
     private final JLabel searchErrorField = new JLabel();
 
     private final JButton searchButton;
     private SearchController searchController;
 
+    @SuppressWarnings("unused")
     private final DefaultListModel<String> movieListModel = new DefaultListModel<>();
+    @SuppressWarnings("unused")
     private String selectedMovieID;
     private JPanel searchListPanel;
 
@@ -65,8 +68,7 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
                     public void actionPerformed(ActionEvent evt) {
                         searchController.switchToShortlistView();
                     }
-                }
-        );
+                });
 
         // the search bar
         final JPanel searchComponents = new JPanel();
@@ -94,7 +96,6 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
             // Execute the search
             this.searchController.execute(currentState.getQuery());
         });
-
 
         // the movie list display
         searchListPanel = new JPanel();
@@ -126,10 +127,12 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
     public void propertyChange(PropertyChangeEvent evt) {
         SearchState state = (SearchState) evt.getNewValue();
 
-        if (state == null) return;
+        if (state == null)
+            return;
 
         List<Movie> movies = state.getMovies();
-        if (movies == null) return;
+        if (movies == null)
+            return;
 
         searchListPanel.removeAll();
 
@@ -140,9 +143,10 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
             if (posterPath != null && !posterPath.isBlank()) {
                 try {
                     String cleaned = posterPath.startsWith("/") ? posterPath : "/" + posterPath;
-                    URL url = new URL("https://image.tmdb.org/t/p/w200" + cleaned);
-                    icon = new ImageIcon(url);
-                } catch (Exception ignored) {}
+                    java.net.URI uri = java.net.URI.create("https://image.tmdb.org/t/p/w200" + cleaned);
+                    icon = new ImageIcon(uri.toURL());
+                } catch (Exception ignored) {
+                }
             }
 
             MovieResultPanel block = new MovieResultPanel(icon, movie);
@@ -157,7 +161,6 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         searchListPanel.revalidate();
         searchListPanel.repaint();
     }
-
 
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;

@@ -1,8 +1,5 @@
 package view;
 
-import interface_adapter.join_room.JoinRoomController;
-import interface_adapter.join_room.JoinRoomState;
-import interface_adapter.join_room.JoinRoomViewModel;
 import interface_adapter.joined_room.JoinedRoomController;
 import interface_adapter.joined_room.JoinedRoomState;
 import interface_adapter.joined_room.JoinedRoomViewModel;
@@ -15,13 +12,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-
 public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
     private JLabel roomIdLabel;
     private JLabel roomTitle;
     private JPanel participantsPanel;
     private final JButton toExit;
     private JoinedRoomController joinedRoomController = null;
+    @SuppressWarnings("unused")
     private final JoinedRoomViewModel joinedRoomViewModel;
 
     public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
@@ -52,12 +49,11 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
         buttons.add(toExit);
         add(buttons);
 
-
         toExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(toExit)) {
                     final JoinedRoomState currentState = joinedRoomViewModel.getState();
-                    joinedRoomController.execute(currentState.getRoomcode()); //need to get the current user
+                    joinedRoomController.execute(currentState.getRoomcode()); // need to get the current user
                 }
             }
         });
@@ -81,7 +77,8 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: Dispatch actions to appropriate controllers (lock, compute winner, apply filters)
+        // TODO: Dispatch actions to appropriate controllers (lock, compute winner,
+        // apply filters)
     }
 
     @Override

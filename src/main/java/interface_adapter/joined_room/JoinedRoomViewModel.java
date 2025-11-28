@@ -1,7 +1,6 @@
 package interface_adapter.joined_room;
 
 import interface_adapter.ViewModel;
-import interface_adapter.joined_room.JoinedRoomState;
 
 public class JoinedRoomViewModel extends ViewModel<JoinedRoomState> {
     private final String viewName = "Joined Room";
