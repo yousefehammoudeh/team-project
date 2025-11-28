@@ -68,7 +68,6 @@ public class RoomDatabase implements
         return username.equals(room.getHostId());
     }
 
-
     public boolean isLocked() throws DataAccessException {
         checkRoomLoaded();
         return room.isLocked();
@@ -120,8 +119,7 @@ public class RoomDatabase implements
         boolean added = room.addParticipant(new Participant(username, username));
         if (added) {
             saveRoom();
-        }
-        else {
+        } else {
             // Do not join the room if a user with the same name exists
             room = null;
         }
@@ -131,6 +129,10 @@ public class RoomDatabase implements
     public int participantsCount() throws DataAccessException {
         checkRoomLoaded();
         return room.getParticipants().size();
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public boolean saveBallot(Ballot ballot) throws DataAccessException {
@@ -161,9 +163,5 @@ public class RoomDatabase implements
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 }

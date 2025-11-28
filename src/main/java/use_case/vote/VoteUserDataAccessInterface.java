@@ -22,7 +22,7 @@ public interface VoteUserDataAccessInterface {
     List<String> getShortlist() throws DataAccessException;
 
     /** Return number of participants in the room. Used to show expected ballots. */
-    int participantCount();
+    int participantsCount() throws DataAccessException;
 
     /**
      * Check whether the given participantId is the host (used for privileged ops).

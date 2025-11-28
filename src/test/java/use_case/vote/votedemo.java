@@ -18,6 +18,13 @@ public class votedemo {
         java.util.List<String> movieIds = new java.util.ArrayList<>();
         java.util.List<String> posterUrls = new java.util.ArrayList<>();
 
+        try {
+            dao.createRoom("demoRoom");
+        } catch (Exception ex) {
+            System.err.println("Failed to create room: " + ex.getMessage());
+            return;
+        }
+
         String apiKey = System.getenv("TMDB_API_KEY");
         if (apiKey != null && !apiKey.isBlank()) {
             try {
@@ -42,24 +49,28 @@ public class votedemo {
             } catch (Exception ex) {
                 System.err.println("Failed to fetch movies from TMDB: " + ex.getMessage());
                 // Fallback to placeholders
+                try {
+                    movieIds.addAll(Arrays.asList("A", "B", "C"));
+                    posterUrls.addAll(Arrays.asList("", "", ""));
+                    dao.addMovie("A");
+                    dao.addMovie("B");
+                    dao.addMovie("C");
+                } catch (Exception e) {
+                    System.err.println("Failed to add fallback movies: " + e.getMessage());
+                }
+            }
+        } else {
+            System.err.println("TMDB_API_KEY not set - using placeholder data");
+            try {
                 movieIds.addAll(Arrays.asList("A", "B", "C"));
                 posterUrls.addAll(Arrays.asList("", "", ""));
                 dao.addMovie("A");
                 dao.addMovie("B");
                 dao.addMovie("C");
+            } catch (Exception e) {
+                System.err.println("Failed to add placeholder movies: " + e.getMessage());
             }
-        } else {
-            System.err.println("TMDB_API_KEY not set - using placeholder data");
-            movieIds.addAll(Arrays.asList("A", "B", "C"));
-            posterUrls.addAll(Arrays.asList("", "", ""));
-            dao.addMovie("A");
-            dao.addMovie("B");
-            dao.addMovie("C");
         }
-
-        // Populate demo participants
-        dao.addParticipant("p1", "Alice");
-        dao.addParticipant("p2", "Bob");
 
         // Use-case layer
         VoteViewModel voteVM = new VoteViewModel();
