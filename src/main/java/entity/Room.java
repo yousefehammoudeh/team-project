@@ -30,7 +30,6 @@ public class Room {
         this.participants = participants;
         this.shortlist = shortlist;
         this.ballots = ballots;
-        this.hostId = hostId;
     }
 
     public String getCode() {
@@ -146,4 +145,5 @@ public class Room {
     public void setLocked(boolean locked) {
         this.locked = locked;
     }
+
 }

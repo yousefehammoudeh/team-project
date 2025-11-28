@@ -1,8 +1,5 @@
 package interface_adapter.joined_room;
 
-import entity.Participant;
-import entity.Room;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +8,14 @@ public class JoinedRoomState {
     private String roomcode = "";
     private String currentUser = "";
 
-
     public JoinedRoomState(JoinedRoomState copy) {
         participants = copy.participants;
         roomcode = copy.roomcode;
         currentUser = copy.currentUser;
     }
 
-    public JoinedRoomState() {}
+    public JoinedRoomState() {
+    }
 
     public List<String> getParticipants() {
         return participants;
@@ -36,9 +33,12 @@ public class JoinedRoomState {
         return this.roomcode;
     }
 
-    public void setCurrentUser(String currentUser) { this.currentUser = currentUser;}
+    public void setCurrentUser(String currentUser) {
+        this.currentUser = currentUser;
+    }
 
-    public String getCurrentUser() { return this.currentUser;}
-
+    public String getCurrentUser() {
+        return this.currentUser;
+    }
 
 }

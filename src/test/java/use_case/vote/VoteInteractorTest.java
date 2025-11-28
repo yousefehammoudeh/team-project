@@ -30,9 +30,14 @@ public class VoteInteractorTest {
 
     @Test
     public void submitValidBallot_savesAndReportsCount() {
-        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject();
-        dao.addMovie("m1");
-        dao.addMovie("m2");
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("testUser", new HashMap<>());
+        try {
+            dao.createRoom("testRoom");
+            dao.addMovie("m1");
+            dao.addMovie("m2");
+        } catch (Exception e) {
+            fail("Setup failed: " + e.getMessage());
+        }
 
         TestPresenter presenter = new TestPresenter();
         VoteInteractor interactor = new VoteInteractor(dao, presenter);
@@ -40,15 +45,24 @@ public class VoteInteractorTest {
         VoteInputData input = new VoteInputData("p1", Arrays.asList("m2", "m1"));
         interactor.submitBallot(input);
 
-        List<Ballot> ballots = dao.getBallots();
-        assertEquals(1, ballots.size(), "Ballot should be saved in DAO");
+        try {
+            List<Ballot> ballots = dao.getBallots();
+            assertEquals(1, ballots.size(), "Ballot should be saved in DAO");
+        } catch (Exception e) {
+            fail("Failed to get ballots: " + e.getMessage());
+        }
         assertNotNull(presenter.lastOutput, "Presenter should receive output update");
         assertEquals(1, presenter.lastOutput.getBallotsReceivedCount());
     }
 
     @Test
     public void submitInvalidBallot_isRejected() {
-        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject();
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("testUser", new HashMap<>());
+        try {
+            dao.createRoom("testRoom");
+        } catch (Exception e) {
+            fail("Setup failed: " + e.getMessage());
+        }
         // no movies in shortlist
 
         TestPresenter presenter = new TestPresenter();
@@ -57,18 +71,27 @@ public class VoteInteractorTest {
         VoteInputData input = new VoteInputData("p1", Arrays.asList("nonexistent"));
         interactor.submitBallot(input);
 
-        List<Ballot> ballots = dao.getBallots();
-        assertEquals(0, ballots.size(), "Invalid ballot should not be saved");
+        try {
+            List<Ballot> ballots = dao.getBallots();
+            assertEquals(0, ballots.size(), "Invalid ballot should not be saved");
+        } catch (Exception e) {
+            fail("Failed to get ballots: " + e.getMessage());
+        }
         assertNotNull(presenter.lastFailure, "Presenter should receive failure");
     }
 
     @Test
     public void computeWinner_bordaCountsAndTieBreaksByShortlistOrder() {
-        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject();
-        // shortlist order: A, B, C
-        dao.addMovie("A");
-        dao.addMovie("B");
-        dao.addMovie("C");
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("p1", new HashMap<>());
+        try {
+            dao.createRoom("testRoom");
+            // shortlist order: A, B, C
+            dao.addMovie("A");
+            dao.addMovie("B");
+            dao.addMovie("C");
+        } catch (Exception e) {
+            fail("Setup failed: " + e.getMessage());
+        }
 
         TestPresenter presenter = new TestPresenter();
         VoteInteractor interactor = new VoteInteractor(dao, presenter);
@@ -80,10 +103,7 @@ public class VoteInteractorTest {
         // p2: B > A > C (B:3, A:2, C:1) -> totals A:5, B:5, C:2 -> tie A/B -> A earlier
         interactor.submitBallot(new VoteInputData("p2", Arrays.asList("B", "A", "C")));
 
-        // Ensure participants exist and host is p1
-        dao.addParticipant("p1", "P1");
-        dao.addParticipant("p2", "P2");
-
+        // Host is p1 (the user who created the room)
         interactor.computeWinner("p1");
 
         assertNotNull(presenter.lastOutput, "Presenter should receive final output");

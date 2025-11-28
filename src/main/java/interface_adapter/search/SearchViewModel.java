@@ -6,6 +6,21 @@ import interface_adapter.ViewModel;
  * TODO: ViewModel wrapper for SearchState.
  */
 public class SearchViewModel extends ViewModel<SearchState> {
-    // TODO: Initialize default state and helper methods
+
+    public SearchViewModel() {
+        super("search");
+        this.state = new SearchState();
+    }
+
+    @Override
+    public SearchState getState() {
+        return this.state;
+    }
+
+    @Override
+    public void setState(SearchState state) {
+        this.state = state;
+        firePropertyChanged();      // notify views
+    }
 }
 

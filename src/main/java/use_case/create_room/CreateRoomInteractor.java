@@ -1,57 +1,62 @@
 package use_case.create_room;
 
-import entity.Room;
-
-import java.util.UUID;
+import data_access.note_database.DataAccessException;
+import static data_access.HTTPCode.CONFLICT_ERROR;
 
 /**
  * Implements create room use case.
- * - Generate room code + host token
+ * - Generate room code
  * - Persist room
  * - Return dashboard initial state
  */
 public class CreateRoomInteractor implements CreateRoomInputBoundary {
-    // Implement execute(CreateRoomInputData inputData)
-    private final CreateRoomUserDataAccessInterface roomGateway;
+    private final CreateRoomUserDataAccessInterface roomDataAccess;
     private final CreateRoomOutputBoundary presenter;
 
-    public CreateRoomInteractor(CreateRoomUserDataAccessInterface roomGateway,
+    public CreateRoomInteractor(CreateRoomUserDataAccessInterface roomDataAccess,
             CreateRoomOutputBoundary presenter) {
-        this.roomGateway = roomGateway;
+        this.roomDataAccess = roomDataAccess;
         this.presenter = presenter;
     }
 
     public void execute(CreateRoomInputData createRoomInputData) {
         final String hostName = createRoomInputData.getHostName();
-        final String hostId = createRoomInputData.getHostId();
-        final String roomCode = generateUniqueRoomCode();
-        final String hostToken = generateToken();
 
-        // TODO: Host cant create 2 rooms at the same time
+        // Currently not used beyond identity fetch; retained for future use-case rules.
+        @SuppressWarnings("unused")
+        final String hostId = roomDataAccess.getUsername();
 
-        final Room room = new Room(roomCode, hostId);
+        try {
+            String roomCode;
+            while (true) {
+                roomCode = generateUniqueRoomCode();
+                try {
+                    roomDataAccess.createRoom(roomCode);
+                    break; // success
+                } catch (DataAccessException e) {
+                    if (e.getCode() == CONFLICT_ERROR) {
+                        // collision on code; try again
+                        continue;
+                    }
+                    throw e;
+                }
+            }
 
-        if (roomGateway.verifyRoomUniquenessPerUser(hostId)) {
-            presenter.presentFailure("The Host already created a room.");
-        } else {
-            roomGateway.save(room);
-            roomGateway.setCurrentRoom(roomCode);
-
-            CreateRoomOutputData output = new CreateRoomOutputData(hostName, hostId, roomCode, hostToken);
-
+            CreateRoomOutputData output = new CreateRoomOutputData(hostName, roomCode);
             presenter.present(output);
+
+        } catch (DataAccessException e) {
+            presenter.presentFailure("Error creating room: " + e.getMessage());
         }
     }
 
-    private String generateUniqueRoomCode() {
-        String code;
-        do {
-            code = UUID.randomUUID().toString().replace("-", "").substring(0, 6);
-        } while (roomGateway.existsByRoomCode(code));
-        return code;
-    }
-
-    private String generateToken() {
-        return UUID.randomUUID().toString();
+    private static String generateUniqueRoomCode() {
+        final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        final java.util.Random random = new java.util.Random();
+        final StringBuilder code = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            code.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return code.toString();
     }
 }

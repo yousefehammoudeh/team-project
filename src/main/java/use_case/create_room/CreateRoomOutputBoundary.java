@@ -1,10 +1,10 @@
 package use_case.create_room;
 
 /**
- * TODO: Presenter API for create room success/failure.
+ * Presenter API for create room success/failure.
  */
 public interface CreateRoomOutputBoundary {
-    void present(CreateRoomOutputData outputData); // TODO: refine
+    void present(CreateRoomOutputData outputData);
 
     void presentFailure(String message);
 }

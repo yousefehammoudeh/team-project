@@ -7,7 +7,9 @@ import entity.Ballot;
 import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
@@ -19,9 +21,11 @@ import java.util.List;
 public class RoomDatabase implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
+        CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        UpdateRoomDataAccessInterface {
+        UpdateRoomDataAccessInterface,
+        JoinedRoomUserDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
@@ -133,6 +137,10 @@ public class RoomDatabase implements
         return room.getParticipants().size();
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public boolean saveBallot(Ballot ballot) throws DataAccessException {
         checkRoomLoaded();
         refreshRoom();
@@ -163,7 +171,14 @@ public class RoomDatabase implements
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    /**
+     * TODO: Properly implement leaveRoom with:
+     * - Load current room
+     * - Remove participant matching username
+     * - Save updated room
+     */
+    public void leaveRoom(String roomCode) {
+        throw new UnsupportedOperationException("leaveRoom not yet implemented");
     }
+
 }
