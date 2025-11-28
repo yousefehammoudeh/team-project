@@ -10,6 +10,7 @@ import interface_adapter.join_room.JoinRoomController;
 import interface_adapter.join_room.JoinRoomPresenter;
 import interface_adapter.join_room.JoinRoomViewModel;
 import interface_adapter.joined_room.JoinedRoomViewModel;
+import interface_adapter.host_dashboard.HostDashboardViewModel;
 import use_case.create_room.CreateRoomInputBoundary;
 import use_case.create_room.CreateRoomInteractor;
 import use_case.join_room.JoinRoomInputBoundary;
@@ -29,15 +30,16 @@ import view.WelcomeView;
 import view.HostDashboardView;
 import view.ParticipantsDashboardView;
 import view.ViewManager;
+import interface_adapter.search.*;
+import use_case.search.*;
+import data_access.tmdb.TmdbMovieGateway;
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * TODO: Compose application wiring.
- * - Instantiate ViewManagerModel and all ViewModels
- * - Build use case interactors with data-access and presenters
- * - Build controllers and views
- * - Register views to ViewManager and set initial active view
+ * Composes application wiring: view models, interactors, presenters,
+ * controllers,
+ * and Swing views registered in a CardLayout with an initial Welcome view.
  */
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -49,6 +51,9 @@ public class AppBuilder {
     private ShortlistView shortlistView;
     private ShortlistViewModel shortlistViewModel;
     private ShortlistPresenter shortlistPresenter;
+    private HostDashboardViewModel hostDashboardViewModel;
+    private interface_adapter.shortlist.AddMovieController addMovieController;
+    private view.SearchView searchView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -61,11 +66,13 @@ public class AppBuilder {
         cardPanel.add(welcomeView, ViewManagerModel.WELCOME_VIEW);
 
         // Host dashboard
-        final HostDashboardView hostDashboardView = new HostDashboardView();
+        this.hostDashboardViewModel = new HostDashboardViewModel();
+        final HostDashboardView hostDashboardView = new HostDashboardView(hostDashboardViewModel);
         hostDashboardView.setViewManagerModel(viewManagerModel);
         cardPanel.add(hostDashboardView, ViewManagerModel.HOST_DASHBOARD_VIEW);
 
-        // Participants dashboard (registered under joined-room view name for presenter routing)
+        // Participants dashboard (registered under joined-room view name for presenter
+        // routing)
         final JoinedRoomViewModel joinedRoomViewModel = new JoinedRoomViewModel();
         final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(joinedRoomViewModel);
         cardPanel.add(participantsDashboardView, joinedRoomViewModel.getViewName());
@@ -76,18 +83,22 @@ public class AppBuilder {
     public AppBuilder addJoinAndCreateFlows() {
         // Create Room flow
         final CreateRoomViewModel createRoomViewModel = new CreateRoomViewModel();
-        final CreateRoomPresenter createRoomPresenter = new CreateRoomPresenter(createRoomViewModel, viewManagerModel);
-        final CreateRoomInputBoundary createRoomInteractor = new CreateRoomInteractor(userDataAccessObject, createRoomPresenter);
+        final CreateRoomPresenter createRoomPresenter = new CreateRoomPresenter(createRoomViewModel,
+                hostDashboardViewModel, viewManagerModel);
+        final CreateRoomInputBoundary createRoomInteractor = new CreateRoomInteractor(userDataAccessObject,
+                createRoomPresenter);
         final CreateRoomController createRoomController = new CreateRoomController(createRoomInteractor);
-        final CreateRoomView createRoomView = new CreateRoomView(createRoomViewModel, viewManagerModel);
+        final CreateRoomView createRoomView = new CreateRoomView(createRoomViewModel);
         createRoomView.setController(createRoomController);
         cardPanel.add(createRoomView, createRoomView.getViewName());
 
         // Join Room flow
         final JoinRoomViewModel joinRoomViewModel = new JoinRoomViewModel();
         final JoinedRoomViewModel joinedRoomViewModel = new JoinedRoomViewModel();
-        final JoinRoomPresenter joinRoomPresenter = new JoinRoomPresenter(joinRoomViewModel, joinedRoomViewModel, createRoomViewModel, viewManagerModel);
-        final JoinRoomInputBoundary joinRoomInteractor = new JoinRoomInteractor(userDataAccessObject, joinRoomPresenter);
+        final JoinRoomPresenter joinRoomPresenter = new JoinRoomPresenter(joinRoomViewModel, joinedRoomViewModel,
+                createRoomViewModel, viewManagerModel);
+        final JoinRoomInputBoundary joinRoomInteractor = new JoinRoomInteractor(userDataAccessObject,
+                joinRoomPresenter);
         final JoinRoomController joinRoomController = new JoinRoomController(joinRoomInteractor);
         final JoinRoomView joinRoomView = new JoinRoomView(joinRoomViewModel);
         joinRoomView.setJoinRoomController(joinRoomController);
@@ -107,10 +118,14 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        final AddMovieInputBoundary addMovieInputBoundary =
-                new AddMovieInteractor(userDataAccessObject, shortlistPresenter);
-        final AddMovieController addMovieController = new AddMovieController(addMovieInputBoundary);
-        shortlistView.setAddMovieController(addMovieController);
+        final AddMovieInputBoundary addMovieInputBoundary = new AddMovieInteractor(userDataAccessObject,
+            shortlistPresenter);
+        this.addMovieController = new AddMovieController(addMovieInputBoundary);
+        shortlistView.setAddMovieController(this.addMovieController);
+        // If search view already exists, inject the same controller so "Add" from search works
+        if (this.searchView != null) {
+            this.searchView.setAddMovieController(this.addMovieController);
+        }
         return this;
     }
 
@@ -133,6 +148,30 @@ public class AppBuilder {
             new UpdateRoomInteractor(userDataAccessObject, shortlistPresenter);
         UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
         shortlistView.setUpdateRoomController(updateRoomController);
+        return this;
+    }
+
+    public AppBuilder addSearchUseCase() {
+        // Create Search ViewModel and Presenter
+        final SearchViewModel searchViewModel = new SearchViewModel();
+        final SearchPresenter searchPresenter = new SearchPresenter(searchViewModel, viewManagerModel);
+
+        // Gateway for TMDB-backed search
+        final SearchUserDataAccessInterface gateway = new TmdbMovieGateway();
+
+        // Interactor and Controller
+        final SearchInputBoundary searchInteractor = new SearchInteractor(gateway, searchPresenter);
+        final SearchController searchController = new SearchController(searchInteractor);
+
+        // View
+        this.searchView = new view.SearchView(searchViewModel);
+        this.searchView.setSearchController(searchController);
+        // Inject AddMovieController if available so "Add" buttons work from search
+        // results
+        if (this.addMovieController != null) {
+            this.searchView.setAddMovieController(this.addMovieController);
+        }
+        cardPanel.add(this.searchView, ViewManagerModel.SEARCH_VIEW);
         return this;
     }
 

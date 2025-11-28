@@ -8,7 +8,6 @@ import java.beans.PropertyChangeSupport;
  */
 public class ViewModel<T> {
     protected final PropertyChangeSupport support = new PropertyChangeSupport(this);
-    @SuppressWarnings("unused")
     private final String name;
     protected T state;
 
@@ -18,6 +17,10 @@ public class ViewModel<T> {
 
     protected ViewModel(String name) {
         this.name = name;
+    }
+
+    public String getViewName() {
+        return this.name;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

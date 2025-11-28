@@ -10,12 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Random;
 
 /**
- * TODO: Shortlist view (add/remove candidates, lock if host).
+ * Shortlist view: add/remove candidates, lock if host.
  */
-public class ShortlistView extends JPanel implements ActionListener, PropertyChangeListener {
+public class ShortlistView extends JPanel implements PropertyChangeListener {
     private final static int UPDATE_INTERVAL = 5;
 
     private final String viewName = "Shortlist";
@@ -73,6 +72,16 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
                 toggleLockRoomController.execute();
             }
         });
+
+        shortlist.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedMovieID = shortlist.getSelectedValue();
+            }
+        });
+
+        // Add movies from SearchView via AddMovieController; no demo add button
+        // Vote button to proceed to voting view
         shortlistPanel.add(lockButton);
 
         final JButton voteButton = new JButton("Vote");
@@ -80,9 +89,8 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (viewManagerModel != null) {
-                    viewManagerModel.setActiveViewName("Vote");
-                }
-                else {
+                    viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
+                } else {
                     JOptionPane.showMessageDialog(null, "Proceed to vote (scaffold)");
                 }
             }
@@ -91,12 +99,12 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
         final JButton searchButton = new JButton("Search");
         voteButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (viewManagerModel != null) {
                     viewManagerModel.setActiveViewName("Search View");
-                }
-                else {
+                } else {
                     JOptionPane.showMessageDialog(null, "Proceed to search (scaffold)");
                 }
             }
@@ -105,6 +113,8 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
         lockedText.setText("Not Locked");
         shortlistPanel.add(lockedText);
+
+        // TODO: code above for demo and test only.
 
         this.add(shortlistPanel);
 
@@ -115,26 +125,23 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
                         updateRoomController.execute();
                     }
                     Thread.sleep(UPDATE_INTERVAL * 1000);
-                } catch (InterruptedException e) {
+                } catch (
+
+                InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }).start();
 
-//        final Random random = new Random();
-//        final JButton addButton = new JButton("Add");
-//        addButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                addMovieController.execute(Integer.toString(random.nextInt(100)));
-//            }
-//        });
-//        shortlistPanel.add(addButton);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Handle add/remove/lock actions
+        // final Random random = new Random();
+        // final JButton addButton = new JButton("Add");
+        // addButton.addActionListener(new ActionListener() {
+        // @Override
+        // public void actionPerformed(ActionEvent e) {
+        // addMovieController.execute(Integer.toString(random.nextInt(100)));
+        // }
+        // });
+        // shortlistPanel.add(addButton);
     }
 
     @Override
@@ -142,8 +149,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
         final ShortlistState state = (ShortlistState) evt.getNewValue();
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(null, state.getError());
-        }
-        else {
+        } else {
             String selectedID = shortlist.getSelectedValue();
             movieListModel.clear();
             movieListModel.addAll(state.getShortlist());
@@ -151,8 +157,7 @@ public class ShortlistView extends JPanel implements ActionListener, PropertyCha
 
             if (state.isLocked()) {
                 lockedText.setText("Locked");
-            }
-            else {
+            } else {
                 lockedText.setText("Not Locked");
             }
         }

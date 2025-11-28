@@ -2,13 +2,10 @@ package interface_adapter.search;
 
 import interface_adapter.ViewModel;
 
-/**
- * TODO: ViewModel wrapper for SearchState.
- */
 public class SearchViewModel extends ViewModel<SearchState> {
 
     public SearchViewModel() {
-        super("search");
+        super("Search");
         this.state = new SearchState();
     }
 
@@ -20,7 +17,8 @@ public class SearchViewModel extends ViewModel<SearchState> {
     @Override
     public void setState(SearchState state) {
         this.state = state;
-        firePropertyChanged();      // notify views
+        firePropertyChanged(); // notify views
     }
-}
 
+    // Uses base getViewName()
+}

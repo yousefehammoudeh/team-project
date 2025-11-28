@@ -60,7 +60,6 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update UI based on ViewModel changes
         final JoinedRoomState state = (JoinedRoomState) evt.getNewValue();
         setRoomId(state.getRoomcode());
         updateParticipants(state.getParticipants());
