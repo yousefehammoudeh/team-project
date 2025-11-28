@@ -7,18 +7,18 @@ import use_case.search.SearchInputData;
  * TODO: Accepts search queries and delegates to interactor.
  */
 public class SearchController {
-    private final SearchInputBoundary searchInteractor;
+    private final SearchInputBoundary searchInputBoundary;
 
-    public SearchController(SearchInputBoundary searchInteractor) {
-        this.searchInteractor = searchInteractor;
+    public SearchController(SearchInputBoundary searchInputBoundary) {
+        this.searchInputBoundary = searchInputBoundary;
     }
 
     public void execute(String movieTitle) {
         final SearchInputData searchMovieInputData = new SearchInputData(movieTitle);
-        searchInteractor.execute(searchMovieInputData);
+        searchInputBoundary.execute(searchMovieInputData);
     }
 
     public void switchToShortlistView() {
-        searchInteractor.switchToShortlistView();
+        searchInputBoundary.switchToShortlistView();
     }
 }
