@@ -30,24 +30,13 @@ public class WelcomeView extends JPanel {
         final JButton createRoomButton = new JButton("Create New Room (Host)");
         createRoomButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         createRoomButton.addActionListener(e -> {
-            // TODO: Replace this stub with navigation to CreateRoomView
-            // TODO: CreateRoomView should have form for host name and preferences
-            // TODO: After room creation, navigate to HostDashboard with actual room data
-            JOptionPane.showMessageDialog(this,
-                    "Create Room functionality coming soon!\n\nFor now, navigating to Host Dashboard...");
-            viewManagerModel.setActiveViewName("HostDashboard");
+            viewManagerModel.setActiveViewName("create room");
         });
 
         final JButton joinRoomButton = new JButton("Join Existing Room");
         joinRoomButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         joinRoomButton.addActionListener(e -> {
-            // TODO: Replace this stub with navigation to JoinRoomView
-            // TODO: JoinRoomView should have form for room code and participant name
-            // TODO: After successful join, navigate to ParticipantsDashboard with actual
-            // room data
-            JOptionPane.showMessageDialog(this,
-                    "Join Room functionality coming soon!\n\nFor now, navigating to Participants Dashboard...");
-            viewManagerModel.setActiveViewName("ParticipantsDashboard");
+            viewManagerModel.setActiveViewName("join");
         });
         buttonsPanel.add(createRoomButton);
         buttonsPanel.add(joinRoomButton);
