@@ -3,6 +3,19 @@ package app;
 import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.shortlist.*;
+import interface_adapter.create_room.CreateRoomController;
+import interface_adapter.create_room.CreateRoomPresenter;
+import interface_adapter.create_room.CreateRoomViewModel;
+import interface_adapter.join_room.JoinRoomController;
+import interface_adapter.join_room.JoinRoomPresenter;
+import interface_adapter.join_room.JoinRoomViewModel;
+import interface_adapter.joined_room.JoinedRoomViewModel;
+import use_case.create_room.CreateRoomInputBoundary;
+import use_case.create_room.CreateRoomInteractor;
+import use_case.join_room.JoinRoomInputBoundary;
+import use_case.join_room.JoinRoomInteractor;
+import view.CreateRoomView;
+import view.JoinRoomView;
 import use_case.add_movie.AddMovieInputBoundary;
 import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
@@ -52,9 +65,33 @@ public class AppBuilder {
         hostDashboardView.setViewManagerModel(viewManagerModel);
         cardPanel.add(hostDashboardView, ViewManagerModel.HOST_DASHBOARD_VIEW);
 
-        // Participants dashboard
-        final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(null);
-        cardPanel.add(participantsDashboardView, ViewManagerModel.PARTICIPANTS_DASHBOARD_VIEW);
+        // Participants dashboard (registered under joined-room view name for presenter routing)
+        final JoinedRoomViewModel joinedRoomViewModel = new JoinedRoomViewModel();
+        final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(joinedRoomViewModel);
+        cardPanel.add(participantsDashboardView, joinedRoomViewModel.getViewName());
+
+        return this;
+    }
+
+    public AppBuilder addJoinAndCreateFlows() {
+        // Create Room flow
+        final CreateRoomViewModel createRoomViewModel = new CreateRoomViewModel();
+        final CreateRoomPresenter createRoomPresenter = new CreateRoomPresenter(createRoomViewModel, viewManagerModel);
+        final CreateRoomInputBoundary createRoomInteractor = new CreateRoomInteractor(userDataAccessObject, createRoomPresenter);
+        final CreateRoomController createRoomController = new CreateRoomController(createRoomInteractor);
+        final CreateRoomView createRoomView = new CreateRoomView(createRoomViewModel, viewManagerModel);
+        createRoomView.setController(createRoomController);
+        cardPanel.add(createRoomView, createRoomView.getViewName());
+
+        // Join Room flow
+        final JoinRoomViewModel joinRoomViewModel = new JoinRoomViewModel();
+        final JoinedRoomViewModel joinedRoomViewModel = new JoinedRoomViewModel();
+        final JoinRoomPresenter joinRoomPresenter = new JoinRoomPresenter(joinRoomViewModel, joinedRoomViewModel, createRoomViewModel, viewManagerModel);
+        final JoinRoomInputBoundary joinRoomInteractor = new JoinRoomInteractor(userDataAccessObject, joinRoomPresenter);
+        final JoinRoomController joinRoomController = new JoinRoomController(joinRoomInteractor);
+        final JoinRoomView joinRoomView = new JoinRoomView(joinRoomViewModel);
+        joinRoomView.setJoinRoomController(joinRoomController);
+        cardPanel.add(joinRoomView, joinRoomView.getViewName());
 
         return this;
     }
@@ -93,7 +130,7 @@ public class AppBuilder {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
         UpdateRoomInputBoundary updateRoomInputBoundary =
-                new UpdateRoomInteractor(userDataAccessObject,  shortlistPresenter);
+            new UpdateRoomInteractor(userDataAccessObject, shortlistPresenter);
         UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
         shortlistView.setUpdateRoomController(updateRoomController);
         return this;
