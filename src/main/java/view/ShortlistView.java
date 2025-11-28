@@ -126,36 +126,7 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        // Add movies from SearchView via AddMovieController; no demo add button
-        // Vote button to proceed to voting view
-        shortlistPanel.add(lockButton);
-
-        final JButton voteButton = new JButton("Vote");
-        voteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (viewManagerModel != null) {
-                    viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Proceed to vote (scaffold)");
-                }
-            }
-        });
-        shortlistPanel.add(voteButton);
-
-        final JButton searchButton = new JButton("Search");
-        voteButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (viewManagerModel != null) {
-                    viewManagerModel.setActiveViewName("Search View");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Proceed to search (scaffold)");
-                }
-            }
-        });
-        shortlistPanel.add(voteButton);
+        // Vote button intentionally removed for now during workflow integration
 
         lockedText.setText("Not Locked");
         // Place lock status away from center so it doesn't replace the list
@@ -182,16 +153,6 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
                 }
             }
         }).start();
-
-        // final Random random = new Random();
-        // final JButton addButton = new JButton("Add");
-        // addButton.addActionListener(new ActionListener() {
-        // @Override
-        // public void actionPerformed(ActionEvent e) {
-        // addMovieController.execute(Integer.toString(random.nextInt(100)));
-        // }
-        // });
-        // shortlistPanel.add(addButton);
     }
 
     @Override

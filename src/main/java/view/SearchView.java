@@ -29,6 +29,7 @@ public class SearchView extends JPanel implements PropertyChangeListener {
     private ViewManagerModel viewManagerModel;
 
     private final JButton dashboard;
+    private final JLabel roomId;
     private final JButton shortList;
 
     private final JTextField searchInputField = new JTextField(15);
@@ -128,9 +129,7 @@ public class SearchView extends JPanel implements PropertyChangeListener {
 
     private static final ImageIcon PLACEHOLDER_ICON = new ImageIcon(
             SearchView.class.getClassLoader().getResource("placeholder.png"),
-                    "placeholder.png not found in resources"
-    );
-
+            "placeholder.png not found in resources");
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
