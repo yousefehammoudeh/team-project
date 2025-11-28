@@ -75,7 +75,15 @@ public class RoomDatabase implements
         return room.isLocked();
     }
 
+    public void setLocked(boolean locked) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.setLocked(locked);
+        saveRoom();
+    }
+
     public boolean addMovie(String movieID) throws DataAccessException {
+        checkRoomLoaded();
         refreshRoom();
         boolean result = room.addToShortlist(movieID);
         if (result) {
@@ -85,6 +93,7 @@ public class RoomDatabase implements
     }
 
     public boolean removeMovie(String movieID) throws DataAccessException {
+        checkRoomLoaded();
         refreshRoom();
         boolean result = room.removeFromShortlist(movieID);
         if (result) {
