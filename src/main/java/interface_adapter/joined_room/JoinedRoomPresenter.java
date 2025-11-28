@@ -28,7 +28,6 @@ public class JoinedRoomPresenter implements JoinedRoomOutputBoundary {
 
         // switch to the join room view
         this.viewManagerModel.setActiveViewName(joinRoomViewModel.getViewName());
-        this.viewManagerModel.firePropertyChanged();
     }
 
 }

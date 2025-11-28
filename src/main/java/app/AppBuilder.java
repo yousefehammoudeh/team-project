@@ -30,6 +30,7 @@ import view.WelcomeView;
 import view.HostDashboardView;
 import view.ParticipantsDashboardView;
 import view.ViewManager;
+import view.WinnerView;
 import interface_adapter.search.*;
 import use_case.search.*;
 import data_access.tmdb.TmdbMovieGateway;
@@ -52,8 +53,13 @@ public class AppBuilder {
     private ShortlistViewModel shortlistViewModel;
     private ShortlistPresenter shortlistPresenter;
     private HostDashboardViewModel hostDashboardViewModel;
+    private HostDashboardView hostDashboardView;
     private interface_adapter.shortlist.AddMovieController addMovieController;
     private view.SearchView searchView;
+    private SearchViewModel searchViewModel;
+    private JoinedRoomViewModel sharedJoinedRoomViewModel;
+    private interface_adapter.winner.WinnerViewModel winnerViewModel;
+    private view.WinnerView winnerView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -67,15 +73,22 @@ public class AppBuilder {
 
         // Host dashboard
         this.hostDashboardViewModel = new HostDashboardViewModel();
-        final HostDashboardView hostDashboardView = new HostDashboardView(hostDashboardViewModel);
+        this.hostDashboardView = new HostDashboardView(hostDashboardViewModel);
         hostDashboardView.setViewManagerModel(viewManagerModel);
+        hostDashboardView.setHostRefreshController(new interface_adapter.host_dashboard.HostRefreshController(
+                userDataAccessObject, hostDashboardViewModel));
+        // SearchViewModel will be set later when addSearchUseCase is called
         cardPanel.add(hostDashboardView, ViewManagerModel.HOST_DASHBOARD_VIEW);
 
-        // Participants dashboard (registered under joined-room view name for presenter
-        // routing)
-        final JoinedRoomViewModel joinedRoomViewModel = new JoinedRoomViewModel();
-        final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(joinedRoomViewModel);
-        cardPanel.add(participantsDashboardView, joinedRoomViewModel.getViewName());
+        // Participants dashboard (shared JoinedRoomViewModel)
+        this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
+        final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(
+                sharedJoinedRoomViewModel);
+        participantsDashboardView.setViewManagerModel(viewManagerModel);
+        participantsDashboardView.setParticipantsRefreshController(
+                new interface_adapter.host_dashboard.ParticipantsRefreshController(userDataAccessObject,
+                        sharedJoinedRoomViewModel));
+        cardPanel.add(participantsDashboardView, sharedJoinedRoomViewModel.getViewName());
 
         return this;
     }
@@ -92,10 +105,15 @@ public class AppBuilder {
         createRoomView.setController(createRoomController);
         cardPanel.add(createRoomView, createRoomView.getViewName());
 
+        // Ensure shared JoinedRoomViewModel exists
+        if (this.sharedJoinedRoomViewModel == null) {
+            this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
+        }
+
         // Join Room flow
         final JoinRoomViewModel joinRoomViewModel = new JoinRoomViewModel();
-        final JoinedRoomViewModel joinedRoomViewModel = new JoinedRoomViewModel();
-        final JoinRoomPresenter joinRoomPresenter = new JoinRoomPresenter(joinRoomViewModel, joinedRoomViewModel,
+        final JoinRoomPresenter joinRoomPresenter = new JoinRoomPresenter(joinRoomViewModel,
+                this.sharedJoinedRoomViewModel,
                 createRoomViewModel, viewManagerModel);
         final JoinRoomInputBoundary joinRoomInteractor = new JoinRoomInteractor(userDataAccessObject,
                 joinRoomPresenter);
@@ -119,10 +137,11 @@ public class AppBuilder {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
         final AddMovieInputBoundary addMovieInputBoundary = new AddMovieInteractor(userDataAccessObject,
-            shortlistPresenter);
+                shortlistPresenter);
         this.addMovieController = new AddMovieController(addMovieInputBoundary);
         shortlistView.setAddMovieController(this.addMovieController);
-        // If search view already exists, inject the same controller so "Add" from search works
+        // If search view already exists, inject the same controller so "Add" from
+        // search works
         if (this.searchView != null) {
             this.searchView.setAddMovieController(this.addMovieController);
         }
@@ -133,8 +152,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        final RemoveMovieInputBoundary removeMovieInputBoundary =
-                new RemoveMovieInteractor(userDataAccessObject, shortlistPresenter);
+        final RemoveMovieInputBoundary removeMovieInputBoundary = new RemoveMovieInteractor(userDataAccessObject,
+                shortlistPresenter);
         final RemoveMovieController removeMovieController = new RemoveMovieController(removeMovieInputBoundary);
         shortlistView.setRemoveMovieController(removeMovieController);
         return this;
@@ -144,8 +163,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        UpdateRoomInputBoundary updateRoomInputBoundary =
-            new UpdateRoomInteractor(userDataAccessObject, shortlistPresenter);
+        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(userDataAccessObject,
+                shortlistPresenter);
         UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
         shortlistView.setUpdateRoomController(updateRoomController);
         return this;
@@ -153,7 +172,7 @@ public class AppBuilder {
 
     public AppBuilder addSearchUseCase() {
         // Create Search ViewModel and Presenter
-        final SearchViewModel searchViewModel = new SearchViewModel();
+        this.searchViewModel = new SearchViewModel();
         final SearchPresenter searchPresenter = new SearchPresenter(searchViewModel, viewManagerModel);
 
         // Gateway for TMDB-backed search
@@ -172,6 +191,11 @@ public class AppBuilder {
             this.searchView.setAddMovieController(this.addMovieController);
         }
         cardPanel.add(this.searchView, ViewManagerModel.SEARCH_VIEW);
+
+        // Wire SearchViewModel to HostDashboardView if it exists
+        if (this.hostDashboardView != null) {
+            this.hostDashboardView.setSearchViewModel(searchViewModel);
+        }
         return this;
     }
 
@@ -179,8 +203,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        ToggleLockRoomInputBoundary toggleLockRoomInputBoundary =
-                new ToggleLockRoomInteractor(userDataAccessObject, shortlistPresenter);
+        ToggleLockRoomInputBoundary toggleLockRoomInputBoundary = new ToggleLockRoomInteractor(userDataAccessObject,
+                shortlistPresenter);
         ToggleLockRoomController toggleLockRoomController = new ToggleLockRoomController(toggleLockRoomInputBoundary);
         shortlistView.setToggleLockRoomController(toggleLockRoomController);
         return this;
@@ -190,6 +214,17 @@ public class AppBuilder {
         final JFrame application = new JFrame("ReelRound");
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.add(cardPanel);
+        // Winner view registration with presenter/controller
+        this.winnerViewModel = new interface_adapter.winner.WinnerViewModel();
+        this.winnerView = new WinnerView();
+        final interface_adapter.winner.WinnerPresenter winnerPresenter = new interface_adapter.winner.WinnerPresenter(
+                winnerViewModel, winnerView);
+        final interface_adapter.winner.WinnerController winnerController = new interface_adapter.winner.WinnerController(
+                userDataAccessObject, winnerPresenter);
+        if (this.hostDashboardView != null) {
+            this.hostDashboardView.setComputeWinnerController(winnerController);
+        }
+        cardPanel.add(winnerView, "Winner");
         // Set initial view to welcome
         viewManagerModel.setActiveViewName(ViewManagerModel.WELCOME_VIEW);
         return application;

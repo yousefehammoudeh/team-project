@@ -1,6 +1,6 @@
 package interface_adapter.join_room;
 
-import interface_adapter.ViewModel; //gives you access to getState() and setState()
+import interface_adapter.ViewModel;
 
 /**
  * ViewModel wrapper for JoinRoomState.

@@ -9,6 +9,7 @@ import java.util.List;
 public class HostDashboardState {
     private String roomId;
     private List<String> participants = new ArrayList<>();
+    private boolean locked;
 
     public String getRoomId() {
         return roomId;
@@ -16,6 +17,14 @@ public class HostDashboardState {
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     public List<String> getParticipants() {
