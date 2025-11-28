@@ -8,6 +8,7 @@ import interface_adapter.ViewModel;
 public class SearchViewModel extends ViewModel<SearchState> {
 
     public SearchViewModel() {
+        super("search");
         this.state = new SearchState();
     }
 
