@@ -8,14 +8,17 @@ import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
 import use_case.remove_movie.RemoveMovieInteractor;
 import use_case.shortlist.ShortlistOutputBoundary;
+import use_case.toggle_lock_room.ToggleLockRoomInputBoundary;
+import use_case.toggle_lock_room.ToggleLockRoomInteractor;
 import use_case.update_room.UpdateRoomInputBoundary;
 import use_case.update_room.UpdateRoomInteractor;
 
 import javax.swing.*;
+import java.util.UUID;
 
 public class ShortlistViewTest {
     public static void main(String[] args) {
-        createShortlistView("username", "testRoom123");
+        createShortlistView("username", "newroomname");
     }
 
     private static void createShortlistView(String username, String roomName) {
@@ -25,7 +28,8 @@ public class ShortlistViewTest {
 
         RoomDatabase roomDataAccessObject = new RoomDatabase(username);
         try {
-            roomDataAccessObject.joinRoom(roomName);
+            roomDataAccessObject.createRoom(roomName);
+//            roomDataAccessObject.joinRoom(roomName);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -45,6 +49,11 @@ public class ShortlistViewTest {
                 new UpdateRoomInteractor(roomDataAccessObject, shortlistPresenter);
         UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
         shortlistView.setUpdateRoomController(updateRoomController);
+
+        ToggleLockRoomInputBoundary toggleLockRoomInputBoundary =
+                new ToggleLockRoomInteractor(roomDataAccessObject, shortlistPresenter);
+        ToggleLockRoomController toggleLockRoomController = new ToggleLockRoomController(toggleLockRoomInputBoundary);
+        shortlistView.setToggleLockRoomController(toggleLockRoomController);
 
         viewManagerModel.setActiveViewName(shortlistView.getViewName());
 

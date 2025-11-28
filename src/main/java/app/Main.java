@@ -14,6 +14,7 @@ public class Main {
                 .addAddMovieUseCase()
                 .addRemoveMovieUseCase()
                 .addUpdateRoomUseCase()
+                .addToggleLockRoomUseCase()
                 .build();
         application.pack();
         application.setLocationRelativeTo(null);

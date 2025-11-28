@@ -7,6 +7,8 @@ import use_case.add_movie.AddMovieInputBoundary;
 import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
 import use_case.remove_movie.RemoveMovieInteractor;
+import use_case.toggle_lock_room.ToggleLockRoomInputBoundary;
+import use_case.toggle_lock_room.ToggleLockRoomInteractor;
 import use_case.update_room.UpdateRoomInputBoundary;
 import use_case.update_room.UpdateRoomInteractor;
 import view.ShortlistView;
@@ -49,8 +51,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        final AddMovieInputBoundary addMovieInputBoundary = new AddMovieInteractor(userDataAccessObject,
-                shortlistPresenter);
+        final AddMovieInputBoundary addMovieInputBoundary =
+                new AddMovieInteractor(userDataAccessObject, shortlistPresenter);
         final AddMovieController addMovieController = new AddMovieController(addMovieInputBoundary);
         shortlistView.setAddMovieController(addMovieController);
         return this;
@@ -60,8 +62,8 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        final RemoveMovieInputBoundary removeMovieInputBoundary = new RemoveMovieInteractor(userDataAccessObject,
-                shortlistPresenter);
+        final RemoveMovieInputBoundary removeMovieInputBoundary =
+                new RemoveMovieInteractor(userDataAccessObject, shortlistPresenter);
         final RemoveMovieController removeMovieController = new RemoveMovieController(removeMovieInputBoundary);
         shortlistView.setRemoveMovieController(removeMovieController);
         return this;
@@ -71,9 +73,21 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(userDataAccessObject,  shortlistPresenter);
+        UpdateRoomInputBoundary updateRoomInputBoundary =
+                new UpdateRoomInteractor(userDataAccessObject,  shortlistPresenter);
         UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
         shortlistView.setUpdateRoomController(updateRoomController);
+        return this;
+    }
+
+    public AppBuilder addToggleLockRoomUseCase() {
+        if (shortlistPresenter == null) {
+            shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
+        }
+        ToggleLockRoomInputBoundary toggleLockRoomInputBoundary =
+                new ToggleLockRoomInteractor(userDataAccessObject, shortlistPresenter);
+        ToggleLockRoomController toggleLockRoomController = new ToggleLockRoomController(toggleLockRoomInputBoundary);
+        shortlistView.setToggleLockRoomController(toggleLockRoomController);
         return this;
     }
 

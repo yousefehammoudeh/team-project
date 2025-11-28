@@ -11,6 +11,7 @@ import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
+import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
@@ -25,7 +26,8 @@ public class RoomDatabase implements
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
         UpdateRoomDataAccessInterface,
-        JoinedRoomUserDataAccessInterface {
+        JoinedRoomUserDataAccessInterface,
+        ToggleLockRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
@@ -78,7 +80,15 @@ public class RoomDatabase implements
         return room.isLocked();
     }
 
+    public void setLocked(boolean locked) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.setLocked(locked);
+        saveRoom();
+    }
+
     public boolean addMovie(String movieID) throws DataAccessException {
+        checkRoomLoaded();
         refreshRoom();
         boolean result = room.addToShortlist(movieID);
         if (result) {
@@ -88,6 +98,7 @@ public class RoomDatabase implements
     }
 
     public boolean removeMovie(String movieID) throws DataAccessException {
+        checkRoomLoaded();
         refreshRoom();
         boolean result = room.removeFromShortlist(movieID);
         if (result) {
