@@ -126,6 +126,12 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         this.addMovieController = controller;
     }
 
+    private static final ImageIcon PLACEHOLDER_ICON = new ImageIcon(
+            SearchView.class.getClassLoader().getResource("placeholder.png"),
+                    "placeholder.png not found in resources"
+    );
+
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         SearchState state = (SearchState) evt.getNewValue();
@@ -145,8 +151,8 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         searchListPanel.removeAll();
 
         for (Movie movie : movies) {
+            ImageIcon icon = PLACEHOLDER_ICON;
             String posterPath = movie.getPosterPath();
-            ImageIcon icon = null;
 
             if (posterPath != null && !posterPath.isBlank()) {
                 try {
