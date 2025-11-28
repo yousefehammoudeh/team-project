@@ -3,9 +3,11 @@ package view;
 import javax.swing.*;
 
 /**
- * TODO: Mirror CA-lab helper for label+text field layout.
+ * A panel containing a label and a text field.
  */
 class LabelTextPanel extends JPanel {
-    // TODO: Add JLabel + JTextField/JComponent composition
+    LabelTextPanel(JLabel label, JTextField textField) {
+        this.add(label);
+        this.add(textField);
+    }
 }
-
