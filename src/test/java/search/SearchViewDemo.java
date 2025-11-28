@@ -9,7 +9,6 @@ import interface_adapter.search.SearchState;
 import interface_adapter.search.SearchViewModel;
 import use_case.search.SearchInteractor;
 import view.SearchView;
-import view.ShortlistView;
 
 public class SearchViewDemo {
     public static void main(String[] args) {
