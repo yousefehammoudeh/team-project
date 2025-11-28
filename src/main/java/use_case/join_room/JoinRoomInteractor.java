@@ -30,6 +30,7 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
         // check if inputs are valid
         else {
             try {
+                roomGateway.setUsername(joinRoomInputData.getUsername());
                 boolean added = roomGateway.joinRoom(joinRoomInputData.getRoomcode());
                 if (!added) {
                     presenter.presentFailure("User already exists.");
