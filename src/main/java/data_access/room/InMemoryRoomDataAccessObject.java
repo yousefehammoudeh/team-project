@@ -4,6 +4,7 @@ import data_access.note_database.DataAccessException;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
@@ -25,7 +26,7 @@ public class InMemoryRoomDataAccessObject implements
         RemoveMovieRoomDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        use_case.joined_room.JoinedRoomUserDataAccessInterface {
+        JoinedRoomUserDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;

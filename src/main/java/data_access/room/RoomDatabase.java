@@ -8,6 +8,7 @@ import entity.Participant;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
@@ -22,7 +23,7 @@ public class RoomDatabase implements
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
         UpdateRoomDataAccessInterface,
-        use_case.joined_room.JoinedRoomUserDataAccessInterface {
+        JoinedRoomUserDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDatabase noteDatabase = new NoteDataAccessObject();
