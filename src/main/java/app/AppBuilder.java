@@ -12,6 +12,9 @@ import use_case.toggle_lock_room.ToggleLockRoomInteractor;
 import use_case.update_room.UpdateRoomInputBoundary;
 import use_case.update_room.UpdateRoomInteractor;
 import view.ShortlistView;
+import view.WelcomeView;
+import view.HostDashboardView;
+import view.ParticipantsDashboardView;
 import view.ViewManager;
 import javax.swing.*;
 import java.awt.*;
@@ -36,14 +39,30 @@ public class AppBuilder {
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
-        // ViewManager will be used in future view switching logic
         new ViewManager(cardPanel, cardLayout, viewManagerModel);
+    }
+
+    public AppBuilder addWelcomeAndDashboards() {
+        // Welcome view
+        final WelcomeView welcomeView = new WelcomeView(viewManagerModel);
+        cardPanel.add(welcomeView, ViewManagerModel.WELCOME_VIEW);
+
+        // Host dashboard
+        final HostDashboardView hostDashboardView = new HostDashboardView();
+        hostDashboardView.setViewManagerModel(viewManagerModel);
+        cardPanel.add(hostDashboardView, ViewManagerModel.HOST_DASHBOARD_VIEW);
+
+        // Participants dashboard
+        final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(null);
+        cardPanel.add(participantsDashboardView, ViewManagerModel.PARTICIPANTS_DASHBOARD_VIEW);
+
+        return this;
     }
 
     public AppBuilder addShortlistView() {
         this.shortlistViewModel = new ShortlistViewModel();
         this.shortlistView = new ShortlistView(viewManagerModel, shortlistViewModel);
-        cardPanel.add(shortlistView, shortlistView.getName());
+        cardPanel.add(shortlistView, ViewManagerModel.SHORTLIST_VIEW);
         return this;
     }
 
@@ -92,9 +111,11 @@ public class AppBuilder {
     }
 
     public JFrame build() {
-        final JFrame application = new JFrame("APP TITLE"); // TODO: give a title
+        final JFrame application = new JFrame("ReelRound");
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.add(cardPanel);
+        // Set initial view to welcome
+        viewManagerModel.setActiveViewName(ViewManagerModel.WELCOME_VIEW);
         return application;
     }
 }
