@@ -24,7 +24,8 @@ public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
         VoteUserDataAccessInterface,
-        JoinRoomUserDataAccessInterface {
+        JoinRoomUserDataAccessInterface,
+        use_case.joined_room.JoinedRoomUserDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;
@@ -130,5 +131,14 @@ public class InMemoryRoomDataAccessObject implements
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * TODO: Stub implementation for leaveRoom.
+     * Should remove the current user from the room's participant list.
+     */
+    public void leaveRoom(String roomCode) {
+        // Stub: Not yet implemented for in-memory testing
+        throw new UnsupportedOperationException("leaveRoom not yet implemented");
     }
 }
