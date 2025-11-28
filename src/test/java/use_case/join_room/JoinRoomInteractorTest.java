@@ -11,7 +11,12 @@ class JoinRoomInteractorTest {
     @Test
     void successTest() {
         // create a room first
-        InMemoryRoomDataAccessObject db = new InMemoryRoomDataAccessObject();
+        InMemoryRoomDataAccessObject db = new InMemoryRoomDataAccessObject("Alice", new java.util.HashMap<>());
+        try {
+            db.createRoom("c4a760");
+        } catch (data_access.note_database.DataAccessException e) {
+            fail("Setup failed: " + e.getMessage());
+        }
 
         JoinRoomInputData input = new JoinRoomInputData("Bob", "c4a760");
 
@@ -38,8 +43,6 @@ class JoinRoomInteractorTest {
         interactor.execute(input);
 
     }
-
-
 
     @Test
     void noUsernameTest() {
@@ -102,7 +105,7 @@ class JoinRoomInteractorTest {
 
     @Test
     void wrongRoomTest() {
-        // create a room first
+        // create a room first (no rooms added to simulate wrong room)
         InMemoryRoomDataAccessObject db = new InMemoryRoomDataAccessObject();
 
         JoinRoomInputData input = new JoinRoomInputData("Bob", "d4a760");
@@ -131,13 +134,15 @@ class JoinRoomInteractorTest {
 
     @Test
     void multipleParticipantsTest() {
-        // create a room first
-        InMemoryRoomDataAccessObject db = new InMemoryRoomDataAccessObject();
-
-        //db.addParticipant("Alice");
+        // create a room first with existing participant Alice
+        InMemoryRoomDataAccessObject db = new InMemoryRoomDataAccessObject("Alice", new java.util.HashMap<>());
+        try {
+            db.createRoom("c4a760");
+        } catch (data_access.note_database.DataAccessException e) {
+            fail("Setup failed: " + e.getMessage());
+        }
 
         JoinRoomInputData input = new JoinRoomInputData("Alice", "c4a760");
-
 
         JoinRoomOutputBoundary successPresenter = new JoinRoomOutputBoundary() {
             @Override
@@ -159,10 +164,6 @@ class JoinRoomInteractorTest {
         JoinRoomInputBoundary interactor = new JoinRoomInteractor(db, successPresenter);
         interactor.execute(input);
 
-
     }
 
-
 }
-
-

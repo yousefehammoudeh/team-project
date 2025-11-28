@@ -3,7 +3,6 @@ package use_case.remove_movie;
 import data_access.note_database.DataAccessException;
 import data_access.room.InMemoryRoomDataAccessObject;
 import entity.Room;
-import interface_adapter.shortlist.ShortlistPresenter;
 import org.junit.jupiter.api.Test;
 import use_case.shortlist.ShortlistOutputBoundary;
 import use_case.shortlist.ShortlistOutputData;
@@ -33,7 +32,7 @@ class RemoveMovieInteractorTest {
 
             @Override
             public void presentFailure(String message) {
-                fail("Failed to add a movie to an empty shortlist: " + message);
+                fail("Failed to remove a movie from shortlist: " + message);
             }
         };
 

@@ -3,7 +3,6 @@ package use_case.add_movie;
 import data_access.note_database.DataAccessException;
 import data_access.room.InMemoryRoomDataAccessObject;
 import entity.Room;
-import interface_adapter.shortlist.ShortlistPresenter;
 import org.junit.jupiter.api.Test;
 import use_case.shortlist.ShortlistOutputBoundary;
 import use_case.shortlist.ShortlistOutputData;

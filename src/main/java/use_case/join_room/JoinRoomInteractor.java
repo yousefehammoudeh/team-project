@@ -2,6 +2,7 @@ package use_case.join_room;
 
 import data_access.note_database.DataAccessException;
 import java.util.List;
+import static data_access.HTTPCode.NOT_FOUND_ERROR;
 
 /**
  * - Validate code and name
@@ -42,7 +43,11 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
                     presenter.prepareSuccessView(joinRoomOutputData);
                 }
             } catch (DataAccessException e) {
-                presenter.presentFailure(e.getMessage());
+                if (e.getCode() == NOT_FOUND_ERROR) {
+                    presenter.presentFailure("Room doesn't exist.");
+                } else {
+                    presenter.presentFailure(e.getMessage());
+                }
             }
 
         }
