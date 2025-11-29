@@ -14,12 +14,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RemoveMovieInteractorTest {
     @Test
-    void testRemoveMovie() throws DataAccessException {
+    void testRemoveMovie() {
         Map<String, Room> rooms = new HashMap<>();
         InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
-        dao.createRoom("RoomCode");
-        dao.addMovie("Movie1");
-        dao.addMovie("Movie2");
+        try {
+            dao.createRoom("RoomCode");
+            dao.addMovie("Movie1");
+            dao.addMovie("Movie2");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
 
         RemoveMovieInputData inputData = new RemoveMovieInputData("Movie2");
 
@@ -41,11 +47,17 @@ class RemoveMovieInteractorTest {
     }
 
     @Test
-    void testRemoveNonexistentMovie() throws DataAccessException {
+    void testRemoveNonexistentMovie() {
         Map<String, Room> rooms = new HashMap<>();
         InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
-        dao.createRoom("RoomCode");
-        dao.addMovie("SomeMovie");
+        try {
+            dao.createRoom("RoomCode");
+            dao.addMovie("SomeMovie");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
 
         RemoveMovieInputData inputData = new RemoveMovieInputData("OtherMovie");
 
@@ -58,6 +70,61 @@ class RemoveMovieInteractorTest {
             @Override
             public void presentFailure(String message) {
                 assertEquals("The movie is not in the shortlist.", message);
+            }
+        };
+
+        RemoveMovieInputBoundary interactor = new RemoveMovieInteractor(dao, shortlistOutputBoundary);
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void testRemoveMovieWhenLocked() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
+        try {
+            dao.createRoom("RoomCode");
+            dao.addMovie("MovieID");
+            dao.setLocked(true);
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
+
+        RemoveMovieInputData inputData = new RemoveMovieInputData("MovieID");
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Removed a movie when the room is locked.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("The room is locked.", message);
+            }
+        };
+
+        RemoveMovieInputBoundary interactor = new RemoveMovieInteractor(dao, shortlistOutputBoundary);
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void testRemoveMovieWithoutRoom() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
+
+        RemoveMovieInputData inputData = new RemoveMovieInputData("MovieID");
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Added a movie without room.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Room not loaded. Create or join a room first.", message);
             }
         };
 
