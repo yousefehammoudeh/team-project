@@ -23,7 +23,7 @@ class UpdateRoomTest {
             dao1.addMovie("MovieID");
         }
         catch (DataAccessException e) {
-            System.out.println("Failed to initialize the test case: " + e.getMessage());
+            fail("Failed to initialize the test case: " + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -46,14 +46,14 @@ class UpdateRoomTest {
     }
 
     @Test
-    void testRateLimit() {
+    void testRateLimitCooldown() {
         RoomDatabase dao = new RoomDatabase("User");
         String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
         try {
             dao.createRoom(roomName);
         }
         catch (DataAccessException e) {
-            System.out.println("Failed to initialize the test case: " + e.getMessage());
+            fail("Failed to initialize the test case: " + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -80,6 +80,76 @@ class UpdateRoomTest {
                 rateLimited = true;
             }
         }
+        UpdateRoomInputBoundary interactor = new UpdateRoomInteractor(dao, shortlistOutputBoundary);
+        interactor.execute();
+
+        final boolean[] presenterCalled = {false};
+        ShortlistOutputBoundary shortlistOutputBoundaryInCooldown = new ShortlistPresenter(null) {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Made an update in cooldown.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                if (!presenterCalled[0]) {
+                    presenterCalled[0] = true;
+                }
+                else {
+                    fail("Made an update in cooldown.");
+                }
+            }
+        };
+        UpdateRoomInputBoundary interactorInCooldown = new UpdateRoomInteractor(dao, shortlistOutputBoundaryInCooldown);
+        interactorInCooldown.execute();
+        interactorInCooldown.execute();
+
+        // must be an 1-element array to use in the output boundary
+        presenterCalled[0] = false;
+        ShortlistOutputBoundary shortlistOutputBoundaryAfterCooldown = new ShortlistPresenter(null) {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Made an update in cooldown.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                if (!presenterCalled[0]) {
+                    presenterCalled[0] = true;
+                }
+                else {
+                    assertEquals("Too many requests. Next update will take place after 20 seconds", message);
+                }
+            }
+        };
+        UpdateRoomInputBoundary interactorAfterCooldown = new UpdateRoomInteractor(dao, shortlistOutputBoundaryAfterCooldown);
+        interactorAfterCooldown.execute();
+        try {
+            Thread.sleep(21000);
+        }
+        catch (InterruptedException e) {
+            fail("Interrupted while waiting for cooldown.");
+            e.printStackTrace();
+        }
+        interactorAfterCooldown.execute();
+    }
+
+    @Test
+    void testUpdateWithoutRoom() {
+        RoomDatabase dao = new RoomDatabase("User");
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Updated without room.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Room not loaded. Create or join a room first.", message);
+            }
+        };
 
         UpdateRoomInputBoundary interactor = new UpdateRoomInteractor(dao, shortlistOutputBoundary);
         interactor.execute();

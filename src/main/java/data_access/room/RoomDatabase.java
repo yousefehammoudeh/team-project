@@ -52,6 +52,7 @@ public class RoomDatabase implements
     }
 
     public void refreshRoom() throws DataAccessException {
+        checkRoomLoaded();
         String note = noteDatabase.loadNote(getFormattedRoomCode());
         room = RoomJSONParser.JSONToRoom(note);
     }
