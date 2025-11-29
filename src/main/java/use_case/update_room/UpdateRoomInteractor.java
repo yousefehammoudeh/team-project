@@ -7,7 +7,7 @@ import use_case.shortlist.ShortlistOutputData;
 import static data_access.HTTPCode.TOO_MANY_REQUESTS;
 
 public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
-    private final static int COOLDOWN = 20;
+    private static final int COOLDOWN = 20;
     UpdateRoomDataAccessInterface roomDataAccessObject;
     private final ShortlistOutputBoundary shortlistPresenter;
     private boolean inCooldown;
