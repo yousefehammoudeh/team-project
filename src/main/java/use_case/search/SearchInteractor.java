@@ -6,7 +6,7 @@ import entity.Movie;
 import java.util.List;
 
 /**
- * TODO: Implements search & details use case.
+ *
  */
 public class SearchInteractor implements SearchInputBoundary {
     private final SearchUserDataAccessInterface gateway;
