@@ -2,7 +2,6 @@ package data_access.room;
 
 import data_access.note_database.DataAccessException;
 import data_access.note_database.NoteDataAccessObject;
-import data_access.note_database.NoteDatabase;
 import entity.Ballot;
 import entity.Participant;
 import entity.Room;
@@ -30,7 +29,7 @@ public class RoomDatabase implements
         ToggleLockRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
-    private final NoteDatabase noteDatabase = new NoteDataAccessObject();
+    private final NoteDataAccessObject noteDatabase = new NoteDataAccessObject();
     private String username;
     private Room room;
 
