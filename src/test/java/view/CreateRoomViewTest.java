@@ -1,7 +1,6 @@
 package view;
 
 import interface_adapter.create_room.CreateRoomViewModel;
-import interface_adapter.create_room.CreateRoomController;
 
 import javax.swing.*;
 
@@ -14,9 +13,8 @@ public class CreateRoomViewTest {
         CreateRoomView view = new CreateRoomView(viewModel);
 
         frame.add(view);
-        frame.setSize(800, 700);
+        frame.setSize(300, 250);
         frame.setLocationRelativeTo(null);
-        frame.pack();
         frame.setVisible(true);
     }
 }

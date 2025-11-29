@@ -3,17 +3,18 @@ package interface_adapter.create_room;
 import use_case.create_room.CreateRoomOutputBoundary;
 import use_case.create_room.CreateRoomOutputData;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.created_room.CreatedRoomViewModel;
+import interface_adapter.created_room.CreatedRoomState;
 
-/**
- * Translates interactor output to view model updates.
- */
 public class CreateRoomPresenter implements CreateRoomOutputBoundary {
-    @SuppressWarnings("unused")
-    private final CreateRoomViewModel viewModel;
+
+    private final CreateRoomViewModel createRoomViewModel;
+    private final CreatedRoomViewModel createdRoomViewModel;
     private ViewManagerModel viewManagerModel;
 
-    public CreateRoomPresenter(CreateRoomViewModel viewModel) {
-        this.viewModel = viewModel;
+    public CreateRoomPresenter(CreateRoomViewModel createVM, CreatedRoomViewModel createdVM) {
+        this.createRoomViewModel = createVM;
+        this.createdRoomViewModel = createdVM;
     }
 
     public void setViewManagerModel(ViewManagerModel vm) {
@@ -22,22 +23,19 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
 
     @Override
     public void present(CreateRoomOutputData outputData) {
-        CreateRoomState state = viewModel.getState();
 
-        state.setHostName(outputData.getHostName());
+        CreatedRoomState state = createdRoomViewModel.getState();
         state.setRoomCode(outputData.getRoomCode());
-        state.setError(null);
+        createdRoomViewModel.firePropertyChanged();
 
         viewManagerModel.setActiveViewName("created room");
-
-        viewModel.firePropertyChanged();
         viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void presentFailure(String message) {
-        CreateRoomState state = viewModel.getState();
+        CreateRoomState state = createRoomViewModel.getState();
         state.setError(message);
-        viewModel.firePropertyChanged();
+        createRoomViewModel.firePropertyChanged();
     }
 }

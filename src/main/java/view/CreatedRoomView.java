@@ -1,6 +1,8 @@
 package view;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.created_room.CreatedRoomViewModel;
+import interface_adapter.created_room.CreatedRoomState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,86 +12,98 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-/**
- * Host dashboard (shows room code, controls for lock, compute
- * winner, apply filters, etc.).
- */
 public class CreatedRoomView extends JPanel implements ActionListener, PropertyChangeListener {
+
     private final JLabel roomIdLabel;
+    private final JPanel participantsPanel;
+
     private final JButton searchButton;
     private final JButton shortlistButton;
     private final JButton voteButton;
-    private final JPanel participantsPanel;
-    private ViewManagerModel viewManagerModel;
 
-    public CreatedRoomView() {
+    private ViewManagerModel viewManagerModel;
+    private final CreatedRoomViewModel viewModel;
+
+    public CreatedRoomView(CreatedRoomViewModel viewModel) {
+
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
+
         setLayout(new BorderLayout(10, 10));
 
-        // Room ID
+        // --- TOP: Room Code ---
         final JPanel topPanel = new JPanel();
-        roomIdLabel = new JLabel("< Room ID >", SwingConstants.CENTER);
+        roomIdLabel = new JLabel("Room ID: <unknown>", SwingConstants.CENTER);
         roomIdLabel.setFont(new Font("Serif", Font.BOLD, 20));
         topPanel.add(roomIdLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // Search Bar
-        final JPanel searchPanel = new JPanel();
-        JTextField searchField = new JTextField(20);
-        searchButton = new JButton("\uD83D\uDD0D");
+        // --- CENTER: Buttons ---
+        final JPanel centerPanel = new JPanel();
+
+        searchButton = new JButton("\uD83D\uDD0D");  // search icon
         searchButton.addActionListener(this);
-        searchPanel.add(searchField);
-        searchPanel.add(searchButton);
+        centerPanel.add(searchButton);
+
         shortlistButton = new JButton("Shortlist");
         shortlistButton.addActionListener(this);
-        searchPanel.add(shortlistButton);
+        centerPanel.add(shortlistButton);
+
         voteButton = new JButton("Vote");
         voteButton.addActionListener(this);
-        searchPanel.add(voteButton);
-        add(searchPanel, BorderLayout.CENTER);
+        centerPanel.add(voteButton);
 
-        // Participants Names
-        participantsPanel = new JPanel();
-        participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        add(centerPanel, BorderLayout.CENTER);
+
+        // --- BOTTOM: Participants ---
+        participantsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.SOUTH);
     }
 
-    public void setRoomId(String id) {
-        roomIdLabel.setText("Room ID: " + id);
+    /** Update only the room code */
+    private void updateRoomCode(String roomCode) {
+        roomIdLabel.setText("Room ID: " + roomCode);
     }
 
-    public void updateParticipants(List<String> names) {
+    /** Update participant list */
+    private void updateParticipants(List<String> names) {
         participantsPanel.removeAll();
+
         for (String name : names) {
-            final JLabel nameLabel = new JLabel(name);
-            nameLabel.setFont(new Font("Serif", Font.BOLD, 14));
-            participantsPanel.add(nameLabel);
+            JLabel label = new JLabel(name);
+            label.setFont(new Font("Serif", Font.BOLD, 14));
+            participantsPanel.add(label);
         }
+
+        participantsPanel.revalidate();
+        participantsPanel.repaint();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (viewManagerModel == null) return;
+
         Object src = e.getSource();
+
         if (src == searchButton) {
-            if (viewManagerModel != null)
-                viewManagerModel.setActiveViewName("Search");
+            viewManagerModel.setActiveViewName("search");
         } else if (src == shortlistButton) {
-            if (viewManagerModel != null)
-                viewManagerModel.setActiveViewName("Shortlist");
+            viewManagerModel.setActiveViewName("shortlist");
         } else if (src == voteButton) {
-            if (viewManagerModel != null)
-                viewManagerModel.setActiveViewName("Vote");
+            viewManagerModel.setActiveViewName("vote");
         }
+
+        viewManagerModel.firePropertyChanged();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update UI based on ViewModel changes
+        CreatedRoomState state = viewModel.getState();
+
+        updateRoomCode(state.getRoomCode());
+        updateParticipants(state.getParticipants());
     }
 
-    /**
-     * Optional wiring: allow composition code to provide the ViewManagerModel so
-     * views can request navigation.
-     */
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;
     }
