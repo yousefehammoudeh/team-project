@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * Participants dashboard (shows room code).
  */
-public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+public class JoinedRoomView extends JPanel implements ActionListener, PropertyChangeListener {
     @SuppressWarnings("unused")
     private final JoinedRoomViewModel joinedRoomViewModel;
     private final JLabel roomIdLabel;
     private final JPanel participantsPanel;
 
-    public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
+    public JoinedRoomView(JoinedRoomViewModel joinedRoomViewModel) {
         this.joinedRoomViewModel = joinedRoomViewModel;
         setLayout(new BorderLayout(10, 10));
 

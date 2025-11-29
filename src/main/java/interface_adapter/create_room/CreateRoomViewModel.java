@@ -7,7 +7,7 @@ import interface_adapter.ViewModel;
  */
 public class CreateRoomViewModel extends ViewModel<CreateRoomState> {
 
-    CreateRoomViewModel() {
+    public CreateRoomViewModel() {
         super("create room");
         setState(new CreateRoomState());
     }

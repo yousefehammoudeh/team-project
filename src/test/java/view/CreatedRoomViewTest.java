@@ -4,12 +4,12 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.Random;
 
-public class HostDashboardTest {
+public class CreatedRoomViewTest {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Host Dashboard - Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        HostDashboardView view = new HostDashboardView();
+        CreatedRoomView view = new CreatedRoomView();
         view.setRoomId(generateRoomId());
         view.updateParticipants(Arrays.asList("Diana", "Tamako", "Elaine", "He Sun", "Yousef"));
 

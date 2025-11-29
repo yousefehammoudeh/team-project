@@ -14,7 +14,7 @@ import java.util.List;
  * Host dashboard (shows room code, controls for lock, compute
  * winner, apply filters, etc.).
  */
-public class HostDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+public class CreatedRoomView extends JPanel implements ActionListener, PropertyChangeListener {
     private final JLabel roomIdLabel;
     private final JButton searchButton;
     private final JButton shortlistButton;
@@ -22,7 +22,7 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     private final JPanel participantsPanel;
     private ViewManagerModel viewManagerModel;
 
-    public HostDashboardView() {
+    public CreatedRoomView() {
         setLayout(new BorderLayout(10, 10));
 
         // Room ID
