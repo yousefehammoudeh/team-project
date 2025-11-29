@@ -28,6 +28,7 @@ public class SearchView extends JPanel implements PropertyChangeListener {
     @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
+    private final JButton dashboard;
     private final JLabel roomId;
     private final JButton shortList;
 
@@ -58,11 +59,20 @@ public class SearchView extends JPanel implements PropertyChangeListener {
 
         // header; room id, button to the shortlist
         final JPanel header = new JPanel();
-        roomId = new JLabel("Room ID: ");
+        roomId = new JLabel("Room ID: Not Set");
         roomId.setFont(new Font("Serif", Font.BOLD, 16));
         header.add(roomId);
+        dashboard = new JButton("Dashboard");
+        header.add(dashboard);
         shortList = new JButton("Shortlist");
         header.add(shortList);
+
+        dashboard.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        searchController.switchToHostDashboardView();
+                    }
+                });
 
         shortList.addActionListener(
                 new ActionListener() {
@@ -119,6 +129,11 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         this.addMovieController = controller;
     }
 
+    private static final ImageIcon PLACEHOLDER_ICON = new ImageIcon(
+            SearchView.class.getClassLoader().getResource("placeholder.png"),
+                    "placeholder.png not found in resources"
+    );
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         SearchState state = (SearchState) evt.getNewValue();
@@ -138,8 +153,8 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         searchListPanel.removeAll();
 
         for (Movie movie : movies) {
+            ImageIcon icon = PLACEHOLDER_ICON;
             String posterPath = movie.getPosterPath();
-            ImageIcon icon = null;
 
             if (posterPath != null && !posterPath.isBlank()) {
                 try {

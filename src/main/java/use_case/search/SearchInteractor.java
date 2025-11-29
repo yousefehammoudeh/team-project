@@ -42,4 +42,8 @@ public class SearchInteractor implements SearchInputBoundary {
     public void switchToShortlistView() {
         presenter.switchToShortlistView();
     }
+
+    public void switchToHostDashboardView() {
+        presenter.switchToHostDashboardView();
+    }
 }
