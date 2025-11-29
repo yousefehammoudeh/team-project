@@ -44,4 +44,44 @@ class UpdateRoomTest {
         UpdateRoomInputBoundary interactor = new UpdateRoomInteractor(dao2, shortlistOutputBoundary);
         interactor.execute();
     }
+
+    @Test
+    void testRateLimit() {
+        RoomDatabase dao = new RoomDatabase("User");
+        String roomName = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+        try {
+            dao.createRoom(roomName);
+        }
+        catch (DataAccessException e) {
+            System.out.println("Failed to initialize the test case: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistPresenter(null) {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Made an update when the API is rate limited.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Too many requests. Next update will take place after 20 seconds", message);
+            }
+        };
+
+        // Sorry API
+        boolean rateLimited = false;
+        while (!rateLimited) {
+            try {
+                dao.addMovie("MovieID");
+            }
+            catch (DataAccessException e) {
+                rateLimited = true;
+            }
+        }
+
+        UpdateRoomInputBoundary interactor = new UpdateRoomInteractor(dao, shortlistOutputBoundary);
+        interactor.execute();
+    }
 }
