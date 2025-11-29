@@ -99,4 +99,25 @@ class ToggleLockRoomTest {
         ToggleLockRoomInputBoundary interactor = new ToggleLockRoomInteractor(dao2, shortlistOutputBoundary);
         interactor.execute();
     }
+
+    @Test
+    void testLockWithoutRoom() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Locked when there is no room.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Room not loaded. Create or join a room first.", message);
+            }
+        };
+
+        ToggleLockRoomInputBoundary interactor = new ToggleLockRoomInteractor(dao, shortlistOutputBoundary);
+        interactor.execute();
+    }
 }
