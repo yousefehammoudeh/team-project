@@ -133,7 +133,7 @@ class AddMovieInteractorTest {
 
             @Override
             public void presentFailure(String message) {
-                assertEquals("The shortlist is locked.", message);
+                assertEquals("The room is locked.", message);
             }
         };
 
