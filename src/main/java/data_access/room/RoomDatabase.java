@@ -65,7 +65,7 @@ public class RoomDatabase implements
 
     private void checkRoomLoaded() throws DataAccessException {
         if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+            throw new DataAccessException("Room not loaded. Create or join a room first.");
         }
     }
 

@@ -14,10 +14,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AddMovieInteractorTest {
     @Test
-    void testAddMovie() throws DataAccessException {
+    void testAddMovie() {
         Map<String, Room> rooms = new HashMap<>();
         InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
-        dao.createRoom("RoomCode");
+        try {
+            dao.createRoom("RoomCode");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
+
 
         AddMovieInputData inputData = new AddMovieInputData("MovieID");
 
@@ -38,12 +45,18 @@ class AddMovieInteractorTest {
     }
 
     @Test
-    void testAddManyMovies() throws DataAccessException {
+    void testAddManyMovies() {
         Map<String, Room> rooms = new HashMap<>();
         InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
-        dao.createRoom("RoomCode");
-        dao.addMovie("Movie1");
-        dao.addMovie("Movie2");
+        try {
+            dao.createRoom("RoomCode");
+            dao.addMovie("Movie1");
+            dao.addMovie("Movie2");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
 
         AddMovieInputData inputData = new AddMovieInputData("Movie3");
 
@@ -67,11 +80,17 @@ class AddMovieInteractorTest {
     }
 
     @Test
-    void testAddExistingMovie() throws DataAccessException {
+    void testAddExistingMovie() {
         Map<String, Room> rooms = new HashMap<>();
         InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
-        dao.createRoom("RoomCode");
-        dao.addMovie("MovieID");
+        try {
+            dao.createRoom("RoomCode");
+            dao.addMovie("MovieID");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
 
         AddMovieInputData inputData = new AddMovieInputData("MovieID");
 
@@ -84,6 +103,60 @@ class AddMovieInteractorTest {
             @Override
             public void presentFailure(String message) {
                 assertEquals("The movie already exists.", message);
+            }
+        };
+
+        AddMovieInputBoundary interactor = new AddMovieInteractor(dao, shortlistOutputBoundary);
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void testAddMovieWhenLocked() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
+        try {
+            dao.createRoom("RoomCode");
+            dao.setLocked(true);
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+            e.printStackTrace();
+        }
+
+        AddMovieInputData inputData = new AddMovieInputData("MovieID");
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Added a movie when the room is locked.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("The shortlist is locked.", message);
+            }
+        };
+
+        AddMovieInputBoundary interactor = new AddMovieInteractor(dao, shortlistOutputBoundary);
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void testAddMovieWithoutRoom() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao = new InMemoryRoomDataAccessObject("Username", rooms);
+
+        AddMovieInputData inputData = new AddMovieInputData("MovieID");
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Added a movie without room.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Room not loaded. Create or join a room first.", message);
             }
         };
 
