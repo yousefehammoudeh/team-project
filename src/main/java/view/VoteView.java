@@ -2,6 +2,7 @@ package view;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import interface_adapter.shortlist.UpdateRoomController;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -15,15 +16,33 @@ import java.util.function.Consumer;
 /**
  * Simplified VoteView: only displays poster images and a "Submit Vote" button.
  */
-public class VoteView extends JPanel {
+public class VoteView extends JPanel implements java.beans.PropertyChangeListener {
     private final JPanel postersPanel;
     private final JButton submitButton = new JButton("Submit Vote");
+    private final JButton computeWinnerButton = new JButton("Compute Winner");
     // mapping of label -> movie id and current ranked selection
     private final Map<JLabel, String> labelToMovieId = new HashMap<>();
     private final List<String> rankedSelection = new ArrayList<>();
     private Consumer<List<String>> onSubmit;
+    private Runnable onComputeWinner;
+    private UpdateRoomController globalUpdateController;
+    private interface_adapter.ViewManagerModel viewManagerModel;
 
-    public VoteView() {
+    private interface_adapter.vote.VoteViewModel viewModel;
+    private final JLabel statusLabel = new JLabel("Waiting for votes...");
+    private final JLabel winnerLabel = new JLabel("Winner: -");
+    private final java.awt.event.MouseAdapter refreshClick = new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            if (globalUpdateController != null) {
+                globalUpdateController.execute();
+            }
+        }
+    };
+
+    public VoteView(interface_adapter.vote.VoteViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(8, 8));
 
         postersPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
@@ -32,7 +51,11 @@ public class VoteView extends JPanel {
         scroller.setPreferredSize(new Dimension(880, 320));
         add(scroller, BorderLayout.CENTER);
 
-        final JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel bottom = new JPanel(new BorderLayout());
+        final JPanel infoPanel = new JPanel(new GridLayout(2, 1));
+        infoPanel.add(statusLabel);
+        infoPanel.add(winnerLabel);
+        bottom.add(infoPanel, BorderLayout.WEST);
         submitButton.addActionListener(e -> {
             if (onSubmit != null) {
                 onSubmit.accept(new ArrayList<>(rankedSelection));
@@ -42,8 +65,30 @@ public class VoteView extends JPanel {
                 JOptionPane.showMessageDialog(this, "Submit Vote pressed (no handler attached)");
             }
         });
-        bottom.add(submitButton);
+        // Right side: submit + compute winner (host-only visible)
+        final JPanel rightButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        rightButtons.add(submitButton);
+        computeWinnerButton.addActionListener(e -> {
+            if (onComputeWinner != null) {
+                onComputeWinner.run();
+            } else {
+                JOptionPane.showMessageDialog(this, "Compute Winner pressed (no handler attached)");
+            }
+        });
+        rightButtons.add(computeWinnerButton);
+        bottom.add(rightButtons, BorderLayout.EAST);
         add(bottom, BorderLayout.SOUTH);
+
+        // Allow clicking anywhere in the view to trigger a refresh
+        installGlobalRefreshClick(this);
+        installGlobalRefreshClick(scroller);
+        installGlobalRefreshClick(scroller.getViewport());
+        installGlobalRefreshClick(postersPanel);
+        installGlobalRefreshClick(bottom);
+        installGlobalRefreshClick(infoPanel);
+        installGlobalRefreshClick(rightButtons);
+        installGlobalRefreshClick(submitButton);
+        installGlobalRefreshClick(computeWinnerButton);
     }
 
     /**
@@ -110,6 +155,8 @@ public class VoteView extends JPanel {
                     updateSelectionDecorations();
                 }
             });
+            // Also allow any click on a poster to trigger a refresh update
+            clickable.addMouseListener(refreshClick);
             postersPanel.add(clickable);
         }
 
@@ -147,6 +194,69 @@ public class VoteView extends JPanel {
      */
     public void setOnSubmit(Consumer<List<String>> handler) {
         this.onSubmit = handler;
+    }
+
+    /** Attach a handler to compute winner when host presses the button. */
+    public void setOnComputeWinner(Runnable handler) {
+        this.onComputeWinner = handler;
+    }
+
+    /** Inject global update controller so the view can request a refresh. */
+    public void setGlobalUpdateController(UpdateRoomController controller) {
+        this.globalUpdateController = controller;
+    }
+
+    private void installGlobalRefreshClick(java.awt.Component c) {
+        if (c == null)
+            return;
+        c.addMouseListener(refreshClick);
+        if (c instanceof java.awt.Container) {
+            for (java.awt.Component child : ((java.awt.Container) c).getComponents()) {
+                installGlobalRefreshClick(child);
+            }
+        }
+    }
+
+    /** Inject view manager to allow navigation when winner detected. */
+    public void setViewManagerModel(interface_adapter.ViewManagerModel vm) {
+        this.viewManagerModel = vm;
+    }
+
+    @Override
+    public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        interface_adapter.vote.VoteState s = (interface_adapter.vote.VoteState) evt.getNewValue();
+        if (s == null)
+            return;
+        
+        // Update posters if they're provided
+        if (s.getPosterUrls() != null && s.getMovieIds() != null) {
+            setPosterUrls(s.getPosterUrls(), s.getMovieIds());
+        }
+        
+        // Update bottom status and controls
+        statusLabel.setText("Ballots: " + s.getBallotsReceivedCount() + "/" + s.getParticipantCount());
+        if (s.getWinnerMovieId() != null) {
+            winnerLabel.setText("Winner: " + s.getWinnerMovieId());
+            // Navigate to winner view if manager available
+            if (viewManagerModel != null) {
+                viewManagerModel.setActiveViewName("Winner");
+            }
+        } else {
+            winnerLabel.setText("Winner: -");
+        }
+        // Enable submit only if locked AND user hasn't voted yet
+        submitButton.setEnabled(s.isShortlistLocked() && !s.hasVoted());
+        if (s.hasVoted()) {
+            submitButton.setText("Vote Submitted");
+        } else {
+            submitButton.setText("Submit Vote");
+        }
+
+        // Host-only compute winner button: visible only to host and enabled when all
+        // ballots submitted
+        computeWinnerButton.setVisible(s.isHost());
+        boolean allBallotsIn = s.getBallotsReceivedCount() >= s.getParticipantCount() && s.getParticipantCount() > 0;
+        computeWinnerButton.setEnabled(s.isHost() && allBallotsIn);
     }
 
     /** Update UI to display the computed scores for each movie id. */

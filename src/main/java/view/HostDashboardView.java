@@ -2,12 +2,15 @@ package view;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.host_dashboard.HostDashboardState;
+import interface_adapter.shortlist.UpdateRoomController;
 import interface_adapter.host_dashboard.HostDashboardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -26,7 +29,7 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
     private final JPanel participantsPanel;
     private ViewManagerModel viewManagerModel;
     private final HostDashboardViewModel viewModel;
-    private interface_adapter.host_dashboard.HostRefreshController hostRefreshController;
+    private UpdateRoomController globalUpdateController;
     private interface_adapter.search.SearchViewModel searchViewModel;
 
     public HostDashboardView(HostDashboardViewModel viewModel) {
@@ -65,18 +68,27 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.SOUTH);
 
-        // Optional: background refresh for participants
-        new Thread(() -> {
-            try {
-                while (true) {
-                    if (hostRefreshController != null) {
-                        hostRefreshController.execute();
-                    }
-                    Thread.sleep(5000);
-                }
-            } catch (InterruptedException ignored) {
+        // Event-driven refresh (no background polling)
+        registerUserActivityRefresh(this);
+        registerUserActivityRefresh(participantsPanel);
+        registerUserActivityRefresh(navigationPanel);
+        registerUserActivityRefresh(topPanel);
+    }
+
+    // No debounce per requirement
+
+    private void registerUserActivityRefresh(JComponent component) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                triggerRefreshOnActivity();
             }
-        }).start();
+        });
+    }
+
+    private void triggerRefreshOnActivity() {
+        if (globalUpdateController != null)
+            globalUpdateController.execute();
     }
 
     // Backwards-compatible no-arg constructor for existing tests
@@ -157,8 +169,8 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         this.viewManagerModel = vm;
     }
 
-    public void setHostRefreshController(interface_adapter.host_dashboard.HostRefreshController c) {
-        this.hostRefreshController = c;
+    public void setGlobalUpdateController(UpdateRoomController c) {
+        this.globalUpdateController = c;
     }
 
     public void setSearchViewModel(interface_adapter.search.SearchViewModel searchViewModel) {
