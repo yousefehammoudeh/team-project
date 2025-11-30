@@ -1,5 +1,6 @@
 package view;
 
+import data_access.tmdb.TmdbMovieGateway;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.shortlist.*;
 
@@ -21,8 +22,9 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
     private final String viewName = "Shortlist";
     private final ShortlistViewModel shortlistViewModel;
 
-    private final DefaultListModel<String> movieListModel = new DefaultListModel<>();
-    private final JList<String> shortlist;
+    private final DefaultListModel<MovieNameIDPair> movieListModel = new DefaultListModel<>();
+    private final JList<MovieNameIDPair> shortlist;
+    private final TmdbMovieGateway tmdbMovieGateway = new TmdbMovieGateway();
 
     @SuppressWarnings("unused")
     private AddMovieController addMovieController;
@@ -33,7 +35,6 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
     private final JPanel shortlistPanel = new JPanel();
     private final JLabel lockedText = new JLabel();
     private JButton voteButton;
-    private String selectedMovieID;
 
     private ViewManagerModel viewManagerModel;
 
@@ -60,11 +61,11 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedDisplay = shortlist.getSelectedValue();
-                if (selectedDisplay != null) {
-                    String movieId = selectedDisplay.replace("Movie ID: ", "");
-                    removeMovieController.execute(movieId);
+                if (shortlist.getSelectedValue() == null) {
+                    return;
                 }
+                String selectedDisplay = shortlist.getSelectedValue().id;
+                removeMovieController.execute(selectedDisplay);
             }
         });
         controlsRow.add(removeButton);
@@ -94,12 +95,6 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
 
         shortlist = new JList<>(movieListModel);
         shortlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        shortlist.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                selectedMovieID = shortlist.getSelectedValue();
-            }
-        });
         final JScrollPane scrollPane = new JScrollPane(shortlist);
         shortlistPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -138,12 +133,12 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         if (state.getError() != null) {
             // No popup
         } else {
-            String selectedID = shortlist.getSelectedValue();
+            MovieNameIDPair selectedItem = shortlist.getSelectedValue();
             movieListModel.clear();
             for (String movieId : state.getShortlist()) {
-                movieListModel.addElement("Movie ID: " + movieId);
+                movieListModel.addElement(new MovieNameIDPair(movieId));
             }
-            shortlist.setSelectedValue(selectedID, true);
+            shortlist.setSelectedValue(selectedItem, true);
 
             if (state.isLocked()) {
                 lockedText.setText("Locked");
@@ -181,5 +176,43 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
 
     public String getViewName() {
         return viewName;
+    }
+
+    private String getMovieNameByID(String id) {
+        try {
+            return tmdbMovieGateway.fetchDetails(id, null).getTitle();
+        }
+        catch (Exception e) {
+            return "Movie ID: " + id;
+        }
+    }
+
+    private class MovieNameIDPair {
+        private final String name;
+        private final String id;
+
+        public MovieNameIDPair(String id) {
+            this.name = getMovieNameByID(id);
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o != null && o.getClass().equals(MovieNameIDPair.class)) {
+                MovieNameIDPair other = (MovieNameIDPair) o;
+                return this.id.equals(other.id);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.id.hashCode();
+        }
     }
 }
