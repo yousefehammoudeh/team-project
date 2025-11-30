@@ -62,6 +62,8 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         roomId = new JLabel("Room ID: Not Set");
         roomId.setFont(new Font("Serif", Font.BOLD, 16));
         header.add(roomId);
+        dashboard = new JButton("Dashboard");
+        header.add(dashboard);
         shortList = new JButton("Shortlist");
         header.add(shortList);
 

@@ -33,6 +33,7 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
     private final JPanel shortlistPanel = new JPanel();
     private final JLabel lockedText = new JLabel();
     private JButton voteButton;
+    private String selectedMovieID;
 
     private ViewManagerModel viewManagerModel;
 
@@ -56,9 +57,25 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         controlsRow.add(searchButton);
 
         final JButton removeButton = new JButton("Remove");
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedDisplay = shortlist.getSelectedValue();
+                if (selectedDisplay != null) {
+                    String movieId = selectedDisplay.replace("Movie ID: ", "");
+                    removeMovieController.execute(movieId);
+                }
+            }
+        });
         controlsRow.add(removeButton);
 
         final JButton lockButton = new JButton("Lock");
+        lockButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleLockRoomController.execute();
+            }
+        });
         controlsRow.add(lockButton);
 
         voteButton = new JButton("Vote");
@@ -85,34 +102,6 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         });
         final JScrollPane scrollPane = new JScrollPane(shortlist);
         shortlistPanel.add(scrollPane, BorderLayout.CENTER);
-
-        final JButton removeButton = new JButton("Remove");
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selectedDisplay = shortlist.getSelectedValue();
-                if (selectedDisplay != null) {
-                    String movieId = selectedDisplay.replace("Movie ID: ", "");
-                    removeMovieController.execute(movieId);
-                }
-            }
-        });
-        shortlistPanel.add(removeButton);
-
-        final JButton lockButton = new JButton("Lock");
-        lockButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleLockRoomController.execute();
-            }
-        });
-
-        shortlist.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                // No-op now
-            }
-        });
 
         // Vote button intentionally removed for now during workflow integration
 
