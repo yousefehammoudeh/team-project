@@ -131,4 +131,36 @@ class RemoveMovieInteractorTest {
         RemoveMovieInputBoundary interactor = new RemoveMovieInteractor(dao, shortlistOutputBoundary);
         interactor.execute(inputData);
     }
+
+    @Test
+    void testRemoveMovieNotHost() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao1 = new InMemoryRoomDataAccessObject("Username1", rooms);
+        InMemoryRoomDataAccessObject dao2 = new InMemoryRoomDataAccessObject("Username2", rooms);
+        try {
+            dao1.createRoom("RoomCode");
+            dao2.joinRoom("RoomCode");
+            dao1.addMovie("MovieID");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+        }
+
+        RemoveMovieInputData inputData = new RemoveMovieInputData("MovieID");
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Removed a movie as non-host.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Only the host can remove movies from the shortlist.", message);
+            }
+        };
+
+        RemoveMovieInputBoundary interactor = new RemoveMovieInteractor(dao2, shortlistOutputBoundary);
+        interactor.execute(inputData);
+    }
 }
