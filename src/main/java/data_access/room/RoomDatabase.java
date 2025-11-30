@@ -189,13 +189,13 @@ public class RoomDatabase implements
     public String getWinnerMovieId() throws DataAccessException {
         checkRoomLoaded();
         refreshRoom();
-        return room.getSelectedMovieId();
+        return room.getWinnerMovieId();
     }
 
     public void setWinnerMovieId(String movieId) throws DataAccessException {
         checkRoomLoaded();
         refreshRoom();
-        room.selectMovie(movieId);
+        room.setWinnerMovieId(movieId);
         saveRoom();
     }
 

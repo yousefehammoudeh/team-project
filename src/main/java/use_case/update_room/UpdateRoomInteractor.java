@@ -111,11 +111,15 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
 
                 // If a winner exists, set it and optionally navigate
                 String winnerId = roomDataAccessObject.getWinnerMovieId();
+                System.out.println("[UpdateRoomInteractor] Retrieved winner ID from database: " + winnerId);
                 if (winnerId != null && !winnerId.isBlank()) {
+                    System.out.println("[UpdateRoomInteractor] Setting winner ID in VoteState");
                     voteState.setWinnerMovieId(winnerId);
                     if (viewManagerModel != null) {
                         viewManagerModel.setActiveViewName("Winner");
                     }
+                } else {
+                    System.out.println("[UpdateRoomInteractor] No winner ID found in database");
                 }
 
                 voteViewModel.firePropertyChanged();

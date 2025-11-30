@@ -147,18 +147,25 @@ public class AppBuilder {
                 userDataAccessObject, winnerPresenter);
         final interface_adapter.winner.WinnerController winnerController = new interface_adapter.winner.WinnerController(
                 winnerInteractor);
+        this.winnerView.setWinnerController(winnerController);
         if (this.hostDashboardView != null)
             this.hostDashboardView.setComputeWinnerController(winnerController);
         // Also wire compute winner from VoteView (host-only visibility controls are in
         // VoteView)
         if (this.voteView != null) {
             this.voteView.setOnComputeWinner(() -> {
+                System.out.println("[AppBuilder] Computing winner...");
                 // Host initiates winner computation
                 winnerController.execute();
+                System.out.println("[AppBuilder] Winner computed, triggering global update...");
                 // Trigger a global update so participants pick up winner
                 if (updateRoomController != null) {
                     updateRoomController.execute();
+                    System.out.println("[AppBuilder] Global update completed");
+                } else {
+                    System.out.println("[AppBuilder] ERROR: updateRoomController is null!");
                 }
+                System.out.println("[AppBuilder] Navigating to Winner view");
                 viewManagerModel.setActiveViewName("Winner");
             });
         }
@@ -230,7 +237,7 @@ public class AppBuilder {
             this.participantsDashboardView.setGlobalUpdateController(this.updateRoomController);
         }
         if (this.voteView != null) {
-            this.voteView.setGlobalUpdateController(this.updateRoomController);
+            this.voteView.setUpdateRoomController(this.updateRoomController);
         }
         return this;
     }
