@@ -1,4 +1,4 @@
-package search;
+package use_case.search;
 
 import javax.swing.*;
 import data_access.tmdb.TmdbMovieGateway;

@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * Simple generic ViewModel with property change support and a typed state.
+ * Base ViewModel with Observer pattern support.
  */
 public class ViewModel<T> {
     protected final PropertyChangeSupport support = new PropertyChangeSupport(this);

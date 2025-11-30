@@ -2,31 +2,30 @@ package view;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.host_dashboard.HostDashboardState;
+import interface_adapter.shortlist.UpdateRoomController;
 import interface_adapter.host_dashboard.HostDashboardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
- * Host dashboard (shows room code, controls for lock, compute
- * winner, apply filters, etc.).
+ * Host dashboard (shows room code, navigation, and participants).
  */
 public class HostDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
     private final JLabel roomIdLabel;
     private final JButton searchButton;
     private final JButton shortlistButton;
-    private final JButton voteButton;
-    private JButton computeWinnerButton;
-    private interface_adapter.winner.WinnerController computeWinnerController;
     private final JPanel participantsPanel;
     private ViewManagerModel viewManagerModel;
     private final HostDashboardViewModel viewModel;
-    private interface_adapter.host_dashboard.HostRefreshController hostRefreshController;
+    private UpdateRoomController globalUpdateController;
     private interface_adapter.search.SearchViewModel searchViewModel;
 
     public HostDashboardView(HostDashboardViewModel viewModel) {
@@ -49,34 +48,33 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         shortlistButton = new JButton("Shortlist");
         shortlistButton.addActionListener(this);
         navigationPanel.add(shortlistButton);
-        voteButton = new JButton("Vote");
-        voteButton.addActionListener(this);
-        navigationPanel.add(voteButton);
-        // Host-only control: compute winner navigates to Winner view
-        computeWinnerButton = new JButton("Compute Winner");
-        computeWinnerButton.addActionListener(this);
-        final JPanel bottomPanel = new JPanel();
-        bottomPanel.add(computeWinnerButton);
-        add(bottomPanel, BorderLayout.SOUTH);
         add(navigationPanel, BorderLayout.CENTER);
 
-        // Participants Names
-        participantsPanel = new JPanel();
-        participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        // Participants Names along the bottom
+        participantsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.SOUTH);
 
-        // Optional: background refresh for participants
-        new Thread(() -> {
-            try {
-                while (true) {
-                    if (hostRefreshController != null) {
-                        hostRefreshController.execute();
-                    }
-                    Thread.sleep(5000);
-                }
-            } catch (InterruptedException ignored) {
+        // Event-driven refresh (no background polling)
+        registerUserActivityRefresh(this);
+        registerUserActivityRefresh(participantsPanel);
+        registerUserActivityRefresh(navigationPanel);
+        registerUserActivityRefresh(topPanel);
+    }
+
+    // No debounce per requirement
+
+    private void registerUserActivityRefresh(JComponent component) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                triggerRefreshOnActivity();
             }
-        }).start();
+        });
+    }
+
+    private void triggerRefreshOnActivity() {
+        if (globalUpdateController != null)
+            globalUpdateController.execute();
     }
 
     // Backwards-compatible no-arg constructor for existing tests
@@ -116,16 +114,6 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         } else if (src == shortlistButton) {
             if (viewManagerModel != null)
                 viewManagerModel.setActiveViewName("Shortlist");
-        } else if (src == voteButton) {
-            if (viewManagerModel != null)
-                viewManagerModel.setActiveViewName("Vote");
-        } else if (src == computeWinnerButton) {
-            if (computeWinnerController != null) {
-                computeWinnerController.execute();
-            }
-            if (viewManagerModel != null) {
-                viewManagerModel.setActiveViewName("Winner");
-            }
         }
     }
 
@@ -157,15 +145,11 @@ public class HostDashboardView extends JPanel implements ActionListener, Propert
         this.viewManagerModel = vm;
     }
 
-    public void setHostRefreshController(interface_adapter.host_dashboard.HostRefreshController c) {
-        this.hostRefreshController = c;
+    public void setGlobalUpdateController(UpdateRoomController c) {
+        this.globalUpdateController = c;
     }
 
     public void setSearchViewModel(interface_adapter.search.SearchViewModel searchViewModel) {
         this.searchViewModel = searchViewModel;
-    }
-
-    public void setComputeWinnerController(interface_adapter.winner.WinnerController c) {
-        this.computeWinnerController = c;
     }
 }

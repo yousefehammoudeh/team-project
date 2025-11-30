@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Random;
+import interface_adapter.vote.VoteViewModel;
 
 /**
  * Manual test harness for VoteView. Similar to other view tests in this
@@ -15,7 +16,7 @@ public class VoteViewTest {
         JFrame frame = new JFrame("Vote View - Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        VoteView view = new VoteView();
+        VoteView view = new VoteView(new VoteViewModel());
 
         // Try to use TMDB gateway if API key is available, otherwise fall back to
         // placeholders

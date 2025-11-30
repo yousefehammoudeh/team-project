@@ -15,10 +15,14 @@ public class VoteViewModel extends ViewModel<VoteState> {
         super("Vote");
         VoteState s = new VoteState();
         s.setBallotsReceivedCount(0);
-        s.setShortlistSize(0);
+        s.setParticipantCount(0);
         s.setWinnerMovieId(null);
         s.setScores(null);
         s.setError(null);
+        s.setPosterUrls(java.util.Collections.emptyList());
+        s.setMovieIds(java.util.Collections.emptyList());
+        s.setLocked(false);
+        s.setHasVoted(false);
         this.state = s;
     }
 

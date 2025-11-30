@@ -8,9 +8,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import interface_adapter.shortlist.UpdateRoomController;
 
 /**
  * Participants dashboard (shows room code).
@@ -21,7 +24,7 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
     private ViewManagerModel viewManagerModel;
     private final JLabel roomIdLabel;
     private final JPanel participantsPanel;
-    private interface_adapter.host_dashboard.ParticipantsRefreshController participantsRefreshController;
+    private UpdateRoomController globalUpdateController;
 
     public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
         this.joinedRoomViewModel = joinedRoomViewModel;
@@ -40,18 +43,40 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
         participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.CENTER);
 
-        // Optional: background refresh for participants
-        new Thread(() -> {
-            try {
-                while (true) {
-                    if (participantsRefreshController != null) {
-                        participantsRefreshController.execute();
-                    }
-                    Thread.sleep(5000);
+        // Navigation buttons
+        final JPanel navigationPanel = new JPanel();
+        final JButton shortlistButton = new JButton("Shortlist");
+        shortlistButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (viewManagerModel != null) {
+                    viewManagerModel.setActiveViewName(ViewManagerModel.SHORTLIST_VIEW);
                 }
-            } catch (InterruptedException ignored) {
             }
-        }).start();
+        });
+        navigationPanel.add(shortlistButton);
+        add(navigationPanel, BorderLayout.SOUTH);
+
+        // Event-driven refresh on user interaction (no background polling)
+        registerUserActivityRefresh(this);
+        registerUserActivityRefresh(participantsPanel);
+        registerUserActivityRefresh(navigationPanel);
+        registerUserActivityRefresh(topPanel);
+    }
+
+    private void registerUserActivityRefresh(JComponent component) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                triggerRefreshOnActivity();
+            }
+        });
+    }
+
+    private void triggerRefreshOnActivity() {
+        if (globalUpdateController != null) {
+            globalUpdateController.execute();
+        }
     }
 
     public void setRoomId(String id) {
@@ -77,27 +102,17 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final JoinedRoomState state = (JoinedRoomState) evt.getNewValue();
-        System.out.println("[ParticipantsDashboard] propertyChange: locked=" + state.isLocked() +
-                ", viewManagerModel=" + (viewManagerModel != null) +
-                ", currentView=" + (viewManagerModel != null ? viewManagerModel.getActiveViewName() : "null"));
         setRoomId(state.getRoomcode());
         updateParticipants(state.getParticipants());
         // Auto-navigate to Vote view if room is locked
         if (state.isLocked() && viewManagerModel != null &&
                 !ViewManagerModel.VOTE_VIEW.equals(viewManagerModel.getActiveViewName())) {
-            System.out.println("[ParticipantsDashboard] NAVIGATING TO VOTE NOW!");
             viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
-            System.out
-                    .println("[ParticipantsDashboard] After navigation, view=" + viewManagerModel.getActiveViewName());
-        } else {
-            System.out.println("[ParticipantsDashboard] NOT navigating: locked=" + state.isLocked() +
-                    ", alreadyOnVote=" + ViewManagerModel.VOTE_VIEW
-                            .equals(viewManagerModel != null ? viewManagerModel.getActiveViewName() : null));
         }
     }
 
-    public void setParticipantsRefreshController(interface_adapter.host_dashboard.ParticipantsRefreshController c) {
-        this.participantsRefreshController = c;
+    public void setGlobalUpdateController(UpdateRoomController c) {
+        this.globalUpdateController = c;
     }
 
     public void setViewManagerModel(ViewManagerModel vm) {

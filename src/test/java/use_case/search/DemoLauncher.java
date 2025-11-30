@@ -1,4 +1,4 @@
-package search;
+package use_case.search;
 
 import view.SearchView;
 import view.ShortlistView;
@@ -99,7 +99,7 @@ public class DemoLauncher {
                     // mimic AddMovieInteractor behaviour: check locked, duplicate, return output
                     // presenter
                     if (lockedFlag[0]) {
-                        shortlistPresenter.presentFailure("The shortlist is locked.");
+                        shortlistPresenter.presentFailure("The room is locked.");
                         return;
                     }
                     if (shortlistStore.contains(id)) {

@@ -9,6 +9,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -16,20 +18,13 @@ import java.beans.PropertyChangeListener;
  * Shortlist view: add/remove candidates, lock if host.
  */
 public class ShortlistView extends JPanel implements PropertyChangeListener {
-    private final static int UPDATE_INTERVAL = 20;
-
     private final String viewName = "Shortlist";
     private final ShortlistViewModel shortlistViewModel;
 
     private final DefaultListModel<String> movieListModel = new DefaultListModel<>();
     private final JList<String> shortlist;
-    private String selectedMovieID;
-    private int lastShortlistSize = 0;
-    private long lastUpdateTime = 0;
-    private long lastActionTime = 0;
-    private boolean lockInFlight = false;
-    private JButton lockButtonRef;
 
+    @SuppressWarnings("unused")
     private AddMovieController addMovieController;
     private RemoveMovieController removeMovieController;
     private UpdateRoomController updateRoomController;
@@ -37,6 +32,7 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
 
     private final JPanel shortlistPanel = new JPanel();
     private final JLabel lockedText = new JLabel();
+    private JButton voteButton;
 
     private ViewManagerModel viewManagerModel;
 
@@ -63,8 +59,19 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         controlsRow.add(removeButton);
 
         final JButton lockButton = new JButton("Lock");
-        this.lockButtonRef = lockButton;
         controlsRow.add(lockButton);
+
+        voteButton = new JButton("Vote");
+        voteButton.setVisible(false); // Initially hidden, shown when locked
+        voteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (viewManagerModel != null) {
+                    viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
+                }
+            }
+        });
+        controlsRow.add(voteButton);
 
         shortlistPanel.add(controlsRow, BorderLayout.NORTH);
 
@@ -76,18 +83,10 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                long currentTime = System.currentTimeMillis();
-                // Debounce: prevent action if less than 1 second since last action
-                if (currentTime - lastActionTime < 1000) {
-                    return;
-                }
                 String selectedDisplay = shortlist.getSelectedValue();
                 if (selectedDisplay != null) {
-                    // Extract the movie ID from "Movie ID: xxx" format
                     String movieId = selectedDisplay.replace("Movie ID: ", "");
                     removeMovieController.execute(movieId);
-                    selectedMovieID = null;
-                    lastActionTime = currentTime;
                 }
             }
         });
@@ -95,25 +94,14 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         lockButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                long currentTime = System.currentTimeMillis();
-                // Debounce: prevent action if less than 1500ms since last action
-                if (currentTime - lastActionTime < 1500 || lockInFlight) {
-                    return;
-                }
-                // Mark in-flight and disable button to prevent rapid re-clicks
-                lockInFlight = true;
-                if (lockButtonRef != null) {
-                    lockButtonRef.setEnabled(false);
-                }
                 toggleLockRoomController.execute();
-                lastActionTime = currentTime;
             }
         });
 
         shortlist.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                selectedMovieID = shortlist.getSelectedValue();
+                // No-op now
             }
         });
 
@@ -125,72 +113,50 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         // End controls
 
         this.add(shortlistPanel);
+        // Event-driven refresh on user activity (no background polling)
+        registerUserActivityRefresh(this);
+        registerUserActivityRefresh(shortlist);
+        registerUserActivityRefresh(controlsRow);
+    }
 
-        new Thread(() -> {
-            while (true) {
-                try {
-                    long currentTime = System.currentTimeMillis();
-                    // Only update if we're viewing this screen and no recent user action
-                    if (getViewName().equals(viewManagerModel.getActiveViewName()) &&
-                    // Skip auto-refresh for 30s after a user action to avoid rate limits
-                            (currentTime - lastActionTime) > 30000) {
-                        updateRoomController.execute();
-                    }
-                    Thread.sleep(UPDATE_INTERVAL * 1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+    private void registerUserActivityRefresh(JComponent component) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                triggerRefreshOnActivity();
             }
-        }).start();
+        });
+    }
+
+    private void triggerRefreshOnActivity() {
+        if (updateRoomController != null) {
+            updateRoomController.execute();
+        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final ShortlistState state = (ShortlistState) evt.getNewValue();
         if (state.getError() != null) {
-            // Suppress error popups to reduce noise/rate-limit dialogs
-            if (lockButtonRef != null) {
-                lockButtonRef.setEnabled(true);
-            }
-            lockInFlight = false;
+            // No popup
         } else {
             String selectedID = shortlist.getSelectedValue();
-            int newSize = state.getShortlist().size();
-            long currentTime = System.currentTimeMillis();
-
-            // Remove confirmation to avoid rate-limit popups and noise
-
             movieListModel.clear();
-            // Format movie entries for display (Movie ID: xxx)
             for (String movieId : state.getShortlist()) {
                 movieListModel.addElement("Movie ID: " + movieId);
             }
             shortlist.setSelectedValue(selectedID, true);
 
-            // no-op: confirmation removed
-
-            lastShortlistSize = newSize;
-            lastUpdateTime = currentTime;
-
             if (state.isLocked()) {
                 lockedText.setText("Locked");
-                // Lock succeeded; re-enable button and clear in-flight
-                if (lockButtonRef != null) {
-                    lockButtonRef.setEnabled(true);
-                }
-                lockInFlight = false;
-                // Transport to Vote view when locked
-                if (viewManagerModel != null &&
-                        !ViewManagerModel.VOTE_VIEW.equals(viewManagerModel.getActiveViewName())) {
-                    viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
+                if (voteButton != null) {
+                    voteButton.setVisible(true);
                 }
             } else {
                 lockedText.setText("Not Locked");
-                // Unlock state also clears in-flight and re-enables button
-                if (lockButtonRef != null) {
-                    lockButtonRef.setEnabled(true);
+                if (voteButton != null) {
+                    voteButton.setVisible(false);
                 }
-                lockInFlight = false;
             }
         }
     }

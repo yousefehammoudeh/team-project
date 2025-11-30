@@ -10,7 +10,4 @@ package use_case.vote;
 public interface VoteInputBoundary {
     /** Submit a ranked ballot for a participant. */
     void submitBallot(VoteInputData inputData);
-
-    /** Compute and announce the winner. Host privilege is checked by hostId. */
-    void computeWinner(String hostId);
 }

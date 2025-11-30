@@ -12,6 +12,7 @@ public class Room {
     private final List<String> shortlist;
     private final List<Ballot> ballots;
     private String selectedMovieId;
+    private String winnerMovieId;
 
     public Room(String code, String hostId) {
         this.code = code;
@@ -50,6 +51,14 @@ public class Room {
 
     public String getSelectedMovieId() {
         return selectedMovieId;
+    }
+
+    public String getWinnerMovieId() {
+        return winnerMovieId;
+    }
+
+    public void setWinnerMovieId(String winnerMovieId) {
+        this.winnerMovieId = winnerMovieId;
     }
 
     public synchronized boolean addParticipant(Participant p) {

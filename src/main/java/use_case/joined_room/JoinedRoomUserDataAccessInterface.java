@@ -5,5 +5,5 @@ import data_access.note_database.DataAccessException;
 
 public interface JoinedRoomUserDataAccessInterface {
 
-    void leaveRoom(String roomCode);
+    void leaveRoom(String roomCode) throws DataAccessException;
 }

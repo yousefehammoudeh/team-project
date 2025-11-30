@@ -38,9 +38,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Composes application wiring: view models, interactors, presenters,
- * controllers,
- * and Swing views registered in a CardLayout with an initial Welcome view.
+ * Assembles the application using Builder pattern.
+ * Integrates Factory, Façade, and Observer patterns throughout.
  */
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -54,12 +53,16 @@ public class AppBuilder {
     private ShortlistPresenter shortlistPresenter;
     private HostDashboardViewModel hostDashboardViewModel;
     private HostDashboardView hostDashboardView;
+    private ParticipantsDashboardView participantsDashboardView;
     private interface_adapter.shortlist.AddMovieController addMovieController;
     private view.SearchView searchView;
     private SearchViewModel searchViewModel;
     private JoinedRoomViewModel sharedJoinedRoomViewModel;
+    private interface_adapter.vote.VoteViewModel voteViewModel;
+    private view.VoteView voteView;
     private interface_adapter.winner.WinnerViewModel winnerViewModel;
     private view.WinnerView winnerView;
+    private interface_adapter.shortlist.UpdateRoomController updateRoomController; // store for winner refresh
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -75,20 +78,14 @@ public class AppBuilder {
         this.hostDashboardViewModel = new HostDashboardViewModel();
         this.hostDashboardView = new HostDashboardView(hostDashboardViewModel);
         hostDashboardView.setViewManagerModel(viewManagerModel);
-        hostDashboardView.setHostRefreshController(new interface_adapter.host_dashboard.HostRefreshController(
-                userDataAccessObject, hostDashboardViewModel));
-        // SearchViewModel will be set later when addSearchUseCase is called
+        // Global update controller will be injected later
         cardPanel.add(hostDashboardView, ViewManagerModel.HOST_DASHBOARD_VIEW);
 
         // Participants dashboard (shared JoinedRoomViewModel)
         this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
-        final ParticipantsDashboardView participantsDashboardView = new ParticipantsDashboardView(
-                sharedJoinedRoomViewModel);
-        participantsDashboardView.setViewManagerModel(viewManagerModel);
-        participantsDashboardView.setParticipantsRefreshController(
-                new interface_adapter.host_dashboard.ParticipantsRefreshController(userDataAccessObject,
-                        sharedJoinedRoomViewModel));
-        cardPanel.add(participantsDashboardView, sharedJoinedRoomViewModel.getViewName());
+        this.participantsDashboardView = new ParticipantsDashboardView(sharedJoinedRoomViewModel);
+        this.participantsDashboardView.setViewManagerModel(viewManagerModel);
+        cardPanel.add(this.participantsDashboardView, sharedJoinedRoomViewModel.getViewName());
 
         return this;
     }
@@ -132,6 +129,52 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addVoteView() {
+        this.voteViewModel = new interface_adapter.vote.VoteViewModel();
+        this.voteView = new view.VoteView(this.voteViewModel);
+        this.voteView.setViewManagerModel(viewManagerModel);
+        cardPanel.add(voteView, ViewManagerModel.VOTE_VIEW);
+        return this;
+    }
+
+    public AppBuilder addWinnerView() {
+        // Create ViewModels and View
+        this.winnerViewModel = new interface_adapter.winner.WinnerViewModel();
+        this.winnerView = new WinnerView();
+
+        // Use Factory pattern to create controller (encapsulates creation logic)
+        final interface_adapter.winner.WinnerController winnerController = interface_adapter.winner.WinnerComponentFactory
+                .createWinnerController(
+                        userDataAccessObject, winnerViewModel);
+
+        // Wire View to observe ViewModel changes (Observer pattern)
+        wireWinnerViewToViewModel();
+
+        // Wire controllers to views
+        this.winnerView.setWinnerController(winnerController);
+        if (this.voteView != null) {
+            this.voteView.setOnComputeWinner(() -> handleComputeWinner(winnerController));
+        }
+
+        cardPanel.add(winnerView, ViewManagerModel.WINNER_VIEW);
+        return this;
+    }
+
+    public AppBuilder addVoteUseCase() {
+        // Use Factory pattern to create controller (encapsulates creation logic)
+        final interface_adapter.vote.VoteController voteController = interface_adapter.vote.VoteComponentFactory
+                .createVoteController(
+                        userDataAccessObject, voteViewModel);
+
+        // Wire the submit handler to the VoteView
+        if (this.voteView != null) {
+            this.voteView.setOnSubmit(rankedMovieIds -> {
+                voteController.submitBallot(userDataAccessObject.getUsername(), rankedMovieIds);
+            });
+        }
+        return this;
+    }
+
     public AppBuilder addAddMovieUseCase() {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
@@ -163,10 +206,25 @@ public class AppBuilder {
         if (shortlistPresenter == null) {
             shortlistPresenter = new ShortlistPresenter(shortlistViewModel);
         }
-        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(userDataAccessObject,
-                shortlistPresenter);
-        UpdateRoomController updateRoomController = new UpdateRoomController(updateRoomInputBoundary);
-        shortlistView.setUpdateRoomController(updateRoomController);
+        UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(
+                userDataAccessObject,
+                shortlistPresenter,
+                hostDashboardViewModel,
+                sharedJoinedRoomViewModel,
+                voteViewModel,
+                viewManagerModel);
+        this.updateRoomController = new interface_adapter.shortlist.UpdateRoomController(
+                updateRoomInputBoundary);
+        shortlistView.setUpdateRoomController(this.updateRoomController);
+        if (this.hostDashboardView != null) {
+            this.hostDashboardView.setGlobalUpdateController(this.updateRoomController);
+        }
+        if (this.participantsDashboardView != null) {
+            this.participantsDashboardView.setGlobalUpdateController(this.updateRoomController);
+        }
+        if (this.voteView != null) {
+            this.voteView.setUpdateRoomController(this.updateRoomController);
+        }
         return this;
     }
 
@@ -210,22 +268,45 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Wire WinnerView to observe WinnerViewModel changes.
+     * Implements Observer pattern - View reacts to ViewModel state changes.
+     * Extracted method following "Extract Method" refactoring technique.
+     */
+    private void wireWinnerViewToViewModel() {
+        winnerViewModel.addPropertyChangeListener(evt -> {
+            interface_adapter.winner.WinnerState s = (interface_adapter.winner.WinnerState) evt.getNewValue();
+            if (s != null) {
+                winnerView.setWinnerTitle(s.getTitle());
+                winnerView.setPoster(s.getPoster());
+                winnerView.setDetails(s.getDetails());
+            }
+        });
+    }
+
+    /**
+     * Handle winner computation workflow.
+     * Extracted method following "Extract Method" refactoring technique.
+     * 
+     * @param winnerController controller to compute winner
+     */
+    private void handleComputeWinner(interface_adapter.winner.WinnerController winnerController) {
+        // Host initiates winner computation
+        winnerController.execute();
+
+        // Trigger a global update so participants pick up winner
+        if (updateRoomController != null) {
+            updateRoomController.execute();
+        }
+
+        // Navigate to winner view
+        viewManagerModel.setActiveViewName(ViewManagerModel.WINNER_VIEW);
+    }
+
     public JFrame build() {
         final JFrame application = new JFrame("ReelRound");
         application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         application.add(cardPanel);
-        // Winner view registration with presenter/controller
-        this.winnerViewModel = new interface_adapter.winner.WinnerViewModel();
-        this.winnerView = new WinnerView();
-        final interface_adapter.winner.WinnerPresenter winnerPresenter = new interface_adapter.winner.WinnerPresenter(
-                winnerViewModel, winnerView);
-        final interface_adapter.winner.WinnerController winnerController = new interface_adapter.winner.WinnerController(
-                userDataAccessObject, winnerPresenter);
-        if (this.hostDashboardView != null) {
-            this.hostDashboardView.setComputeWinnerController(winnerController);
-        }
-        cardPanel.add(winnerView, "Winner");
-        // Set initial view to welcome
         viewManagerModel.setActiveViewName(ViewManagerModel.WELCOME_VIEW);
         return application;
     }

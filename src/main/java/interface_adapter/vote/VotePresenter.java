@@ -3,9 +3,7 @@ package interface_adapter.vote;
 import use_case.vote.VoteOutputBoundary;
 import use_case.vote.VoteOutputData;
 
-/**
- * TODO: Presents voting state and winner to the view model.
- */
+/** Presents voting state updates and errors to the view model. */
 public class VotePresenter implements VoteOutputBoundary {
     private final VoteViewModel viewModel;
 
@@ -22,10 +20,12 @@ public class VotePresenter implements VoteOutputBoundary {
         }
         VoteState s = viewModel.getVoteState();
         s.setBallotsReceivedCount(outputData.getBallotsReceivedCount());
-        s.setShortlistSize(outputData.getShortlistSize());
+        s.setParticipantCount(outputData.getParticipantCount());
         s.setWinnerMovieId(outputData.getWinnerMovieId());
         s.setScores(outputData.getScores());
         s.setError(null);
+        // Set hasVoted from outputData (user-specific, not global ballot count)
+        s.setHasVoted(outputData.isCurrentUserHasVoted());
         viewModel.firePropertyChanged();
     }
 

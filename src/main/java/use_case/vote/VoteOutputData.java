@@ -12,14 +12,16 @@ public class VoteOutputData {
     private final String winnerMovieId;
     private final Map<String, Integer> scores;
     private final int ballotsReceivedCount;
-    private final int shortlistSize;
+    private final int participantCount;
+    private final boolean currentUserHasVoted;
 
     public VoteOutputData(String winnerMovieId, Map<String, Integer> scores, int ballotsReceivedCount,
-            int shortlistSize) {
+            int participantCount, boolean currentUserHasVoted) {
         this.winnerMovieId = winnerMovieId;
         this.scores = scores;
         this.ballotsReceivedCount = ballotsReceivedCount;
-        this.shortlistSize = shortlistSize;
+        this.participantCount = participantCount;
+        this.currentUserHasVoted = currentUserHasVoted;
     }
 
     public String getWinnerMovieId() {
@@ -34,7 +36,11 @@ public class VoteOutputData {
         return ballotsReceivedCount;
     }
 
-    public int getShortlistSize() {
-        return shortlistSize;
+    public int getParticipantCount() {
+        return participantCount;
+    }
+
+    public boolean isCurrentUserHasVoted() {
+        return currentUserHasVoted;
     }
 }

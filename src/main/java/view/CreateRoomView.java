@@ -1,5 +1,6 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.create_room.CreateRoomController;
 import interface_adapter.create_room.CreateRoomState;
 import interface_adapter.create_room.CreateRoomViewModel;
@@ -17,7 +18,7 @@ import java.beans.PropertyChangeListener;
  * Simple view to create a room by entering a host name.
  */
 public class CreateRoomView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final String viewName = "create room";
+    private final String viewName = ViewManagerModel.CREATE_ROOM_VIEW;
 
     private final CreateRoomViewModel viewModel;
 
