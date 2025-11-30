@@ -74,6 +74,12 @@ public class RoomDatabase implements
         return username.equals(room.getHostId());
     }
 
+    public boolean isShortlistLocked() throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        return room.isLocked();
+    }
+
     public boolean isLocked() throws DataAccessException {
         checkRoomLoaded();
         return room.isLocked();
@@ -176,24 +182,29 @@ public class RoomDatabase implements
         return result;
     }
 
-    public boolean isShortlistLocked() throws DataAccessException {
-        checkRoomLoaded();
-        refreshRoom();
-        return room.isLocked();
-    }
-
     public String getUsername() {
         return username;
     }
 
-    /**
-     * TODO: Properly implement leaveRoom with:
-     * - Load current room
-     * - Remove participant matching username
-     * - Save updated room
-     */
-    public void leaveRoom(String roomCode) {
-        throw new UnsupportedOperationException("leaveRoom not yet implemented");
+    public String getWinnerMovieId() throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        return room.getSelectedMovieId();
     }
 
+    public void setWinnerMovieId(String movieId) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.selectMovie(movieId);
+        saveRoom();
+    }
+
+    public void leaveRoom(String roomCode) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.removeParticipant(new Participant(username, username));
+        saveRoom();
+        room = null;
+
+    }
 }

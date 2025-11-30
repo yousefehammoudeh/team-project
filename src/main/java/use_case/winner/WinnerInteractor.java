@@ -1,0 +1,80 @@
+package use_case.winner;
+
+import data_access.note_database.DataAccessException;
+import data_access.room.RoomDatabase;
+import data_access.tmdb.TmdbMovieGateway;
+import entity.Ballot;
+
+import javax.swing.ImageIcon;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class WinnerInteractor implements WinnerInputBoundary {
+    private final RoomDatabase roomDb;
+    private final WinnerOutputBoundary presenter;
+    private final TmdbMovieGateway tmdb;
+
+    public WinnerInteractor(RoomDatabase roomDb, WinnerOutputBoundary presenter) {
+        this(roomDb, presenter, null);
+    }
+
+    public WinnerInteractor(RoomDatabase roomDb, WinnerOutputBoundary presenter, TmdbMovieGateway tmdbGateway) {
+        this.roomDb = roomDb;
+        this.presenter = presenter;
+        this.tmdb = (tmdbGateway == null ? new TmdbMovieGateway() : tmdbGateway);
+    }
+
+    @Override
+    public void computeWinner() {
+        try {
+            roomDb.refreshRoom();
+            List<Ballot> ballots = roomDb.getBallots();
+            List<String> shortlist = roomDb.getShortlist();
+            if (shortlist == null || shortlist.isEmpty()) {
+                presenter.presentFailure("Shortlist empty; cannot compute winner");
+                return;
+            }
+            Map<String, Integer> scores = new HashMap<>();
+            for (String m : shortlist)
+                scores.put(m, 0);
+            int n = shortlist.size();
+            for (Ballot b : ballots) {
+                List<String> ranked = b.getRankedMovieIds();
+                for (int i = 0; i < ranked.size(); i++) {
+                    String mid = ranked.get(i);
+                    if (scores.containsKey(mid)) {
+                        scores.put(mid, scores.get(mid) + (n - i));
+                    }
+                }
+            }
+            String winnerId = shortlist.get(0);
+            int best = -1;
+            for (Map.Entry<String, Integer> e : scores.entrySet()) {
+                if (e.getValue() > best) {
+                    best = e.getValue();
+                    winnerId = e.getKey();
+                }
+            }
+            var movie = tmdb.fetchDetails(winnerId, null);
+            ImageIcon icon = null;
+            String posterPath = movie.getPosterPath();
+            if (posterPath != null && !posterPath.isBlank()) {
+                try {
+                    String cleaned = posterPath.startsWith("/") ? posterPath : "/" + posterPath;
+                    java.net.URI uri = java.net.URI.create("https://image.tmdb.org/t/p/w300" + cleaned);
+                    icon = new ImageIcon(uri.toURL());
+                } catch (Exception ignored) {
+                }
+            }
+            // Persist winner id so other views can observe and navigate
+            roomDb.setWinnerMovieId(winnerId);
+            WinnerOutputData out = new WinnerOutputData(winnerId, movie.getTitle(),
+                    "Year: " + movie.getYear() + "\nLanguage: " + movie.getLanguage(), icon, scores);
+            presenter.present(out);
+        } catch (DataAccessException | IOException e) {
+            presenter.presentFailure(e.getMessage());
+        }
+    }
+}

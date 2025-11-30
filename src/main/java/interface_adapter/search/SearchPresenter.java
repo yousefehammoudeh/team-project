@@ -25,8 +25,6 @@ public class SearchPresenter implements SearchOutputBoundary {
 
         // Fire event so SearchView refreshes UI
         viewModel.firePropertyChanged();
-
-        System.out.println("[Presenter] Updated results: " + outputData.getMovies().size());
     }
 
     @Override
@@ -38,8 +36,6 @@ public class SearchPresenter implements SearchOutputBoundary {
 
         // Fire update
         viewModel.firePropertyChanged();
-
-        System.out.println("[Presenter] Error: " + message);
     }
 
     @Override

@@ -81,7 +81,7 @@ public class votedemo {
         VoteController voteController = new VoteController(voteInteractor);
 
         // View layer
-        VoteView voteView = new VoteView();
+        VoteView voteView = new VoteView(voteVM);
         voteView.setPosterUrls(posterUrls, movieIds);
 
         // Wire submit -> controller (controller constructs InputData and calls

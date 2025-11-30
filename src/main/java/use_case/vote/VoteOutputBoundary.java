@@ -1,10 +1,8 @@
 package use_case.vote;
 
-/**
- * TODO: Presenter API for voting outcomes.
- */
+/** Presenter API for voting outcomes and errors. */
 public interface VoteOutputBoundary {
     void present(VoteOutputData outputData);
+
     void presentFailure(String message);
 }
-

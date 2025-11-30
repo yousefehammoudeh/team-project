@@ -4,9 +4,7 @@ import use_case.vote.VoteInputBoundary;
 import use_case.vote.VoteInputData;
 import java.util.List;
 
-/**
- * TODO: Submits ranked ballots and requests winner computation (host).
- */
+/** Controller for submitting ballots. Winner computation handled separately. */
 public class VoteController {
     private final VoteInputBoundary interactor;
 

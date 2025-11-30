@@ -7,6 +7,7 @@ import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
+import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
@@ -28,7 +29,8 @@ public class InMemoryRoomDataAccessObject implements
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
         JoinedRoomUserDataAccessInterface,
-        ToggleLockRoomDataAccessInterface {
+        ToggleLockRoomDataAccessInterface,
+        UpdateRoomDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;
@@ -133,6 +135,16 @@ public class InMemoryRoomDataAccessObject implements
         return Collections.unmodifiableList(room.getBallots());
     }
 
+    public String getWinnerMovieId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getSelectedMovieId();
+    }
+
+    public void setWinnerMovieId(String movieId) throws DataAccessException {
+        checkRoomLoaded();
+        room.selectMovie(movieId);
+    }
+
     public String getUsername() {
         return username;
     }
@@ -141,12 +153,23 @@ public class InMemoryRoomDataAccessObject implements
         this.username = username;
     }
 
-    /**
-     * TODO: Stub implementation for leaveRoom.
-     * Should remove the current user from the room's participant list.
-     */
     public void leaveRoom(String roomCode) {
-        // Stub: Not yet implemented for in-memory testing
-        throw new UnsupportedOperationException("leaveRoom not yet implemented");
+        try {
+            checkRoomLoaded();
+            room.removeParticipant(new Participant(username, username));
+            room = null;
+        } catch (DataAccessException ignored) {
+        }
+    }
+
+    @Override
+    public boolean isShortlistLocked() throws DataAccessException {
+        return isLocked();
+    }
+
+    @Override
+    public void refreshRoom() throws DataAccessException {
+        // No-op for in-memory implementation - room is always fresh
+        checkRoomLoaded();
     }
 }

@@ -24,14 +24,11 @@ public class ParticipantsRefreshController {
             roomDb.refreshRoom();
             List<String> participants = roomDb.getParticipantIDs();
             boolean locked = roomDb.isShortlistLocked();
-            System.out.println("[ParticipantsRefreshController] Read from DB: locked=" + locked + ", participants="
-                    + participants.size());
             JoinedRoomState state = joinedRoomViewModel.getState();
             state.setParticipants(participants);
             state.setLocked(locked);
             // room code remains unchanged; ensure it is set once during join
             joinedRoomViewModel.firePropertyChanged();
-            System.out.println("[ParticipantsRefreshController] Fired property change");
         } catch (Exception e) {
             System.err.println("[ParticipantsRefreshController] ERROR: " + e.getMessage());
         }

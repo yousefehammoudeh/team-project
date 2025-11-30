@@ -10,10 +10,15 @@ import java.util.Map;
  */
 public class VoteState {
     private int ballotsReceivedCount;
-    private int shortlistSize;
+    private int participantCount;
     private String winnerMovieId;
     private Map<String, Integer> scores;
     private String error;
+    private java.util.List<String> posterUrls;
+    private java.util.List<String> movieIds;
+    private boolean shortlistLocked;
+    private boolean hasVoted;
+    private boolean host;
 
     public int getBallotsReceivedCount() {
         return ballotsReceivedCount;
@@ -23,12 +28,12 @@ public class VoteState {
         this.ballotsReceivedCount = ballotsReceivedCount;
     }
 
-    public int getShortlistSize() {
-        return shortlistSize;
+    public int getParticipantCount() {
+        return participantCount;
     }
 
-    public void setShortlistSize(int shortlistSize) {
-        this.shortlistSize = shortlistSize;
+    public void setParticipantCount(int participantCount) {
+        this.participantCount = participantCount;
     }
 
     public String getWinnerMovieId() {
@@ -53,5 +58,45 @@ public class VoteState {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public java.util.List<String> getPosterUrls() {
+        return posterUrls;
+    }
+
+    public void setPosterUrls(java.util.List<String> posterUrls) {
+        this.posterUrls = posterUrls;
+    }
+
+    public java.util.List<String> getMovieIds() {
+        return movieIds;
+    }
+
+    public void setMovieIds(java.util.List<String> movieIds) {
+        this.movieIds = movieIds;
+    }
+
+    public boolean isShortlistLocked() {
+        return shortlistLocked;
+    }
+
+    public void setShortlistLocked(boolean locked) {
+        this.shortlistLocked = locked;
+    }
+
+    public boolean hasVoted() {
+        return hasVoted;
+    }
+
+    public void setHasVoted(boolean hasVoted) {
+        this.hasVoted = hasVoted;
+    }
+
+    public boolean isHost() {
+        return host;
+    }
+
+    public void setHost(boolean host) {
+        this.host = host;
     }
 }
