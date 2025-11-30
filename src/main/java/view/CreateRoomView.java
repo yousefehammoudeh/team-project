@@ -1,69 +1,103 @@
 package view;
 
-import interface_adapter.create_room.CreateRoomViewModel;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.create_room.CreateRoomController;
 import interface_adapter.create_room.CreateRoomState;
+import interface_adapter.create_room.CreateRoomViewModel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Simple view to create a room by entering a host name.
+ */
 public class CreateRoomView extends JPanel implements ActionListener, PropertyChangeListener {
+    private final String viewName = ViewManagerModel.CREATE_ROOM_VIEW;
 
-    private final CreateRoomViewModel createRoomViewModel;
+    private final CreateRoomViewModel viewModel;
 
-    private CreateRoomController createRoomController;
+    private final JTextField hostNameField = new JTextField(16);
+    private final JButton createButton = new JButton("Create Room");
+    private CreateRoomController controller;
 
-    private final JTextField hostNameField = new JTextField(15);
-    private final JButton createRoomButton = new JButton("Create Room");
+    public CreateRoomView(CreateRoomViewModel vm) {
+        this.viewModel = vm;
+        this.viewModel.addPropertyChangeListener(this);
 
-    public CreateRoomView(CreateRoomViewModel createRoomViewModel) {
-        this.createRoomViewModel = createRoomViewModel;
-        this.createRoomViewModel.addPropertyChangeListener(this);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Layout
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        JLabel title = new JLabel("Create Room");
+        final JLabel title = new JLabel("Create a Room", SwingConstants.CENTER);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setFont(new Font("SansSerif", Font.BOLD, 22));
 
-        JLabel nameLabel = new JLabel("Enter your name:");
-        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        final JPanel hostPanel = new JPanel();
+        hostPanel.add(new JLabel("Host name:"));
+        hostPanel.add(hostNameField);
 
-        hostNameField.setMaximumSize(new Dimension(200, 30));
-        hostNameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        final JPanel buttons = new JPanel();
+        buttons.add(createButton);
 
-        createRoomButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        createRoomButton.addActionListener(this);
+        add(title);
+        add(Box.createRigidArea(new Dimension(0, 12)));
+        add(hostPanel);
+        add(Box.createRigidArea(new Dimension(0, 12)));
+        add(buttons);
 
-        this.add(title);
-        this.add(Box.createRigidArea(new Dimension(0, 20)));
-        this.add(nameLabel);
-        this.add(hostNameField);
-        this.add(Box.createRigidArea(new Dimension(0, 20)));
-        this.add(createRoomButton);
-    }
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.execute(hostNameField.getText());
+            }
+        });
 
-    public void setCreateRoomController(CreateRoomController controller) {
-        this.createRoomController = controller;
+        // keep VM state updated on typing
+        hostNameField.getDocument().addDocumentListener(new DocumentListener() {
+            private void sync() {
+                final CreateRoomState state = viewModel.getState();
+                state.setHostName(hostNameField.getText());
+                viewModel.setState(state);
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                sync();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                sync();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                sync();
+            }
+        });
     }
 
     @Override
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-        if (e.getSource().equals(createRoomButton)) {
-            String hostName = hostNameField.getText();
-            createRoomController.execute(hostName);
-        }
+    public void actionPerformed(ActionEvent e) {
+        // unused
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        CreateRoomState state = createRoomViewModel.getState();
-
+        final CreateRoomState state = (CreateRoomState) evt.getNewValue();
+        hostNameField.setText(state.getHostName());
         if (state.getError() != null) {
-            JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, state.getError());
         }
+    }
+
+    public void setController(CreateRoomController controller) {
+        this.controller = controller;
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 }

@@ -1,5 +1,7 @@
 package use_case.joined_room;
 
+import data_access.note_database.DataAccessException;
+
 public class JoinedRoomInteractor implements JoinedRoomInputBoundary {
     private JoinedRoomUserDataAccessInterface roomGateway;
     private JoinedRoomOutputBoundary presenter;
@@ -13,7 +15,11 @@ public class JoinedRoomInteractor implements JoinedRoomInputBoundary {
     @Override
     public void execute(String roomCode) {
 
-        roomGateway.leaveRoom(roomCode);
+        try {
+            roomGateway.leaveRoom(roomCode);
+        } catch (DataAccessException e) {
+            // TODO
+        }
         presenter.prepareSuccessView();
 
     }

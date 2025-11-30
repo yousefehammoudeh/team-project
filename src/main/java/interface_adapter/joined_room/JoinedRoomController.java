@@ -1,11 +1,9 @@
 package interface_adapter.joined_room;
 
-// removed unused import
-
 import use_case.joined_room.JoinedRoomInputBoundary;
 
 /**
- * TODO: Accepts code + name to join a room and delegates to interactor.
+ * Controller that delegates joined-room actions to the interactor.
  */
 public class JoinedRoomController {
     private final JoinedRoomInputBoundary interactor;
@@ -13,8 +11,6 @@ public class JoinedRoomController {
     public JoinedRoomController(JoinedRoomInputBoundary interactor) {
         this.interactor = interactor;
     }
-
-    // TODO: Method to trigger join (e.g., join(code, name))
 
     public void execute(String username) {
         interactor.execute(username);

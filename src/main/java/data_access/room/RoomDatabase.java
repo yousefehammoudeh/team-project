@@ -2,7 +2,6 @@ package data_access.room;
 
 import data_access.note_database.DataAccessException;
 import data_access.note_database.NoteDataAccessObject;
-import data_access.note_database.NoteDatabase;
 import entity.Ballot;
 import entity.Participant;
 import entity.Room;
@@ -30,7 +29,7 @@ public class RoomDatabase implements
         ToggleLockRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
-    private final NoteDatabase noteDatabase = new NoteDataAccessObject();
+    private final NoteDataAccessObject noteDatabase = new NoteDataAccessObject();
     private String username;
     private Room room;
 
@@ -52,6 +51,7 @@ public class RoomDatabase implements
     }
 
     public void refreshRoom() throws DataAccessException {
+        checkRoomLoaded();
         String note = noteDatabase.loadNote(getFormattedRoomCode());
         room = RoomJSONParser.JSONToRoom(note);
     }
@@ -65,7 +65,7 @@ public class RoomDatabase implements
 
     private void checkRoomLoaded() throws DataAccessException {
         if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+            throw new DataAccessException("Room not loaded. Create or join a room first.");
         }
     }
 
@@ -74,9 +74,10 @@ public class RoomDatabase implements
         return username.equals(room.getHostId());
     }
 
-
+    @Override
     public boolean isLocked() throws DataAccessException {
         checkRoomLoaded();
+        refreshRoom();
         return room.isLocked();
     }
 
@@ -135,8 +136,7 @@ public class RoomDatabase implements
         boolean added = room.addParticipant(new Participant(username, username));
         if (added) {
             saveRoom();
-        }
-        else {
+        } else {
             // Do not join the room if a user with the same name exists
             room = null;
         }
@@ -178,18 +178,30 @@ public class RoomDatabase implements
         return result;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
-    /**
-     * TODO: Properly implement leaveRoom with:
-     * - Load current room
-     * - Remove participant matching username
-     * - Save updated room
-     */
-    public void leaveRoom(String roomCode) {
-        throw new UnsupportedOperationException("leaveRoom not yet implemented");
+    @Override
+    public String getWinnerMovieId() throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        return room.getWinnerMovieId();
     }
 
+    public void setWinnerMovieId(String movieId) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.setWinnerMovieId(movieId);
+        saveRoom();
+    }
+
+    public void leaveRoom(String roomCode) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.removeParticipant(new Participant(username, username));
+        saveRoom();
+        room = null;
+    }
 }

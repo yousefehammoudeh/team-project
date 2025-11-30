@@ -15,15 +15,25 @@ import java.util.function.Consumer;
 /**
  * Simplified VoteView: only displays poster images and a "Submit Vote" button.
  */
-public class VoteView extends JPanel {
+public class VoteView extends JPanel implements java.beans.PropertyChangeListener {
     private final JPanel postersPanel;
     private final JButton submitButton = new JButton("Submit Vote");
+    private final JButton computeWinnerButton = new JButton("Compute Winner");
+    private final JButton viewWinnerButton = new JButton("View Winner");
     // mapping of label -> movie id and current ranked selection
     private final Map<JLabel, String> labelToMovieId = new HashMap<>();
     private final List<String> rankedSelection = new ArrayList<>();
     private Consumer<List<String>> onSubmit;
+    private Runnable onComputeWinner;
+    private interface_adapter.ViewManagerModel viewManagerModel;
+    private interface_adapter.vote.VoteViewModel viewModel;
+    private interface_adapter.shortlist.UpdateRoomController updateRoomController;
+    private final JLabel statusLabel = new JLabel("Waiting for votes...");
+    private final JLabel winnerLabel = new JLabel("Winner: -");
 
-    public VoteView() {
+    public VoteView(interface_adapter.vote.VoteViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(8, 8));
 
         postersPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
@@ -32,7 +42,11 @@ public class VoteView extends JPanel {
         scroller.setPreferredSize(new Dimension(880, 320));
         add(scroller, BorderLayout.CENTER);
 
-        final JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel bottom = new JPanel(new BorderLayout());
+        final JPanel infoPanel = new JPanel(new GridLayout(2, 1));
+        infoPanel.add(statusLabel);
+        infoPanel.add(winnerLabel);
+        bottom.add(infoPanel, BorderLayout.WEST);
         submitButton.addActionListener(e -> {
             if (onSubmit != null) {
                 onSubmit.accept(new ArrayList<>(rankedSelection));
@@ -42,8 +56,43 @@ public class VoteView extends JPanel {
                 JOptionPane.showMessageDialog(this, "Submit Vote pressed (no handler attached)");
             }
         });
-        bottom.add(submitButton);
+        // Right side: submit + compute winner (host-only visible) + view winner
+        final JPanel rightButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        rightButtons.add(submitButton);
+        computeWinnerButton.addActionListener(e -> {
+            if (onComputeWinner != null) {
+                onComputeWinner.run();
+            } else {
+                JOptionPane.showMessageDialog(this, "Compute Winner pressed (no handler attached)");
+            }
+        });
+        rightButtons.add(computeWinnerButton);
+        viewWinnerButton.addActionListener(e -> {
+            // Refresh state first to get latest winner info
+            if (updateRoomController != null) {
+                updateRoomController.execute();
+            }
+            // Check if winner exists after refresh
+            if (viewManagerModel != null && viewModel != null) {
+                String winnerId = viewModel.getVoteState().getWinnerMovieId();
+                if (winnerId != null && !winnerId.isBlank()) {
+                    viewManagerModel.setActiveViewName(interface_adapter.ViewManagerModel.WINNER_VIEW);
+                }
+            }
+        });
+        rightButtons.add(viewWinnerButton);
+        bottom.add(rightButtons, BorderLayout.EAST);
         add(bottom, BorderLayout.SOUTH);
+
+        // Trigger update when view becomes visible to load posters
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                if (updateRoomController != null) {
+                    updateRoomController.execute();
+                }
+            }
+        });
     }
 
     /**
@@ -147,6 +196,52 @@ public class VoteView extends JPanel {
      */
     public void setOnSubmit(Consumer<List<String>> handler) {
         this.onSubmit = handler;
+    }
+
+    /** Attach a handler to compute winner when host presses the button. */
+    public void setOnComputeWinner(Runnable handler) {
+        this.onComputeWinner = handler;
+    }
+
+    /** Inject view manager to allow navigation when winner detected. */
+    public void setViewManagerModel(interface_adapter.ViewManagerModel vm) {
+        this.viewManagerModel = vm;
+    }
+
+    /** Inject update room controller to refresh state when view becomes visible. */
+    public void setUpdateRoomController(interface_adapter.shortlist.UpdateRoomController controller) {
+        this.updateRoomController = controller;
+    }
+
+    @Override
+    public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        interface_adapter.vote.VoteState s = (interface_adapter.vote.VoteState) evt.getNewValue();
+        if (s == null)
+            return;
+
+        // Update posters if state contains them
+        if (s.getPosterUrls() != null && s.getMovieIds() != null &&
+                !s.getPosterUrls().isEmpty() && !s.getMovieIds().isEmpty()) {
+            setPosterUrls(s.getPosterUrls(), s.getMovieIds());
+        }
+
+        // Update bottom status and controls
+        statusLabel.setText("Ballots: " + s.getBallotsReceivedCount() + "/" + s.getParticipantCount());
+        if (s.getWinnerMovieId() != null) {
+            winnerLabel.setText("Winner: " + s.getWinnerMovieId());
+        } else {
+            winnerLabel.setText("Winner: -");
+        }
+        // Enable submit only if locked AND user hasn't voted yet
+        submitButton.setEnabled(s.isLocked() && !s.hasVoted());
+        if (s.hasVoted()) {
+            submitButton.setText("Vote Submitted");
+        } else {
+            submitButton.setText("Submit Vote");
+        }
+
+        // Host-only compute winner button: visible only to host, always enabled
+        computeWinnerButton.setVisible(s.isHost());
     }
 
     /** Update UI to display the computed scores for each movie id. */

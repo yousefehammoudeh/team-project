@@ -3,11 +3,11 @@ package data_access.room;
 import data_access.note_database.DataAccessException;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
-import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
+import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
@@ -30,7 +30,7 @@ public class InMemoryRoomDataAccessObject implements
         JoinRoomUserDataAccessInterface,
         JoinedRoomUserDataAccessInterface,
         ToggleLockRoomDataAccessInterface,
-        CreateRoomUserDataAccessInterface {
+        UpdateRoomDataAccessInterface {
 
     private Map<String, Room> rooms;
     private String username;
@@ -47,7 +47,7 @@ public class InMemoryRoomDataAccessObject implements
 
     private void checkRoomLoaded() throws DataAccessException {
         if (room == null) {
-            throw new DataAccessException("Room not loaded. Call createRoom() or joinRoom() first.");
+            throw new DataAccessException("Room not loaded. Create or join a room first.");
         }
     }
 
@@ -135,6 +135,17 @@ public class InMemoryRoomDataAccessObject implements
         return Collections.unmodifiableList(room.getBallots());
     }
 
+    public String getWinnerMovieId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getWinnerMovieId();
+    }
+
+    public void setWinnerMovieId(String movieId) throws DataAccessException {
+        checkRoomLoaded();
+        room.setWinnerMovieId(movieId);
+    }
+
+    @Override
     public String getUsername() {
         return username;
     }
@@ -143,12 +154,15 @@ public class InMemoryRoomDataAccessObject implements
         this.username = username;
     }
 
-    /**
-     * TODO: Stub implementation for leaveRoom.
-     * Should remove the current user from the room's participant list.
-     */
-    public void leaveRoom(String roomCode) {
-        // Stub: Not yet implemented for in-memory testing
-        throw new UnsupportedOperationException("leaveRoom not yet implemented");
+    public void leaveRoom(String roomCode) throws DataAccessException {
+        checkRoomLoaded();
+        room.removeParticipant(new Participant(username, username));
+        room = null;
+    }
+
+    @Override
+    public void refreshRoom() throws DataAccessException {
+        // No-op for in-memory implementation - room is always fresh
+        checkRoomLoaded();
     }
 }

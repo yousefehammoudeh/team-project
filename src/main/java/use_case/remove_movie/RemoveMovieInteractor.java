@@ -20,6 +20,9 @@ public class RemoveMovieInteractor implements RemoveMovieInputBoundary {
             if (roomDataAccessObject.isLocked()) {
                 shortlistPresenter.presentFailure("The room is locked.");
             }
+            else if (!roomDataAccessObject.isHost()) {
+                shortlistPresenter.presentFailure("Only the host can remove movies from the shortlist.");
+            }
             else {
                 final boolean success = roomDataAccessObject.removeMovie(movieID);
                 if (success) {
