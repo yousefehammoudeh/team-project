@@ -18,7 +18,7 @@ import interface_adapter.shortlist.UpdateRoomController;
 /**
  * Participants dashboard (shows room code).
  */
-public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+public class JoinedRoomView extends JPanel implements ActionListener, PropertyChangeListener {
     @SuppressWarnings("unused")
     private final JoinedRoomViewModel joinedRoomViewModel;
     private ViewManagerModel viewManagerModel;
@@ -26,7 +26,7 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
     private final JPanel participantsPanel;
     private UpdateRoomController globalUpdateController;
 
-    public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
+    public JoinedRoomView(JoinedRoomViewModel joinedRoomViewModel) {
         this.joinedRoomViewModel = joinedRoomViewModel;
         this.joinedRoomViewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(10, 10));

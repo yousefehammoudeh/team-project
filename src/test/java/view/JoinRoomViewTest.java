@@ -14,6 +14,7 @@ public class JoinRoomViewTest {
 
         frame.add(view);
         frame.setSize(800, 700);
+        frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);
     }

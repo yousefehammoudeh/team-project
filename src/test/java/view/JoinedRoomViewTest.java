@@ -6,12 +6,12 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
-public class ParticipantsDashboardTest {
+public class JoinedRoomViewTest {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Participants Dashboard - Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JoinedRoomViewModel viewModel = new JoinedRoomViewModel();
-        ParticipantsDashboardView view = new ParticipantsDashboardView(viewModel);
+        JoinedRoomView view = new JoinedRoomView(viewModel);
 
         view.setRoomId("ROOM12");
 
