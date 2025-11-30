@@ -23,7 +23,7 @@ public class ParticipantsRefreshController {
         try {
             roomDb.refreshRoom();
             List<String> participants = roomDb.getParticipantIDs();
-            boolean locked = roomDb.isShortlistLocked();
+            boolean locked = roomDb.isLocked();
             JoinedRoomState state = joinedRoomViewModel.getState();
             state.setParticipants(participants);
             state.setLocked(locked);

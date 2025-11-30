@@ -22,7 +22,7 @@ public class HostRefreshController {
             List<String> participants = roomDb.getParticipantIDs();
             HostDashboardState state = hostDashboardViewModel.getState();
             state.setParticipants(participants);
-            state.setLocked(roomDb.isShortlistLocked());
+            state.setLocked(roomDb.isLocked());
             hostDashboardViewModel.firePropertyChanged();
         } catch (Exception ignored) {
         }

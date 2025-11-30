@@ -21,7 +21,7 @@ public class VoteViewModel extends ViewModel<VoteState> {
         s.setError(null);
         s.setPosterUrls(java.util.Collections.emptyList());
         s.setMovieIds(java.util.Collections.emptyList());
-        s.setShortlistLocked(false);
+        s.setLocked(false);
         s.setHasVoted(false);
         this.state = s;
     }

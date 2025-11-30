@@ -43,6 +43,7 @@ public class SearchPresenter implements SearchOutputBoundary {
         viewManagerModel.setActiveViewName(ViewManagerModel.SHORTLIST_VIEW);
     }
 
+    @Override
     public void switchToHostDashboardView() {
         viewManagerModel.setActiveViewName(ViewManagerModel.HOST_DASHBOARD_VIEW);
     }

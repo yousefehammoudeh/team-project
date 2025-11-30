@@ -9,11 +9,14 @@ import java.beans.PropertyChangeListener;
 public class ViewManagerModel extends ViewModel<String> {
     // Common view name constants
     public static final String WELCOME_VIEW = "Welcome";
+    public static final String CREATE_ROOM_VIEW = "create room";
+    public static final String JOIN_ROOM_VIEW = "join";
     public static final String HOST_DASHBOARD_VIEW = "HostDashboard";
     public static final String PARTICIPANTS_DASHBOARD_VIEW = "ParticipantsDashboard";
     public static final String SHORTLIST_VIEW = "Shortlist";
     public static final String VOTE_VIEW = "Vote";
     public static final String SEARCH_VIEW = "Search";
+    public static final String WINNER_VIEW = "Winner";
 
     private String activeViewName;
 

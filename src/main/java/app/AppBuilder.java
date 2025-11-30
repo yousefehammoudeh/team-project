@@ -152,14 +152,11 @@ public class AppBuilder {
 
         // Wire controllers to views
         this.winnerView.setWinnerController(winnerController);
-        if (this.hostDashboardView != null) {
-            this.hostDashboardView.setComputeWinnerController(winnerController);
-        }
         if (this.voteView != null) {
             this.voteView.setOnComputeWinner(() -> handleComputeWinner(winnerController));
         }
 
-        cardPanel.add(winnerView, "Winner");
+        cardPanel.add(winnerView, ViewManagerModel.WINNER_VIEW);
         return this;
     }
 
@@ -303,7 +300,7 @@ public class AppBuilder {
         }
 
         // Navigate to winner view
-        viewManagerModel.setActiveViewName("Winner");
+        viewManagerModel.setActiveViewName(ViewManagerModel.WINNER_VIEW);
     }
 
     public JFrame build() {
