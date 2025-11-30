@@ -3,9 +3,7 @@ package interface_adapter.join_room;
 import use_case.join_room.JoinRoomInputBoundary;
 import use_case.join_room.JoinRoomInputData;
 
-/**
- * TODO: Accepts code + name to join a room and delegates to interactor.
- */
+/***/
 public class JoinRoomController {
     private final JoinRoomInputBoundary interactor;
 
@@ -13,10 +11,9 @@ public class JoinRoomController {
         this.interactor = interactor;
     }
 
-    // TODO: Method to trigger join (e.g., join(code, name))
-
     /**
      * Executes the Join Room Use Case.
+     * 
      * @param username the username to join a room
      * @param roomcode the code to join a room
      */

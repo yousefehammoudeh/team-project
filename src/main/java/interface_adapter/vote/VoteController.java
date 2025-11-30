@@ -5,7 +5,7 @@ import use_case.vote.VoteInputData;
 import java.util.List;
 
 /**
- * TODO: Submits ranked ballots and requests winner computation (host).
+ * Controller for submitting ballots.
  */
 public class VoteController {
     private final VoteInputBoundary interactor;
@@ -17,9 +17,5 @@ public class VoteController {
     public void submitBallot(String participantId, List<String> rankedMovieIds) {
         VoteInputData data = new VoteInputData(participantId, rankedMovieIds);
         interactor.submitBallot(data);
-    }
-
-    public void computeWinner(String hostId) {
-        interactor.computeWinner(hostId);
     }
 }

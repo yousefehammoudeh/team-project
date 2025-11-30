@@ -25,6 +25,7 @@ public class RoomJSONParser {
     private static final String BALLOTS = "ballots";
     private static final String NAME = "name";
     private static final String BALLOT = "ballot";
+    private static final String WINNER = "winner";
 
     public static Room JSONToRoom(String json) {
         JSONObject jsonObject = new JSONObject(json);
@@ -60,7 +61,14 @@ public class RoomJSONParser {
             ballots.add(new Ballot(participantId, movieIds));
         }
 
-        return new Room(code, hostId, locked, participants, shortlist, ballots);
+        Room room = new Room(code, hostId, locked, participants, shortlist, ballots);
+
+        // Parse winner if present
+        if (jsonObject.has(WINNER) && !jsonObject.isNull(WINNER)) {
+            room.setWinnerMovieId(jsonObject.getString(WINNER));
+        }
+
+        return room;
     }
 
     public static String RoomToJSON(Room room) {
@@ -95,6 +103,11 @@ public class RoomJSONParser {
             ballotArray.put(ballotObject);
         }
         jsonObject.put(BALLOTS, ballotArray);
+
+        // Add winner if present
+        if (room.getWinnerMovieId() != null) {
+            jsonObject.put(WINNER, room.getWinnerMovieId());
+        }
 
         return jsonObject.toString();
     }

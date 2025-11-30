@@ -18,9 +18,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * TODO: Search view (search field, results list, details panel).
+ * Search view: query input, results list and add-to-shortlist actions.
  */
-public class SearchView extends JPanel implements ActionListener, PropertyChangeListener {
+public class SearchView extends JPanel implements PropertyChangeListener {
 
     @SuppressWarnings("unused")
     private final String viewName = "Search View";
@@ -28,6 +28,7 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
     @SuppressWarnings("unused")
     private ViewManagerModel viewManagerModel;
 
+    private final JButton dashboard;
     private final JLabel roomId;
     private final JButton shortList;
 
@@ -58,10 +59,20 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
 
         // header; room id, button to the shortlist
         final JPanel header = new JPanel();
-        roomId = new JLabel("room code");
+        roomId = new JLabel("Room ID: Not Set");
+        roomId.setFont(new Font("Serif", Font.BOLD, 16));
         header.add(roomId);
-        shortList = new JButton("shortlist");
+        dashboard = new JButton("Dashboard");
+        header.add(dashboard);
+        shortList = new JButton("Shortlist");
         header.add(shortList);
+
+        dashboard.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        searchController.switchToHostDashboardView();
+                    }
+                });
 
         shortList.addActionListener(
                 new ActionListener() {
@@ -118,10 +129,9 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         this.addMovieController = controller;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Trigger search via controller
-    }
+    private static final ImageIcon PLACEHOLDER_ICON = new ImageIcon(
+            SearchView.class.getClassLoader().getResource("placeholder.png"),
+            "placeholder.png not found in resources");
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -130,6 +140,11 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         if (state == null)
             return;
 
+        // Update room ID if present
+        if (state.getRoomId() != null) {
+            roomId.setText("Room ID: " + state.getRoomId());
+        }
+
         List<Movie> movies = state.getMovies();
         if (movies == null)
             return;
@@ -137,8 +152,8 @@ public class SearchView extends JPanel implements ActionListener, PropertyChange
         searchListPanel.removeAll();
 
         for (Movie movie : movies) {
+            ImageIcon icon = PLACEHOLDER_ICON;
             String posterPath = movie.getPosterPath();
-            ImageIcon icon = null;
 
             if (posterPath != null && !posterPath.isBlank()) {
                 try {

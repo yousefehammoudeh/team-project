@@ -1,15 +1,19 @@
 package view;
 
 import interface_adapter.joined_room.JoinedRoomState;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.joined_room.JoinedRoomViewModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import interface_adapter.shortlist.UpdateRoomController;
 
 /**
  * Participants dashboard (shows room code).
@@ -17,11 +21,14 @@ import java.util.List;
 public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
     @SuppressWarnings("unused")
     private final JoinedRoomViewModel joinedRoomViewModel;
+    private ViewManagerModel viewManagerModel;
     private final JLabel roomIdLabel;
     private final JPanel participantsPanel;
+    private UpdateRoomController globalUpdateController;
 
     public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
         this.joinedRoomViewModel = joinedRoomViewModel;
+        this.joinedRoomViewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(10, 10));
 
         // Room ID
@@ -36,6 +43,40 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
         participantsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.CENTER);
 
+        // Navigation buttons
+        final JPanel navigationPanel = new JPanel();
+        final JButton shortlistButton = new JButton("Shortlist");
+        shortlistButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (viewManagerModel != null) {
+                    viewManagerModel.setActiveViewName(ViewManagerModel.SHORTLIST_VIEW);
+                }
+            }
+        });
+        navigationPanel.add(shortlistButton);
+        add(navigationPanel, BorderLayout.SOUTH);
+
+        // Event-driven refresh on user interaction (no background polling)
+        registerUserActivityRefresh(this);
+        registerUserActivityRefresh(participantsPanel);
+        registerUserActivityRefresh(navigationPanel);
+        registerUserActivityRefresh(topPanel);
+    }
+
+    private void registerUserActivityRefresh(JComponent component) {
+        component.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                triggerRefreshOnActivity();
+            }
+        });
+    }
+
+    private void triggerRefreshOnActivity() {
+        if (globalUpdateController != null) {
+            globalUpdateController.execute();
+        }
     }
 
     public void setRoomId(String id) {
@@ -60,9 +101,21 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO: Update UI based on ViewModel changes
         final JoinedRoomState state = (JoinedRoomState) evt.getNewValue();
         setRoomId(state.getRoomcode());
         updateParticipants(state.getParticipants());
+        // Auto-navigate to Vote view if room is locked
+        if (state.isLocked() && viewManagerModel != null &&
+                !ViewManagerModel.VOTE_VIEW.equals(viewManagerModel.getActiveViewName())) {
+            viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
+        }
+    }
+
+    public void setGlobalUpdateController(UpdateRoomController c) {
+        this.globalUpdateController = c;
+    }
+
+    public void setViewManagerModel(ViewManagerModel vm) {
+        this.viewManagerModel = vm;
     }
 }

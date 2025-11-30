@@ -74,9 +74,10 @@ public class RoomDatabase implements
         return username.equals(room.getHostId());
     }
 
-
+    @Override
     public boolean isLocked() throws DataAccessException {
         checkRoomLoaded();
+        refreshRoom();
         return room.isLocked();
     }
 
@@ -135,8 +136,7 @@ public class RoomDatabase implements
         boolean added = room.addParticipant(new Participant(username, username));
         if (added) {
             saveRoom();
-        }
-        else {
+        } else {
             // Do not join the room if a user with the same name exists
             room = null;
         }
@@ -178,18 +178,27 @@ public class RoomDatabase implements
         return result;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
-    /**
-     * TODO: Properly implement leaveRoom with:
-     * - Load current room
-     * - Remove participant matching username
-     * - Save updated room
-     */
-    public void leaveRoom(String roomCode) {
-        throw new UnsupportedOperationException("leaveRoom not yet implemented");
+    @Override
+    public String getWinnerMovieId() throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        return room.getWinnerMovieId();
     }
 
+    public void setWinnerMovieId(String movieId) throws DataAccessException {
+        checkRoomLoaded();
+        refreshRoom();
+        room.setWinnerMovieId(movieId);
+        saveRoom();
+    }
+
+    public void leaveRoom(String roomCode) throws DataAccessException {
+        checkRoomLoaded();
+        // Stub: handled by dedicated leave-room persistence in another PR
+    }
 }

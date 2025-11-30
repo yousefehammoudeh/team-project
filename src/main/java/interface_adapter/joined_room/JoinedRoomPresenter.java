@@ -5,7 +5,8 @@ import use_case.joined_room.JoinedRoomOutputBoundary;
 import interface_adapter.join_room.JoinRoomViewModel;
 
 /**
- * TODO: Presents room state after joining.
+ * Presents joined-room outcomes (e.g., leave-room): clears state and navigates
+ * back to the join view.
  */
 public class JoinedRoomPresenter implements JoinedRoomOutputBoundary {
     private final JoinRoomViewModel joinRoomViewModel;
@@ -22,14 +23,11 @@ public class JoinedRoomPresenter implements JoinedRoomOutputBoundary {
 
     @Override
     public void prepareSuccessView() {
-        // TODO: Update view model and notify
-
         // clear everything in the JoinRoomViewModel's state
         joinedRoomViewModel.setState(new JoinedRoomState());
 
         // switch to the join room view
         this.viewManagerModel.setActiveViewName(joinRoomViewModel.getViewName());
-        this.viewManagerModel.firePropertyChanged();
     }
 
 }

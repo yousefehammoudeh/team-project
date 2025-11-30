@@ -1,15 +1,14 @@
 package interface_adapter.create_room;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
 
 /**
  * ViewModel wrapper for CreateRoomState.
  */
 public class CreateRoomViewModel extends ViewModel<CreateRoomState> {
-
-    CreateRoomViewModel() {
-        super("create room");
+    public CreateRoomViewModel() {
+        super(ViewManagerModel.CREATE_ROOM_VIEW);
         setState(new CreateRoomState());
     }
 }
-

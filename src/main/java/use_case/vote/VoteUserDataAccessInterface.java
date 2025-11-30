@@ -24,8 +24,9 @@ public interface VoteUserDataAccessInterface {
     /** Return number of participants in the room. Used to show expected ballots. */
     int participantsCount() throws DataAccessException;
 
-    /**
-     * Check whether the given participantId is the host (used for privileged ops).
-     */
+    /** Is current user host (privileged ops). */
     boolean isHost() throws DataAccessException;
+
+    /** Is shortlist locked (voting allowed only when locked). */
+    boolean isLocked() throws DataAccessException;
 }
