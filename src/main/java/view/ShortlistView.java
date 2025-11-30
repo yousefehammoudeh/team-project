@@ -152,10 +152,6 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
                 if (voteButton != null) {
                     voteButton.setVisible(true);
                 }
-                if (viewManagerModel != null &&
-                        !ViewManagerModel.VOTE_VIEW.equals(viewManagerModel.getActiveViewName())) {
-                    viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
-                }
             } else {
                 lockedText.setText("Not Locked");
                 if (voteButton != null) {

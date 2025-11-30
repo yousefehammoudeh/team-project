@@ -12,4 +12,8 @@ public class WinnerController {
     public void execute() {
         interactor.computeWinner();
     }
+
+    public void displayWinner() {
+        interactor.displayWinner();
+    }
 }

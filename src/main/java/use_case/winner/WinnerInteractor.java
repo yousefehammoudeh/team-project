@@ -69,9 +69,41 @@ public class WinnerInteractor implements WinnerInputBoundary {
                 }
             }
             // Persist winner id so other views can observe and navigate
+            System.out.println("[WinnerInteractor] Setting winner ID to: " + winnerId);
             roomDb.setWinnerMovieId(winnerId);
+            System.out.println("[WinnerInteractor] Winner ID persisted to database");
             WinnerOutputData out = new WinnerOutputData(winnerId, movie.getTitle(),
                     "Year: " + movie.getYear() + "\nLanguage: " + movie.getLanguage(), icon, scores);
+            presenter.present(out);
+        } catch (DataAccessException | IOException e) {
+            presenter.presentFailure(e.getMessage());
+        }
+    }
+
+    @Override
+    public void displayWinner() {
+        try {
+            roomDb.refreshRoom();
+            String winnerId = roomDb.getWinnerMovieId();
+            if (winnerId == null || winnerId.isBlank()) {
+                presenter.presentFailure("No winner has been computed yet");
+                return;
+            }
+
+            var movie = tmdb.fetchDetails(winnerId, null);
+            ImageIcon icon = null;
+            String posterPath = movie.getPosterPath();
+            if (posterPath != null && !posterPath.isBlank()) {
+                try {
+                    String cleaned = posterPath.startsWith("/") ? posterPath : "/" + posterPath;
+                    java.net.URI uri = java.net.URI.create("https://image.tmdb.org/t/p/w300" + cleaned);
+                    icon = new ImageIcon(uri.toURL());
+                } catch (Exception ignored) {
+                }
+            }
+
+            WinnerOutputData out = new WinnerOutputData(winnerId, movie.getTitle(),
+                    "Year: " + movie.getYear() + "\nLanguage: " + movie.getLanguage(), icon, null);
             presenter.present(out);
         } catch (DataAccessException | IOException e) {
             presenter.presentFailure(e.getMessage());

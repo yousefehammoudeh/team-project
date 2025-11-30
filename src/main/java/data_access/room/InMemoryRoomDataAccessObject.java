@@ -137,12 +137,12 @@ public class InMemoryRoomDataAccessObject implements
 
     public String getWinnerMovieId() throws DataAccessException {
         checkRoomLoaded();
-        return room.getSelectedMovieId();
+        return room.getWinnerMovieId();
     }
 
     public void setWinnerMovieId(String movieId) throws DataAccessException {
         checkRoomLoaded();
-        room.selectMovie(movieId);
+        room.setWinnerMovieId(movieId);
     }
 
     public String getUsername() {
