@@ -2,6 +2,9 @@ package interface_adapter.winner;
 
 import use_case.winner.WinnerInputBoundary;
 
+/**
+ * Controller for winner computation and display.
+ */
 public class WinnerController {
     private final WinnerInputBoundary interactor;
 

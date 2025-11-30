@@ -1,25 +1,23 @@
 package interface_adapter.winner;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import interface_adapter.ViewModel;
 
-public class WinnerViewModel {
-    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
-    private final WinnerState state = new WinnerState();
+/**
+ * ViewModel wrapper for WinnerState.
+ * Follows Observer pattern as the Observable component.
+ * 
+ * Responsibilities:
+ * - Hold the observable WinnerState instance
+ * - Notify observers when state changes
+ */
+public class WinnerViewModel extends ViewModel<WinnerState> {
 
-    public WinnerState getState() {
-        return state;
+    public WinnerViewModel() {
+        super("Winner");
+        this.state = new WinnerState();
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        support.addPropertyChangeListener(l);
-    }
-
-    public void firePropertyChanged() {
-        support.firePropertyChange("state", null, state);
-    }
-
-    public String getViewName() {
-        return "Winner";
+    public WinnerState getWinnerState() {
+        return this.state;
     }
 }

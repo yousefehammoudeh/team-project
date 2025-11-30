@@ -57,9 +57,4 @@ public class VoteInteractor implements VoteInputBoundary {
             presenter.presentFailure("Database error: " + e.getMessage());
         }
     }
-
-    @Override
-    public void computeWinner(String hostId) {
-        presenter.presentFailure("Winner computation handled by separate WinnerInteractor");
-    }
 }
