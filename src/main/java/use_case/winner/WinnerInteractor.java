@@ -69,9 +69,7 @@ public class WinnerInteractor implements WinnerInputBoundary {
                 }
             }
             // Persist winner id so other views can observe and navigate
-            System.out.println("[WinnerInteractor] Setting winner ID to: " + winnerId);
             roomDb.setWinnerMovieId(winnerId);
-            System.out.println("[WinnerInteractor] Winner ID persisted to database");
             WinnerOutputData out = new WinnerOutputData(winnerId, movie.getTitle(),
                     "Year: " + movie.getYear() + "\nLanguage: " + movie.getLanguage(), icon, scores);
             presenter.present(out);

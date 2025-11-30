@@ -38,9 +38,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Composes application wiring: view models, interactors, presenters,
- * controllers,
- * and Swing views registered in a CardLayout with an initial Welcome view.
+ * Assembles the application using Builder pattern.
+ * Integrates Factory, Façade, and Observer patterns throughout.
  */
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -139,47 +138,37 @@ public class AppBuilder {
     }
 
     public AppBuilder addWinnerView() {
+        // Create ViewModels and View
         this.winnerViewModel = new interface_adapter.winner.WinnerViewModel();
         this.winnerView = new WinnerView();
-        final interface_adapter.winner.WinnerPresenter winnerPresenter = new interface_adapter.winner.WinnerPresenter(
-                winnerViewModel, winnerView);
-        final use_case.winner.WinnerInputBoundary winnerInteractor = new use_case.winner.WinnerInteractor(
-                userDataAccessObject, winnerPresenter);
-        final interface_adapter.winner.WinnerController winnerController = new interface_adapter.winner.WinnerController(
-                winnerInteractor);
+
+        // Use Factory pattern to create controller (encapsulates creation logic)
+        final interface_adapter.winner.WinnerController winnerController = interface_adapter.winner.WinnerComponentFactory
+                .createWinnerController(
+                        userDataAccessObject, winnerViewModel);
+
+        // Wire View to observe ViewModel changes (Observer pattern)
+        wireWinnerViewToViewModel();
+
+        // Wire controllers to views
         this.winnerView.setWinnerController(winnerController);
-        if (this.hostDashboardView != null)
+        if (this.hostDashboardView != null) {
             this.hostDashboardView.setComputeWinnerController(winnerController);
-        // Also wire compute winner from VoteView (host-only visibility controls are in
-        // VoteView)
-        if (this.voteView != null) {
-            this.voteView.setOnComputeWinner(() -> {
-                System.out.println("[AppBuilder] Computing winner...");
-                // Host initiates winner computation
-                winnerController.execute();
-                System.out.println("[AppBuilder] Winner computed, triggering global update...");
-                // Trigger a global update so participants pick up winner
-                if (updateRoomController != null) {
-                    updateRoomController.execute();
-                    System.out.println("[AppBuilder] Global update completed");
-                } else {
-                    System.out.println("[AppBuilder] ERROR: updateRoomController is null!");
-                }
-                System.out.println("[AppBuilder] Navigating to Winner view");
-                viewManagerModel.setActiveViewName("Winner");
-            });
         }
+        if (this.voteView != null) {
+            this.voteView.setOnComputeWinner(() -> handleComputeWinner(winnerController));
+        }
+
         cardPanel.add(winnerView, "Winner");
         return this;
     }
 
     public AppBuilder addVoteUseCase() {
-        final interface_adapter.vote.VotePresenter votePresenter = new interface_adapter.vote.VotePresenter(
-                voteViewModel);
-        final use_case.vote.VoteInputBoundary voteInteractor = new use_case.vote.VoteInteractor(
-                userDataAccessObject, votePresenter);
-        final interface_adapter.vote.VoteController voteController = new interface_adapter.vote.VoteController(
-                voteInteractor);
+        // Use Factory pattern to create controller (encapsulates creation logic)
+        final interface_adapter.vote.VoteController voteController = interface_adapter.vote.VoteComponentFactory
+                .createVoteController(
+                        userDataAccessObject, voteViewModel);
+
         // Wire the submit handler to the VoteView
         if (this.voteView != null) {
             this.voteView.setOnSubmit(rankedMovieIds -> {
@@ -280,6 +269,41 @@ public class AppBuilder {
         ToggleLockRoomController toggleLockRoomController = new ToggleLockRoomController(toggleLockRoomInputBoundary);
         shortlistView.setToggleLockRoomController(toggleLockRoomController);
         return this;
+    }
+
+    /**
+     * Wire WinnerView to observe WinnerViewModel changes.
+     * Implements Observer pattern - View reacts to ViewModel state changes.
+     * Extracted method following "Extract Method" refactoring technique.
+     */
+    private void wireWinnerViewToViewModel() {
+        winnerViewModel.addPropertyChangeListener(evt -> {
+            interface_adapter.winner.WinnerState s = (interface_adapter.winner.WinnerState) evt.getNewValue();
+            if (s != null) {
+                winnerView.setWinnerTitle(s.getTitle());
+                winnerView.setPoster(s.getPoster());
+                winnerView.setDetails(s.getDetails());
+            }
+        });
+    }
+
+    /**
+     * Handle winner computation workflow.
+     * Extracted method following "Extract Method" refactoring technique.
+     * 
+     * @param winnerController controller to compute winner
+     */
+    private void handleComputeWinner(interface_adapter.winner.WinnerController winnerController) {
+        // Host initiates winner computation
+        winnerController.execute();
+
+        // Trigger a global update so participants pick up winner
+        if (updateRoomController != null) {
+            updateRoomController.execute();
+        }
+
+        // Navigate to winner view
+        viewManagerModel.setActiveViewName("Winner");
     }
 
     public JFrame build() {

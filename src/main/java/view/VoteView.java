@@ -60,39 +60,24 @@ public class VoteView extends JPanel implements java.beans.PropertyChangeListene
         final JPanel rightButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         rightButtons.add(submitButton);
         computeWinnerButton.addActionListener(e -> {
-            System.out.println("[VoteView] Compute Winner button clicked");
             if (onComputeWinner != null) {
-                System.out.println("[VoteView] Running onComputeWinner handler");
                 onComputeWinner.run();
-                System.out.println("[VoteView] onComputeWinner handler completed");
             } else {
-                System.out.println("[VoteView] ERROR: No onComputeWinner handler attached");
                 JOptionPane.showMessageDialog(this, "Compute Winner pressed (no handler attached)");
             }
         });
         rightButtons.add(computeWinnerButton);
         viewWinnerButton.addActionListener(e -> {
-            System.out.println("[VoteView] View Winner button clicked");
             // Refresh state first to get latest winner info
             if (updateRoomController != null) {
-                System.out.println("[VoteView] Refreshing room state...");
                 updateRoomController.execute();
-                System.out.println("[VoteView] Room state refreshed");
-            } else {
-                System.out.println("[VoteView] WARNING: No updateRoomController available");
             }
             // Check if winner exists after refresh
             if (viewManagerModel != null && viewModel != null) {
                 String winnerId = viewModel.getVoteState().getWinnerMovieId();
-                System.out.println("[VoteView] Winner ID from state: " + winnerId);
                 if (winnerId != null && !winnerId.isBlank()) {
-                    System.out.println("[VoteView] Navigating to Winner view");
                     viewManagerModel.setActiveViewName("Winner");
-                } else {
-                    System.out.println("[VoteView] Winner not computed yet - not navigating");
                 }
-            } else {
-                System.out.println("[VoteView] ERROR: viewManagerModel or viewModel is null");
             }
         });
         rightButtons.add(viewWinnerButton);
