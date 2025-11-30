@@ -53,7 +53,7 @@ public class Room {
     }
 
     public synchronized boolean addParticipant(Participant p) {
-        if (getParticipants().stream().anyMatch(existing -> existing.getId().equals(p.getId()))) {
+        if (getParticipants().stream().anyMatch(existing -> existing.getName().equals(p.getName()))) {
             return false;
         }
         boolean added = getParticipants().add(p);

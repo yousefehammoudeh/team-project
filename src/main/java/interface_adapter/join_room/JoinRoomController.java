@@ -23,11 +23,4 @@ public class JoinRoomController {
 
         interactor.execute(joinRoomInputData);
     }
-
-    /**
-     * Executes the "switch to CreateRoom" Use Case.
-     */
-    public void switchToCreateRoomView() {
-        interactor.switchToCreateRoomView();
-    }
 }

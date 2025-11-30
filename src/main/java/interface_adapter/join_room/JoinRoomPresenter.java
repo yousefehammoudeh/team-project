@@ -48,8 +48,5 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
         joinRoomState.setUsernameError(message);
         joinRoomViewModel.firePropertyChanged();
     }
-
-    public void switchToCreateRoomView() {
-        viewManagerModel.setActiveViewName(createRoomViewModel.getViewName());
-    }
+    
 }
