@@ -9,7 +9,7 @@ import java.awt.*;
  * Welcome screen - entry point for creating or joining a room.
  */
 public class WelcomeView extends JPanel {
-    private final String viewName = "Welcome";
+    private final String viewName = ViewManagerModel.WELCOME_VIEW;
     @SuppressWarnings("unused")
     private final ViewManagerModel viewManagerModel;
 
@@ -30,13 +30,13 @@ public class WelcomeView extends JPanel {
         final JButton createRoomButton = new JButton("Create New Room (Host)");
         createRoomButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         createRoomButton.addActionListener(e -> {
-            viewManagerModel.setActiveViewName("create room");
+            viewManagerModel.setActiveViewName(ViewManagerModel.CREATE_ROOM_VIEW);
         });
 
         final JButton joinRoomButton = new JButton("Join Existing Room");
         joinRoomButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         joinRoomButton.addActionListener(e -> {
-            viewManagerModel.setActiveViewName("join");
+            viewManagerModel.setActiveViewName(ViewManagerModel.JOIN_ROOM_VIEW);
         });
         buttonsPanel.add(createRoomButton);
         buttonsPanel.add(joinRoomButton);

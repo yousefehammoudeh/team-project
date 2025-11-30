@@ -31,7 +31,7 @@ public class VoteInteractor implements VoteInputBoundary {
             return;
         }
         try {
-            if (!gateway.isShortlistLocked()) {
+            if (!gateway.isLocked()) {
                 presenter.presentFailure("Shortlist not locked; voting disabled");
                 return;
             }

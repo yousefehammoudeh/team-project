@@ -1,5 +1,6 @@
 package interface_adapter.winner;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
 
 /**
@@ -13,7 +14,7 @@ import interface_adapter.ViewModel;
 public class WinnerViewModel extends ViewModel<WinnerState> {
 
     public WinnerViewModel() {
-        super("Winner");
+        super(ViewManagerModel.WINNER_VIEW);
         this.state = new WinnerState();
     }
 

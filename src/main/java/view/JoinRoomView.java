@@ -1,5 +1,6 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.join_room.JoinRoomController;
 import interface_adapter.join_room.JoinRoomState;
 import interface_adapter.join_room.JoinRoomViewModel;
@@ -14,7 +15,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class JoinRoomView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final String viewName = "join";
+    private final String viewName = ViewManagerModel.JOIN_ROOM_VIEW;
 
     private final JoinRoomViewModel joinRoomViewModel;
     private final JTextField usernameInputField = new JTextField(15);

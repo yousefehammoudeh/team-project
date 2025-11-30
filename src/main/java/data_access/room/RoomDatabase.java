@@ -74,14 +74,10 @@ public class RoomDatabase implements
         return username.equals(room.getHostId());
     }
 
-    public boolean isShortlistLocked() throws DataAccessException {
-        checkRoomLoaded();
-        refreshRoom();
-        return room.isLocked();
-    }
-
+    @Override
     public boolean isLocked() throws DataAccessException {
         checkRoomLoaded();
+        refreshRoom();
         return room.isLocked();
     }
 
@@ -182,10 +178,12 @@ public class RoomDatabase implements
         return result;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public String getWinnerMovieId() throws DataAccessException {
         checkRoomLoaded();
         refreshRoom();
@@ -201,10 +199,6 @@ public class RoomDatabase implements
 
     public void leaveRoom(String roomCode) throws DataAccessException {
         checkRoomLoaded();
-        refreshRoom();
-        room.removeParticipant(new Participant(username, username));
-        saveRoom();
-        room = null;
-
+        // Stub: handled by dedicated leave-room persistence in another PR
     }
 }

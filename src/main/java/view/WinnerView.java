@@ -1,5 +1,6 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.winner.WinnerController;
 
 import javax.swing.*;
@@ -42,7 +43,7 @@ public class WinnerView extends JPanel {
     }
 
     public String getViewName() {
-        return "Winner";
+        return ViewManagerModel.WINNER_VIEW;
     }
 
     public void setWinnerTitle(String title) {

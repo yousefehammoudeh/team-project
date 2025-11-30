@@ -76,7 +76,7 @@ public class VoteView extends JPanel implements java.beans.PropertyChangeListene
             if (viewManagerModel != null && viewModel != null) {
                 String winnerId = viewModel.getVoteState().getWinnerMovieId();
                 if (winnerId != null && !winnerId.isBlank()) {
-                    viewManagerModel.setActiveViewName("Winner");
+                    viewManagerModel.setActiveViewName(interface_adapter.ViewManagerModel.WINNER_VIEW);
                 }
             }
         });
@@ -233,7 +233,7 @@ public class VoteView extends JPanel implements java.beans.PropertyChangeListene
             winnerLabel.setText("Winner: -");
         }
         // Enable submit only if locked AND user hasn't voted yet
-        submitButton.setEnabled(s.isShortlistLocked() && !s.hasVoted());
+        submitButton.setEnabled(s.isLocked() && !s.hasVoted());
         if (s.hasVoted()) {
             submitButton.setText("Vote Submitted");
         } else {

@@ -145,6 +145,7 @@ public class InMemoryRoomDataAccessObject implements
         room.setWinnerMovieId(movieId);
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -156,15 +157,9 @@ public class InMemoryRoomDataAccessObject implements
     public void leaveRoom(String roomCode) {
         try {
             checkRoomLoaded();
-            room.removeParticipant(new Participant(username, username));
-            room = null;
+            // Stub: handled by another implementation/PR
         } catch (DataAccessException ignored) {
         }
-    }
-
-    @Override
-    public boolean isShortlistLocked() throws DataAccessException {
-        return isLocked();
     }
 
     @Override

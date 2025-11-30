@@ -1,5 +1,6 @@
 package interface_adapter.join_room;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
 
 /**
@@ -13,7 +14,7 @@ public class JoinRoomViewModel extends ViewModel<JoinRoomState> {
     public static final String CREATE_BUTTON_LABEL = "Create";
 
     public JoinRoomViewModel() {
-        super("join");
+        super(ViewManagerModel.JOIN_ROOM_VIEW);
         setState(new JoinRoomState());
     }
     // Uses base getViewName()

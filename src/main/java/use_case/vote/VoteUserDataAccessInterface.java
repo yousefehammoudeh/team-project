@@ -28,5 +28,5 @@ public interface VoteUserDataAccessInterface {
     boolean isHost() throws DataAccessException;
 
     /** Is shortlist locked (voting allowed only when locked). */
-    boolean isShortlistLocked() throws DataAccessException;
+    boolean isLocked() throws DataAccessException;
 }

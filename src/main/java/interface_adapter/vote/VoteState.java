@@ -16,7 +16,7 @@ public class VoteState {
     private String error;
     private java.util.List<String> posterUrls;
     private java.util.List<String> movieIds;
-    private boolean shortlistLocked;
+    private boolean locked;
     private boolean hasVoted;
     private boolean host;
 
@@ -76,12 +76,12 @@ public class VoteState {
         this.movieIds = movieIds;
     }
 
-    public boolean isShortlistLocked() {
-        return shortlistLocked;
+    public boolean isLocked() {
+        return locked;
     }
 
-    public void setShortlistLocked(boolean locked) {
-        this.shortlistLocked = locked;
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     public boolean hasVoted() {

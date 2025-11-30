@@ -51,10 +51,12 @@ public class WinnerInteractor implements WinnerInputBoundary {
             }
             String winnerId = shortlist.get(0);
             int best = -1;
-            for (Map.Entry<String, Integer> e : scores.entrySet()) {
-                if (e.getValue() > best) {
-                    best = e.getValue();
-                    winnerId = e.getKey();
+            // Iterate using shortlist order so ties favor earlier movies deterministically
+            for (String movieId : shortlist) {
+                Integer score = scores.get(movieId);
+                if (score != null && score > best) {
+                    best = score;
+                    winnerId = movieId;
                 }
             }
             var movie = tmdb.fetchDetails(winnerId, null);

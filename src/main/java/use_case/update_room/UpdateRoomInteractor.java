@@ -1,6 +1,7 @@
 package use_case.update_room;
 
 import data_access.note_database.DataAccessException;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.host_dashboard.HostDashboardState;
 import interface_adapter.host_dashboard.HostDashboardViewModel;
 import interface_adapter.joined_room.JoinedRoomState;
@@ -17,7 +18,7 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
     private final JoinedRoomViewModel joinedRoomViewModel;
     private final VoteViewModel voteViewModel;
     private final data_access.tmdb.TmdbMovieGateway tmdbGateway;
-    private final interface_adapter.ViewManagerModel viewManagerModel;
+    private final ViewManagerModel viewManagerModel;
 
     public UpdateRoomInteractor(UpdateRoomDataAccessInterface roomDataAccessObject,
             ShortlistOutputBoundary shortlistPresenter,
@@ -43,7 +44,7 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
             HostDashboardViewModel hostDashboardViewModel,
             JoinedRoomViewModel joinedRoomViewModel,
             VoteViewModel voteViewModel,
-            interface_adapter.ViewManagerModel viewManagerModel) {
+            ViewManagerModel viewManagerModel) {
         this.roomDataAccessObject = roomDataAccessObject;
         this.shortlistPresenter = shortlistPresenter;
         this.hostDashboardViewModel = hostDashboardViewModel;
@@ -96,7 +97,7 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
                 VoteState voteState = voteViewModel.getVoteState();
                 voteState.setMovieIds(shortlist);
                 voteState.setPosterUrls(posterUrls);
-                voteState.setShortlistLocked(roomDataAccessObject.isLocked());
+                voteState.setLocked(roomDataAccessObject.isLocked());
                 voteState.setParticipantCount(roomDataAccessObject.participantsCount());
 
                 // Get ballots and check if current user has voted
@@ -114,7 +115,7 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
                 if (winnerId != null && !winnerId.isBlank()) {
                     voteState.setWinnerMovieId(winnerId);
                     if (viewManagerModel != null) {
-                        viewManagerModel.setActiveViewName("Winner");
+                        viewManagerModel.setActiveViewName(ViewManagerModel.WINNER_VIEW);
                     }
                 }
 
