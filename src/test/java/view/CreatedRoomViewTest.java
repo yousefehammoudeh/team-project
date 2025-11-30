@@ -15,6 +15,7 @@ public class CreatedRoomViewTest {
 
         CreatedRoomState state = vm.getState();
         state.setRoomCode("A1B2C3");
+        state.setHostName("Diana");
         vm.firePropertyChanged();
 
         frame.add(view);

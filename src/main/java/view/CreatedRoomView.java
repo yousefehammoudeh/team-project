@@ -15,6 +15,7 @@ import java.util.List;
 public class CreatedRoomView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private final JLabel roomIdLabel;
+    private final JLabel hostNameLabel;
     private final JPanel participantsPanel;
 
     private final JButton searchButton;
@@ -31,14 +32,25 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
 
         setLayout(new BorderLayout(10, 10));
 
-        // --- TOP: Room Code ---
+        // ROOM ID AND HOST NAME
         final JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+
         roomIdLabel = new JLabel("Room ID: <unknown>", SwingConstants.CENTER);
         roomIdLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        roomIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        hostNameLabel = new JLabel("Host: <unknown>", SwingConstants.CENTER);
+        hostNameLabel.setFont(new Font("Serif", Font.PLAIN, 18));
+        hostNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         topPanel.add(roomIdLabel);
+        topPanel.add(Box.createVerticalStrut(5));
+        topPanel.add(hostNameLabel);
+
         add(topPanel, BorderLayout.NORTH);
 
-        // --- CENTER: Buttons ---
+        // BUTTONS
         final JPanel centerPanel = new JPanel();
 
         searchButton = new JButton("\uD83D\uDD0D");  // search icon
@@ -55,17 +67,19 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // --- BOTTOM: Participants ---
+        // PARTICIPANTS
         participantsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         add(participantsPanel, BorderLayout.SOUTH);
     }
 
-    /** Update only the room code */
     private void updateRoomCode(String roomCode) {
         roomIdLabel.setText("Room ID: " + roomCode);
     }
 
-    /** Update participant list */
+    private void updateHostName(String hostName) {
+        hostNameLabel.setText("Host: " + hostName);
+    }
+
     private void updateParticipants(List<String> names) {
         participantsPanel.removeAll();
 
@@ -101,6 +115,7 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
         CreatedRoomState state = viewModel.getState();
 
         updateRoomCode(state.getRoomCode());
+        updateHostName(state.getHostName());
         updateParticipants(state.getParticipants());
     }
 

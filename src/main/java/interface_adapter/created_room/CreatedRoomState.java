@@ -5,7 +5,12 @@ import java.util.List;
 
 public class CreatedRoomState {
     private String roomCode = "";
+    private String hostName = "";
     private List<String> participants = new ArrayList<>();
+
+    public String getHostName() { return hostName; }
+
+    public void setHostName(String hostName) { this.hostName = hostName; }
 
     public String getRoomCode() { return roomCode; }
 

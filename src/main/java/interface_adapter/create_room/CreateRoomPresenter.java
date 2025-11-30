@@ -25,6 +25,7 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
     public void present(CreateRoomOutputData outputData) {
 
         CreatedRoomState state = createdRoomViewModel.getState();
+        state.setHostName(outputData.getHostName());
         state.setRoomCode(outputData.getRoomCode());
         createdRoomViewModel.firePropertyChanged();
 
