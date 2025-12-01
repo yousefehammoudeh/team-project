@@ -24,9 +24,9 @@ public class RoomDatabase implements
         CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        UpdateRoomDataAccessInterface,
         JoinedRoomUserDataAccessInterface,
-        ToggleLockRoomDataAccessInterface {
+        ToggleLockRoomDataAccessInterface,
+        UpdateRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDataAccessObject noteDatabase = new NoteDataAccessObject();
