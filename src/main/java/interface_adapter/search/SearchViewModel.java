@@ -1,11 +1,12 @@
 package interface_adapter.search;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
 
 public class SearchViewModel extends ViewModel<SearchState> {
 
     public SearchViewModel() {
-        super("Search");
+        super(ViewManagerModel.SEARCH_VIEW);
         this.state = new SearchState();
     }
 

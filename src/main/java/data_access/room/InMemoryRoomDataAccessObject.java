@@ -5,10 +5,8 @@ import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
-import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
-import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
@@ -30,7 +28,6 @@ public class InMemoryRoomDataAccessObject implements
         CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        JoinedRoomUserDataAccessInterface,
         ToggleLockRoomDataAccessInterface {
 
     private final Map<String, Room> rooms;
@@ -55,6 +52,11 @@ public class InMemoryRoomDataAccessObject implements
     public boolean isHost() throws DataAccessException {
         checkRoomLoaded();
         return username.equals(room.getHostId());
+    }
+
+    public String getHostId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getHostId();
     }
 
     public boolean isLocked() throws DataAccessException {

@@ -79,6 +79,15 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         });
         controlsRow.add(lockButton);
 
+        final JButton updateButton = new JButton("Refresh");
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateRoomController.execute();
+            }
+        });
+        controlsRow.add(updateButton);
+
         voteButton = new JButton("Vote");
         voteButton.setVisible(false); // Initially hidden, shown when locked
         voteButton.addActionListener(new ActionListener() {
@@ -131,7 +140,7 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         final ShortlistState state = (ShortlistState) evt.getNewValue();
         if (state.getError() != null) {
-            // No popup
+            JOptionPane.showMessageDialog(this, state.getError());
         } else {
             MovieNameIDPair selectedItem = shortlist.getSelectedValue();
             movieListModel.clear();

@@ -12,9 +12,4 @@ public interface JoinRoomOutputBoundary {
      * @param message the explanation of the failure
      */
     void presentFailure(String message);
-
-    /**
-     * Switches to the Create Room View.
-     */
-    void switchToCreateRoomView();
 }

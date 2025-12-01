@@ -36,9 +36,8 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
                 if (!added) {
                     presenter.presentFailure("User already exists.");
                 } else {
-                    List<String> p = roomGateway.getParticipantIDs();
-                    final JoinRoomOutputData joinRoomOutputData = new JoinRoomOutputData(p,
-                            joinRoomInputData.getUsername(),
+                    final JoinRoomOutputData joinRoomOutputData = new JoinRoomOutputData(roomGateway.getParticipantIDs(),
+                            roomGateway.getHostId(),
                             joinRoomInputData.getRoomcode());
                     presenter.prepareSuccessView(joinRoomOutputData);
                 }
@@ -52,10 +51,5 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
 
         }
 
-    }
-
-    @Override
-    public void switchToCreateRoomView() {
-        presenter.switchToCreateRoomView();
     }
 }

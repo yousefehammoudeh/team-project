@@ -2,10 +2,8 @@ package use_case.update_room;
 
 import data_access.note_database.DataAccessException;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.host_dashboard.HostDashboardState;
-import interface_adapter.host_dashboard.HostDashboardViewModel;
-import interface_adapter.joined_room.JoinedRoomState;
-import interface_adapter.joined_room.JoinedRoomViewModel;
+import interface_adapter.created_room.CreatedRoomState;
+import interface_adapter.created_room.CreatedRoomViewModel;
 import interface_adapter.vote.VoteState;
 import interface_adapter.vote.VoteViewModel;
 import use_case.shortlist.ShortlistOutputBoundary;
@@ -14,21 +12,18 @@ import use_case.shortlist.ShortlistOutputData;
 public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
     UpdateRoomDataAccessInterface roomDataAccessObject;
     private final ShortlistOutputBoundary shortlistPresenter;
-    private final HostDashboardViewModel hostDashboardViewModel;
-    private final JoinedRoomViewModel joinedRoomViewModel;
+    private final CreatedRoomViewModel createdRoomViewModel;
     private final VoteViewModel voteViewModel;
     private final data_access.tmdb.TmdbMovieGateway tmdbGateway;
     private final ViewManagerModel viewManagerModel;
 
     public UpdateRoomInteractor(UpdateRoomDataAccessInterface roomDataAccessObject,
             ShortlistOutputBoundary shortlistPresenter,
-            HostDashboardViewModel hostDashboardViewModel,
-            JoinedRoomViewModel joinedRoomViewModel,
+            CreatedRoomViewModel createdRoomViewModel,
             VoteViewModel voteViewModel) {
         this.roomDataAccessObject = roomDataAccessObject;
         this.shortlistPresenter = shortlistPresenter;
-        this.hostDashboardViewModel = hostDashboardViewModel;
-        this.joinedRoomViewModel = joinedRoomViewModel;
+        this.createdRoomViewModel = createdRoomViewModel;
         this.voteViewModel = voteViewModel;
         this.tmdbGateway = new data_access.tmdb.TmdbMovieGateway();
         this.viewManagerModel = null;
@@ -41,14 +36,12 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
 
     public UpdateRoomInteractor(UpdateRoomDataAccessInterface roomDataAccessObject,
             ShortlistOutputBoundary shortlistPresenter,
-            HostDashboardViewModel hostDashboardViewModel,
-            JoinedRoomViewModel joinedRoomViewModel,
+            CreatedRoomViewModel createdRoomViewModel,
             VoteViewModel voteViewModel,
             ViewManagerModel viewManagerModel) {
         this.roomDataAccessObject = roomDataAccessObject;
         this.shortlistPresenter = shortlistPresenter;
-        this.hostDashboardViewModel = hostDashboardViewModel;
-        this.joinedRoomViewModel = joinedRoomViewModel;
+        this.createdRoomViewModel = createdRoomViewModel;
         this.voteViewModel = voteViewModel;
         this.tmdbGateway = new data_access.tmdb.TmdbMovieGateway();
         this.viewManagerModel = viewManagerModel;
@@ -62,19 +55,10 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
             shortlistPresenter.present(shortlistOutputData);
 
             // Update Host dashboard participants and lock
-            if (hostDashboardViewModel != null) {
-                HostDashboardState hostState = hostDashboardViewModel.getState();
+            if (createdRoomViewModel != null) {
+                CreatedRoomState hostState = createdRoomViewModel.getState();
                 hostState.setParticipants(roomDataAccessObject.getParticipantIDs());
-                hostState.setLocked(roomDataAccessObject.isLocked());
-                hostDashboardViewModel.firePropertyChanged();
-            }
-
-            // Update Joined room participants and lock
-            if (joinedRoomViewModel != null) {
-                JoinedRoomState joinedState = joinedRoomViewModel.getState();
-                joinedState.setParticipants(roomDataAccessObject.getParticipantIDs());
-                joinedState.setLocked(roomDataAccessObject.isLocked());
-                joinedRoomViewModel.firePropertyChanged();
+                createdRoomViewModel.firePropertyChanged();
             }
 
             // Update Vote view with shortlist movies and poster URLs

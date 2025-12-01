@@ -2,6 +2,7 @@ package app;
 
 import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.created_room.CreatedRoomViewModel;
 import interface_adapter.shortlist.*;
 import interface_adapter.create_room.CreateRoomController;
 import interface_adapter.create_room.CreateRoomPresenter;
@@ -9,8 +10,6 @@ import interface_adapter.create_room.CreateRoomViewModel;
 import interface_adapter.join_room.JoinRoomController;
 import interface_adapter.join_room.JoinRoomPresenter;
 import interface_adapter.join_room.JoinRoomViewModel;
-import interface_adapter.joined_room.JoinedRoomViewModel;
-import interface_adapter.host_dashboard.HostDashboardViewModel;
 import use_case.create_room.CreateRoomInputBoundary;
 import use_case.create_room.CreateRoomInteractor;
 import use_case.join_room.JoinRoomInputBoundary;
@@ -44,13 +43,11 @@ public class AppBuilder {
     private ShortlistView shortlistView;
     private ShortlistViewModel shortlistViewModel;
     private ShortlistPresenter shortlistPresenter;
-    private HostDashboardViewModel hostDashboardViewModel;
-    private HostDashboardView hostDashboardView;
-    private JoinedRoomView joinedRoomView;
+    private CreatedRoomView createdRoomView;
+    private CreatedRoomViewModel createdRoomViewModel;
     private interface_adapter.shortlist.AddMovieController addMovieController;
     private view.SearchView searchView;
     private SearchViewModel searchViewModel;
-    private JoinedRoomViewModel sharedJoinedRoomViewModel;
     private interface_adapter.vote.VoteViewModel voteViewModel;
     private view.VoteView voteView;
     private interface_adapter.winner.WinnerViewModel winnerViewModel;
@@ -68,17 +65,11 @@ public class AppBuilder {
         cardPanel.add(welcomeView, ViewManagerModel.WELCOME_VIEW);
 
         // Host dashboard
-        this.hostDashboardViewModel = new HostDashboardViewModel();
-        this.hostDashboardView = new HostDashboardView(hostDashboardViewModel);
-        hostDashboardView.setViewManagerModel(viewManagerModel);
+        this.createdRoomViewModel = new CreatedRoomViewModel();
+        this.createdRoomView = new CreatedRoomView(createdRoomViewModel);
+        createdRoomView.setViewManagerModel(viewManagerModel);
         // Global update controller will be injected later
-        cardPanel.add(hostDashboardView, ViewManagerModel.HOST_DASHBOARD_VIEW);
-
-        // Participants dashboard (shared JoinedRoomViewModel)
-        this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
-        this.joinedRoomView = new JoinedRoomView(sharedJoinedRoomViewModel);
-        this.joinedRoomView.setViewManagerModel(viewManagerModel);
-        cardPanel.add(this.joinedRoomView, sharedJoinedRoomViewModel.getViewName());
+        cardPanel.add(createdRoomView, ViewManagerModel.CREATED_ROOM_VIEW);
 
         return this;
     }
@@ -87,30 +78,24 @@ public class AppBuilder {
         // Create Room flow
         final CreateRoomViewModel createRoomViewModel = new CreateRoomViewModel();
         final CreateRoomPresenter createRoomPresenter = new CreateRoomPresenter(createRoomViewModel,
-                hostDashboardViewModel, viewManagerModel);
+                createdRoomViewModel, viewManagerModel);
         final CreateRoomInputBoundary createRoomInteractor = new CreateRoomInteractor(userDataAccessObject,
                 createRoomPresenter);
         final CreateRoomController createRoomController = new CreateRoomController(createRoomInteractor);
         final CreateRoomView createRoomView = new CreateRoomView(createRoomViewModel);
         createRoomView.setController(createRoomController);
-        cardPanel.add(createRoomView, createRoomView.getViewName());
-
-        // Ensure shared JoinedRoomViewModel exists
-        if (this.sharedJoinedRoomViewModel == null) {
-            this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
-        }
+        cardPanel.add(createRoomView, ViewManagerModel.CREATE_ROOM_VIEW);
 
         // Join Room flow
         final JoinRoomViewModel joinRoomViewModel = new JoinRoomViewModel();
         final JoinRoomPresenter joinRoomPresenter = new JoinRoomPresenter(joinRoomViewModel,
-                this.sharedJoinedRoomViewModel,
-                createRoomViewModel, viewManagerModel);
+                this.createdRoomViewModel, viewManagerModel);
         final JoinRoomInputBoundary joinRoomInteractor = new JoinRoomInteractor(userDataAccessObject,
                 joinRoomPresenter);
         final JoinRoomController joinRoomController = new JoinRoomController(joinRoomInteractor);
         final JoinRoomView joinRoomView = new JoinRoomView(joinRoomViewModel);
         joinRoomView.setJoinRoomController(joinRoomController);
-        cardPanel.add(joinRoomView, joinRoomView.getViewName());
+        cardPanel.add(joinRoomView, ViewManagerModel.JOIN_ROOM_VIEW);
 
         return this;
     }
@@ -202,18 +187,14 @@ public class AppBuilder {
         UpdateRoomInputBoundary updateRoomInputBoundary = new UpdateRoomInteractor(
                 userDataAccessObject,
                 shortlistPresenter,
-                hostDashboardViewModel,
-                sharedJoinedRoomViewModel,
+                createdRoomViewModel,
                 voteViewModel,
                 viewManagerModel);
         this.updateRoomController = new interface_adapter.shortlist.UpdateRoomController(
                 updateRoomInputBoundary);
         shortlistView.setUpdateRoomController(this.updateRoomController);
-        if (this.hostDashboardView != null) {
-            this.hostDashboardView.setGlobalUpdateController(this.updateRoomController);
-        }
-        if (this.joinedRoomView != null) {
-            this.joinedRoomView.setGlobalUpdateController(this.updateRoomController);
+        if (this.createdRoomView != null) {
+            this.createdRoomView.setUpdateRoomController(this.updateRoomController);
         }
         if (this.voteView != null) {
             this.voteView.setUpdateRoomController(this.updateRoomController);
@@ -243,9 +224,9 @@ public class AppBuilder {
         }
         cardPanel.add(this.searchView, ViewManagerModel.SEARCH_VIEW);
 
-        // Wire SearchViewModel to HostDashboardView if it exists
-        if (this.hostDashboardView != null) {
-            this.hostDashboardView.setSearchViewModel(searchViewModel);
+        // Wire SearchViewModel to CreatedRoomView if it exists
+        if (this.createdRoomView != null) {
+            this.createdRoomView.setSearchViewModel(searchViewModel);
         }
         return this;
     }

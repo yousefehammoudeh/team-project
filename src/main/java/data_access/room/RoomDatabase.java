@@ -8,7 +8,6 @@ import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
-import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
@@ -24,7 +23,6 @@ public class RoomDatabase implements
         CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        JoinedRoomUserDataAccessInterface,
         ToggleLockRoomDataAccessInterface,
         UpdateRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
@@ -72,6 +70,11 @@ public class RoomDatabase implements
     public boolean isHost() throws DataAccessException {
         checkRoomLoaded();
         return username.equals(room.getHostId());
+    }
+
+    public String getHostId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getHostId();
     }
 
     @Override
