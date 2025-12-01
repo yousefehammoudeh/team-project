@@ -5,6 +5,8 @@ import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
+import use_case.leave_room.LeaveRoomDataAccessInterface;
+import use_case.leave_room.LeaveRoomInputBoundary;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
@@ -28,7 +30,8 @@ public class InMemoryRoomDataAccessObject implements
         CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        ToggleLockRoomDataAccessInterface {
+        ToggleLockRoomDataAccessInterface,
+        LeaveRoomDataAccessInterface {
 
     private final Map<String, Room> rooms;
     private String username;
@@ -157,7 +160,7 @@ public class InMemoryRoomDataAccessObject implements
         this.username = username;
     }
 
-    public void leaveRoom(String roomCode) throws DataAccessException {
+    public void leaveRoom() throws DataAccessException {
         checkRoomLoaded();
         room.removeParticipant(new Participant(username, username));
         room = null;

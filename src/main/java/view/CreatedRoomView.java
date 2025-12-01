@@ -3,6 +3,7 @@ package view;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.created_room.CreatedRoomViewModel;
 import interface_adapter.created_room.CreatedRoomState;
+import interface_adapter.created_room.LeaveRoomController;
 import interface_adapter.search.SearchState;
 import interface_adapter.search.SearchViewModel;
 import interface_adapter.shortlist.UpdateRoomController;
@@ -24,6 +25,7 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
     private final JButton searchButton;
     private final JButton shortlistButton;
     private final JButton updateButton;
+    private final JButton leaveButton;
 //    private final JButton voteButton;
 
     private ViewManagerModel viewManagerModel;
@@ -31,6 +33,7 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
     private SearchViewModel searchViewModel;
 
     private UpdateRoomController updateRoomController;
+    private LeaveRoomController leaveRoomController;
 
     public CreatedRoomView(CreatedRoomViewModel viewModel) {
 
@@ -59,6 +62,10 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
 
         // BUTTONS
         final JPanel centerPanel = new JPanel();
+
+        leaveButton = new JButton("Leave");
+        leaveButton.addActionListener(this);
+        centerPanel.add(leaveButton);
 
         searchButton = new JButton("\uD83D\uDD0D");  // search icon
         searchButton.addActionListener(this);
@@ -128,6 +135,9 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
         else if (src == updateButton) {
             updateRoomController.execute();
         }
+        else if (src == leaveButton) {
+            leaveRoomController.execute();
+        }
 //        else if (src == voteButton) {
 //            viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
 //        }
@@ -138,10 +148,13 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         CreatedRoomState state = viewModel.getState();
-        if (state.getRoomCode() != null) {
+        if (state.getError() != null) {
+            JOptionPane.showMessageDialog(this, state.getError());
+        }
+        if (state.getRoomCode() != null && !state.getRoomCode().isEmpty()) {
             updateRoomCode(state.getRoomCode());
         }
-        if (state.getHostName() != null) {
+        if (state.getHostName() != null && !state.getRoomCode().isEmpty()) {
             updateHostName(state.getHostName());
         }
         if (state.getParticipants() != null) {
@@ -155,6 +168,10 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
 
     public void setUpdateRoomController(UpdateRoomController updateRoomController) {
         this.updateRoomController = updateRoomController;
+    }
+
+    public void setLeaveRoomController(LeaveRoomController leaveRoomController) {
+        this.leaveRoomController = leaveRoomController;
     }
 
     public void setSearchViewModel(interface_adapter.search.SearchViewModel searchViewModel) {

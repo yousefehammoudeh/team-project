@@ -3,6 +3,8 @@ package app;
 import data_access.room.RoomDatabase;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.created_room.CreatedRoomViewModel;
+import interface_adapter.created_room.LeaveRoomController;
+import interface_adapter.created_room.LeaveRoomPresenter;
 import interface_adapter.shortlist.*;
 import interface_adapter.create_room.CreateRoomController;
 import interface_adapter.create_room.CreateRoomPresenter;
@@ -14,6 +16,9 @@ import use_case.create_room.CreateRoomInputBoundary;
 import use_case.create_room.CreateRoomInteractor;
 import use_case.join_room.JoinRoomInputBoundary;
 import use_case.join_room.JoinRoomInteractor;
+import use_case.leave_room.LeaveRoomInputBoundary;
+import use_case.leave_room.LeaveRoomInteractor;
+import use_case.leave_room.LeaveRoomOutputBoundary;
 import view.*;
 import use_case.add_movie.AddMovieInputBoundary;
 import use_case.add_movie.AddMovieInteractor;
@@ -239,6 +244,14 @@ public class AppBuilder {
                 shortlistPresenter);
         ToggleLockRoomController toggleLockRoomController = new ToggleLockRoomController(toggleLockRoomInputBoundary);
         shortlistView.setToggleLockRoomController(toggleLockRoomController);
+        return this;
+    }
+
+    public AppBuilder addLeaveRoomUseCase() {
+        LeaveRoomOutputBoundary leaveRoomPresenter = new LeaveRoomPresenter(createdRoomViewModel, viewManagerModel);
+        LeaveRoomInputBoundary leaveRoomInputBoundary = new LeaveRoomInteractor(userDataAccessObject, leaveRoomPresenter);
+        LeaveRoomController leaveRoomController = new LeaveRoomController(leaveRoomInputBoundary);
+        createdRoomView.setLeaveRoomController(leaveRoomController);
         return this;
     }
 

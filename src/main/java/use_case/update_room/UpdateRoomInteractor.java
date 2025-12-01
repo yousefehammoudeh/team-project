@@ -1,6 +1,8 @@
 package use_case.update_room;
 
 import data_access.note_database.DataAccessException;
+import entity.Ballot;
+import entity.Movie;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.created_room.CreatedRoomState;
 import interface_adapter.created_room.CreatedRoomViewModel;
@@ -8,6 +10,9 @@ import interface_adapter.vote.VoteState;
 import interface_adapter.vote.VoteViewModel;
 import use_case.shortlist.ShortlistOutputBoundary;
 import use_case.shortlist.ShortlistOutputData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
     UpdateRoomDataAccessInterface roomDataAccessObject;
@@ -58,16 +63,17 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
             if (createdRoomViewModel != null) {
                 CreatedRoomState hostState = createdRoomViewModel.getState();
                 hostState.setParticipants(roomDataAccessObject.getParticipantIDs());
+                hostState.setError(null);
                 createdRoomViewModel.firePropertyChanged();
             }
 
             // Update Vote view with shortlist movies and poster URLs
             if (voteViewModel != null) {
-                java.util.List<String> shortlist = roomDataAccessObject.getShortlist();
-                java.util.List<String> posterUrls = new java.util.ArrayList<>();
+                List<String> shortlist = roomDataAccessObject.getShortlist();
+                List<String> posterUrls = new ArrayList<>();
                 for (String movieId : shortlist) {
                     try {
-                        entity.Movie movie = tmdbGateway.fetchDetails(movieId, null);
+                        Movie movie = tmdbGateway.fetchDetails(movieId, null);
                         String posterPath = movie != null ? movie.getPosterPath() : null;
                         if (posterPath != null && !posterPath.isBlank()) {
                             posterUrls.add(tmdbGateway.buildPosterUrl(posterPath, "w300"));
@@ -85,7 +91,7 @@ public class UpdateRoomInteractor implements UpdateRoomInputBoundary {
                 voteState.setParticipantCount(roomDataAccessObject.participantsCount());
 
                 // Get ballots and check if current user has voted
-                java.util.List<entity.Ballot> ballots = roomDataAccessObject.getBallots();
+                List<Ballot> ballots = roomDataAccessObject.getBallots();
                 voteState.setBallotsReceivedCount(ballots.size());
                 String currentUsername = roomDataAccessObject.getUsername();
                 boolean hasVoted = ballots.stream()

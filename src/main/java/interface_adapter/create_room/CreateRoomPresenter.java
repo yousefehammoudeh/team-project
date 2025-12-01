@@ -6,6 +6,8 @@ import interface_adapter.created_room.CreatedRoomViewModel;
 import use_case.create_room.CreateRoomOutputBoundary;
 import use_case.create_room.CreateRoomOutputData;
 
+import java.util.List;
+
 /**
  * Translates interactor output to view model updates and navigates to host
  * dashboard on success.
@@ -36,7 +38,8 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
         CreatedRoomState createdRoomState = createdRoomViewModel.getState();
         createdRoomState.setRoomCode(outputData.getRoomCode());
         createdRoomState.setHostName(outputData.getHostName());
-        createdRoomState.setParticipants(java.util.List.of(outputData.getHostName()));
+        createdRoomState.setParticipants(List.of(outputData.getHostName()));
+        createdRoomState.setError(null);
         createdRoomViewModel.firePropertyChanged();
 
         // Navigate to host dashboard

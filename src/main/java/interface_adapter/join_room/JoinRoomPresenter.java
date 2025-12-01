@@ -1,7 +1,6 @@
 package interface_adapter.join_room;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_room.CreateRoomViewModel;
 import interface_adapter.created_room.CreatedRoomState;
 import interface_adapter.created_room.CreatedRoomViewModel;
 import use_case.join_room.JoinRoomOutputBoundary;
@@ -30,6 +29,7 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
         createdRoomState.setParticipants(outputData.getParticipants());
         createdRoomState.setHostName(outputData.getHostName());
         createdRoomState.setRoomCode(outputData.getRoomCode());
+        createdRoomState.setError(null);
         this.createdRoomViewModel.firePropertyChanged();
 
         // clear everything in the JoinRoomViewModel's state
