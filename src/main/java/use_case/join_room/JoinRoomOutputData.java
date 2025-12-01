@@ -1,14 +1,12 @@
-
 package use_case.join_room;
 
 import java.util.List;
 
-
 public class JoinRoomOutputData {
-    //private final String username;
     private final List<String> participants;
     private final String code;
     private final String hostName;
+
     public JoinRoomOutputData(List<String> p, String hostName, String roomCode) {
 
         this.participants = p;
@@ -24,6 +22,8 @@ public class JoinRoomOutputData {
         return participants;
     }
 
-    public String getHostName() { return hostName; }
+    public String getHostName() {
+        return hostName;
+    }
 
 }

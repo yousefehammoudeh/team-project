@@ -20,7 +20,7 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
     private final JoinRoomViewModel joinRoomViewModel;
     private final JTextField usernameInputField = new JTextField(15);
     private final JTextField codeInputField = new JTextField(15);
-    private JoinRoomController joinRoomController = null;
+    private JoinRoomController joinRoomController;
 
     private final JButton toJoin;
 
@@ -54,11 +54,14 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
                 // This creates an anonymous subclass of ActionListener and instantiates it.
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(toJoin)) { // check that the event is join button being clicked
-                            final JoinRoomState currentState = joinRoomViewModel.getState(); // get the state
+                        // check that the event is join button being clicked
+                        if (evt.getSource().equals(toJoin)) {
+                            // get the state
+                            final JoinRoomState currentState = joinRoomViewModel.getState();
 
                             // pass the entered username and room code to the controller
-                            joinRoomController.execute( // abstraction, calls the interactor inside the controller
+                            // abstraction, calls the interactor inside the controller
+                            joinRoomController.execute(
                                     currentState.getUsername(),
                                     currentState.getRoomcode());
                         }
