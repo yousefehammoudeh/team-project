@@ -1,8 +1,8 @@
 package interface_adapter.create_room;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.created_room.CreatedRoomViewModel;
 import interface_adapter.created_room.CreatedRoomState;
+import interface_adapter.created_room.CreatedRoomViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.create_room.CreateRoomOutputData;
 
@@ -17,8 +17,7 @@ class CreateRoomPresenterTest {
         CreatedRoomViewModel createdVM = new CreatedRoomViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();
 
-        CreateRoomPresenter presenter = new CreateRoomPresenter(createVM, createdVM);
-        presenter.setViewManagerModel(viewManager);
+        CreateRoomPresenter presenter = new CreateRoomPresenter(createVM, createdVM, viewManager);
 
         CreateRoomOutputData output =
                 new CreateRoomOutputData("Alice", "ABC123");
@@ -31,15 +30,13 @@ class CreateRoomPresenterTest {
         assertEquals("created room", viewManager.getActiveViewName());
     }
 
-
     @Test
     void testPresenterHandlesFailure() {
         CreateRoomViewModel createVM = new CreateRoomViewModel();
         CreatedRoomViewModel createdVM = new CreatedRoomViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();
 
-        CreateRoomPresenter presenter = new CreateRoomPresenter(createVM, createdVM);
-        presenter.setViewManagerModel(viewManager);
+        CreateRoomPresenter presenter = new CreateRoomPresenter(createVM, createdVM, viewManager);
 
         presenter.presentFailure("Something went wrong");
 

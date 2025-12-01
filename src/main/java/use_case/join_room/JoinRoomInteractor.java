@@ -38,7 +38,7 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
                 } else {
                     List<String> p = roomGateway.getParticipantIDs();
                     final JoinRoomOutputData joinRoomOutputData = new JoinRoomOutputData(p,
-                            joinRoomInputData.getUsername(),
+                            roomGateway.getHostId(),
                             joinRoomInputData.getRoomcode());
                     presenter.prepareSuccessView(joinRoomOutputData);
                 }
@@ -54,8 +54,4 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
 
     }
 
-    @Override
-    public void switchToCreateRoomView() {
-        presenter.switchToCreateRoomView();
-    }
 }

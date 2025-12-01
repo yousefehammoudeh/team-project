@@ -7,6 +7,7 @@ public class CreatedRoomState {
     private String roomCode = "";
     private String hostName = "";
     private List<String> participants = new ArrayList<>();
+    private String error;
 
     public String getHostName() { return hostName; }
 
@@ -20,5 +21,13 @@ public class CreatedRoomState {
 
     public void setParticipants(List<String> participants) {
         this.participants = participants;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }

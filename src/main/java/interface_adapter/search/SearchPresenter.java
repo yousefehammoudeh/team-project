@@ -44,7 +44,7 @@ public class SearchPresenter implements SearchOutputBoundary {
     }
 
     @Override
-    public void switchToHostDashboardView() {
-        viewManagerModel.setActiveViewName(ViewManagerModel.HOST_DASHBOARD_VIEW);
+    public void switchToCreatedRoomView() {
+        viewManagerModel.setActiveViewName(ViewManagerModel.CREATED_ROOM_VIEW);
     }
 }

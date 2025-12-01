@@ -1,4 +1,4 @@
-package search;
+package use_case.search;
 
 import view.SearchView;
 import view.ShortlistView;

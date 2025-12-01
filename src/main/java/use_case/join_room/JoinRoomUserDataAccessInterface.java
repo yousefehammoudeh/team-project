@@ -16,4 +16,6 @@ public interface JoinRoomUserDataAccessInterface {
 
      List<String> getParticipantIDs() throws DataAccessException;
 
+     String getHostId() throws DataAccessException;
+
 }

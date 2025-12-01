@@ -8,7 +8,7 @@ import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
-import use_case.joined_room.JoinedRoomUserDataAccessInterface;
+import use_case.leave_room.LeaveRoomDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
 import use_case.update_room.UpdateRoomDataAccessInterface;
@@ -24,14 +24,15 @@ public class RoomDatabase implements
         CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
+        ToggleLockRoomDataAccessInterface,
         UpdateRoomDataAccessInterface,
-        JoinedRoomUserDataAccessInterface,
-        ToggleLockRoomDataAccessInterface {
+        LeaveRoomDataAccessInterface {
     private static final String ROOM_NAME_HEADER = "csc207_tut0101group23_room_";
 
     private final NoteDataAccessObject noteDatabase = new NoteDataAccessObject();
     private String username;
     private Room room;
+    private String password;
 
     /**
      * Create a RoomDatabase instance for the given user.
@@ -57,9 +58,9 @@ public class RoomDatabase implements
     }
 
     private void saveRoom() throws DataAccessException {
+        checkRoomLoaded();
         String note = RoomJSONParser.RoomToJSON(room);
         String roomCode = getFormattedRoomCode();
-        String password = noteDatabase.getPassword(roomCode);
         noteDatabase.saveNote(roomCode, password, note);
     }
 
@@ -72,6 +73,11 @@ public class RoomDatabase implements
     public boolean isHost() throws DataAccessException {
         checkRoomLoaded();
         return username.equals(room.getHostId());
+    }
+
+    public String getHostId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getHostId();
     }
 
     @Override
@@ -125,7 +131,7 @@ public class RoomDatabase implements
 
     public void createRoom(String roomName) throws DataAccessException {
         room = new Room(roomName, username);
-        noteDatabase.register(getFormattedRoomCode());
+        password = noteDatabase.register(getFormattedRoomCode());
         room.addParticipant(new Participant(username, username));
         saveRoom();
     }
@@ -135,6 +141,7 @@ public class RoomDatabase implements
         refreshRoom();
         boolean added = room.addParticipant(new Participant(username, username));
         if (added) {
+            password = noteDatabase.getPassword(getFormattedRoomCode());
             saveRoom();
         } else {
             // Do not join the room if a user with the same name exists
@@ -197,11 +204,12 @@ public class RoomDatabase implements
         saveRoom();
     }
 
-    public void leaveRoom(String roomCode) throws DataAccessException {
+    public void leaveRoom() throws DataAccessException {
         checkRoomLoaded();
         refreshRoom();
         room.removeParticipant(new Participant(username, username));
         saveRoom();
         room = null;
+        password = null;
     }
 }

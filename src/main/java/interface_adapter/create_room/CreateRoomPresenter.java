@@ -1,10 +1,12 @@
 package interface_adapter.create_room;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.host_dashboard.HostDashboardState;
-import interface_adapter.host_dashboard.HostDashboardViewModel;
+import interface_adapter.created_room.CreatedRoomState;
+import interface_adapter.created_room.CreatedRoomViewModel;
 import use_case.create_room.CreateRoomOutputBoundary;
 import use_case.create_room.CreateRoomOutputData;
+
+import java.util.List;
 
 /**
  * Translates interactor output to view model updates and navigates to host
@@ -12,13 +14,13 @@ import use_case.create_room.CreateRoomOutputData;
  */
 public class CreateRoomPresenter implements CreateRoomOutputBoundary {
     private final CreateRoomViewModel viewModel;
-    private final HostDashboardViewModel hostDashboardViewModel;
+    private final CreatedRoomViewModel createdRoomViewModel;
     private final ViewManagerModel viewManagerModel;
 
-    public CreateRoomPresenter(CreateRoomViewModel viewModel, HostDashboardViewModel hostDashboardViewModel,
+    public CreateRoomPresenter(CreateRoomViewModel viewModel, CreatedRoomViewModel createdRoomViewModel,
             ViewManagerModel viewManagerModel) {
         this.viewModel = viewModel;
-        this.hostDashboardViewModel = hostDashboardViewModel;
+        this.createdRoomViewModel = createdRoomViewModel;
         this.viewManagerModel = viewManagerModel;
     }
 
@@ -33,13 +35,15 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
         viewModel.firePropertyChanged();
 
         // Update host dashboard state from output
-        HostDashboardState hostState = hostDashboardViewModel.getState();
-        hostState.setRoomId(outputData.getRoomCode());
-        hostState.setParticipants(java.util.List.of(outputData.getHostName()));
-        hostDashboardViewModel.firePropertyChanged();
+        CreatedRoomState createdRoomState = createdRoomViewModel.getState();
+        createdRoomState.setRoomCode(outputData.getRoomCode());
+        createdRoomState.setHostName(outputData.getHostName());
+        createdRoomState.setParticipants(List.of(outputData.getHostName()));
+        createdRoomState.setError(null);
+        createdRoomViewModel.firePropertyChanged();
 
         // Navigate to host dashboard
-        viewManagerModel.setActiveViewName(ViewManagerModel.HOST_DASHBOARD_VIEW);
+        viewManagerModel.setActiveViewName(ViewManagerModel.CREATED_ROOM_VIEW);
     }
 
     @Override

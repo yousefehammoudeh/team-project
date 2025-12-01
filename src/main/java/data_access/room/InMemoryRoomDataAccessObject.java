@@ -3,11 +3,12 @@ package data_access.room;
 import data_access.note_database.DataAccessException;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
-import use_case.joined_room.JoinedRoomUserDataAccessInterface;
+import use_case.leave_room.LeaveRoomDataAccessInterface;
+import use_case.leave_room.LeaveRoomInputBoundary;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
-import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
@@ -26,13 +27,13 @@ import static data_access.HTTPCode.NOT_FOUND_ERROR;
 public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
+        CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        JoinedRoomUserDataAccessInterface,
         ToggleLockRoomDataAccessInterface,
-        UpdateRoomDataAccessInterface {
+        LeaveRoomDataAccessInterface {
 
-    private Map<String, Room> rooms;
+    private final Map<String, Room> rooms;
     private String username;
     private Room room;
 
@@ -54,6 +55,11 @@ public class InMemoryRoomDataAccessObject implements
     public boolean isHost() throws DataAccessException {
         checkRoomLoaded();
         return username.equals(room.getHostId());
+    }
+
+    public String getHostId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getHostId();
     }
 
     public boolean isLocked() throws DataAccessException {
@@ -154,15 +160,9 @@ public class InMemoryRoomDataAccessObject implements
         this.username = username;
     }
 
-    public void leaveRoom(String roomCode) throws DataAccessException {
+    public void leaveRoom() throws DataAccessException {
         checkRoomLoaded();
         room.removeParticipant(new Participant(username, username));
         room = null;
-    }
-
-    @Override
-    public void refreshRoom() throws DataAccessException {
-        // No-op for in-memory implementation - room is always fresh
-        checkRoomLoaded();
     }
 }

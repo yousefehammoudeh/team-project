@@ -1,5 +1,6 @@
 package interface_adapter.vote;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
 
 /**
@@ -12,7 +13,7 @@ import interface_adapter.ViewModel;
 public class VoteViewModel extends ViewModel<VoteState> {
 
     public VoteViewModel() {
-        super("Vote");
+        super(ViewManagerModel.VOTE_VIEW);
         VoteState s = new VoteState();
         s.setBallotsReceivedCount(0);
         s.setParticipantCount(0);

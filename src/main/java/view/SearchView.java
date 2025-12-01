@@ -70,7 +70,7 @@ public class SearchView extends JPanel implements PropertyChangeListener {
         dashboard.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        searchController.switchToHostDashboardView();
+                        searchController.switchToCreatedRoomView();
                     }
                 });
 
