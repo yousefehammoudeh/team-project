@@ -4,6 +4,7 @@ import interface_adapter.created_room.CreatedRoomViewModel;
 import interface_adapter.created_room.CreatedRoomState;
 
 import javax.swing.*;
+import java.util.List;
 
 public class CreatedRoomViewTest {
     public static void main(String[] args) {
@@ -16,6 +17,7 @@ public class CreatedRoomViewTest {
         CreatedRoomState state = vm.getState();
         state.setRoomCode("A1B2C3");
         state.setHostName("Diana");
+        state.setParticipants(List.of("Diana"));
         vm.firePropertyChanged();
 
         frame.add(view);
