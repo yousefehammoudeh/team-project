@@ -28,7 +28,6 @@ import use_case.update_room.UpdateRoomInteractor;
 import view.ShortlistView;
 import view.WelcomeView;
 import view.HostDashboardView;
-import view.ParticipantsDashboardView;
 import view.ViewManager;
 import view.WinnerView;
 import interface_adapter.search.*;
@@ -53,7 +52,6 @@ public class AppBuilder {
     private ShortlistPresenter shortlistPresenter;
     private HostDashboardViewModel hostDashboardViewModel;
     private HostDashboardView hostDashboardView;
-    private ParticipantsDashboardView participantsDashboardView;
     private interface_adapter.shortlist.AddMovieController addMovieController;
     private view.SearchView searchView;
     private SearchViewModel searchViewModel;
@@ -83,9 +81,6 @@ public class AppBuilder {
 
         // Participants dashboard (shared JoinedRoomViewModel)
         this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
-        this.participantsDashboardView = new ParticipantsDashboardView(sharedJoinedRoomViewModel);
-        this.participantsDashboardView.setViewManagerModel(viewManagerModel);
-        cardPanel.add(this.participantsDashboardView, sharedJoinedRoomViewModel.getViewName());
 
         return this;
     }
@@ -218,9 +213,6 @@ public class AppBuilder {
         shortlistView.setUpdateRoomController(this.updateRoomController);
         if (this.hostDashboardView != null) {
             this.hostDashboardView.setGlobalUpdateController(this.updateRoomController);
-        }
-        if (this.participantsDashboardView != null) {
-            this.participantsDashboardView.setGlobalUpdateController(this.updateRoomController);
         }
         if (this.voteView != null) {
             this.voteView.setUpdateRoomController(this.updateRoomController);

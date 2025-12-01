@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class SearchInteractor implements SearchInputBoundary {
     private final SearchUserDataAccessInterface gateway;
-    private final SearchOutputBoundary presenter;
+    private final SearchOutputBoundary outputBoundary;
 
-    public SearchInteractor(SearchUserDataAccessInterface gateway, SearchOutputBoundary presenter) {
+    public SearchInteractor(SearchUserDataAccessInterface gateway, SearchOutputBoundary outputBoundary) {
         this.gateway = gateway;
-        this.presenter = presenter;
+        this.outputBoundary = outputBoundary;
     }
 
     public void execute(SearchInputData searchInputData) {
@@ -32,20 +32,20 @@ public class SearchInteractor implements SearchInputBoundary {
             SearchOutputData outputData = new SearchOutputData(movies);
 
             // presenter
-            presenter.present(outputData);
+            outputBoundary.present(outputData);
 
         } catch (Exception e) {
-            presenter.presentFailure("Search failed: " + e.getMessage());
+            outputBoundary.presentFailure("Search failed: " + e.getMessage());
         }
     }
 
     @Override
     public void switchToShortlistView() {
-        presenter.switchToShortlistView();
+        outputBoundary.switchToShortlistView();
     }
 
     @Override
     public void switchToHostDashboardView() {
-        presenter.switchToHostDashboardView();
+        outputBoundary.switchToHostDashboardView();
     }
 }
