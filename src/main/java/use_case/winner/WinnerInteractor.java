@@ -3,6 +3,7 @@ package use_case.winner;
 import data_access.note_database.DataAccessException;
 import data_access.room.RoomDatabase;
 import entity.Ballot;
+import entity.Movie;
 
 import javax.swing.ImageIcon;
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class WinnerInteractor implements WinnerInputBoundary {
             // Persist winner id so other views can observe and navigate
             roomDb.setWinnerMovieId(winnerId);
             WinnerOutputData out = new WinnerOutputData(winnerId, movie.getTitle(),
-                    "Year: " + movie.getYear() + "\nLanguage: " + movie.getLanguage(), icon, scores);
+                    buildDetails(movie), icon, scores);
             presenter.present(out);
         } catch (DataAccessException | IOException e) {
             presenter.presentFailure(e.getMessage());
@@ -99,10 +100,26 @@ public class WinnerInteractor implements WinnerInputBoundary {
             }
 
             WinnerOutputData out = new WinnerOutputData(winnerId, movie.getTitle(),
-                    "Year: " + movie.getYear() + "\nLanguage: " + movie.getLanguage(), icon, null);
+                    buildDetails(movie), icon, null);
             presenter.present(out);
         } catch (DataAccessException | IOException e) {
             presenter.presentFailure(e.getMessage());
         }
+    }
+
+    private String buildDetails(Movie movie) {
+        if (movie == null)
+            return "";
+        String year = movie.getYear() == null ? "" : movie.getYear();
+        String lang = movie.getLanguage() == null ? "" : movie.getLanguage();
+        String genres = (movie.getGenres() == null || movie.getGenres().isEmpty())
+                ? "-"
+                : String.join(", ", movie.getGenres());
+        // TMDB vote_average is 0-10; show with one decimal
+        String rating = String.format("%.1f/10", movie.getRating());
+        return "Year: " + year + "\n" +
+                "Language: " + lang + "\n" +
+                "Genres: " + genres + "\n" +
+                "Rating: " + rating;
     }
 }
