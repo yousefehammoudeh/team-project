@@ -29,7 +29,7 @@ class JoinRoomInteractorTest {
             public void prepareSuccessView(JoinRoomOutputData output) {
                 assertEquals("c4a760", output.getRoomCode());
                 assertEquals(List.of("Alice", "Bob"), output.getParticipants());
-                assertEquals("Bob", output.getCurrentUser());
+                assertEquals("Alice", output.getHostName());
             }
 
             @Override
@@ -166,6 +166,11 @@ class JoinRoomInteractorTest {
 
             @Override
             public List<String> getParticipantIDs() {
+                return null;
+            }
+
+            @Override
+            public String getHostId() {
                 return null;
             }
         };
