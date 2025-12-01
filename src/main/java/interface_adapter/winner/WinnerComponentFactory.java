@@ -1,6 +1,7 @@
 package interface_adapter.winner;
 
 import data_access.room.RoomDatabase;
+import data_access.tmdb.TmdbMovieGateway;
 import use_case.winner.WinnerInputBoundary;
 import use_case.winner.WinnerInteractor;
 
@@ -26,7 +27,8 @@ public class WinnerComponentFactory {
             RoomDatabase dataAccess,
             WinnerViewModel viewModel) {
         WinnerPresenter presenter = new WinnerPresenter(viewModel);
-        WinnerInputBoundary interactor = new WinnerInteractor(dataAccess, presenter);
+        TmdbMovieGateway movieGateway = new TmdbMovieGateway();
+        WinnerInputBoundary interactor = new WinnerInteractor(dataAccess, presenter, movieGateway);
         return new WinnerController(interactor);
     }
 }

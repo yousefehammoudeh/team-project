@@ -3,7 +3,6 @@ package use_case.winner;
 import data_access.note_database.DataAccessException;
 import data_access.room.InMemoryRoomDataAccessObject;
 import data_access.room.RoomDatabase;
-import data_access.tmdb.TmdbMovieGateway;
 import entity.Ballot;
 import entity.Movie;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class WinnerInteractorTest {
 
-    private static class StubTmdbGateway extends TmdbMovieGateway {
+    private static class StubMovieGateway implements WinnerMovieDataAccessInterface {
         @Override
         public Movie fetchDetails(String movieId, String appendToResponse) throws IOException {
             // Return a simple Movie object without requiring a real API key / network
@@ -60,6 +59,16 @@ public class WinnerInteractorTest {
         public List<Ballot> getBallots() throws DataAccessException {
             return dao.getBallots();
         }
+
+        @Override
+        public void setWinnerMovieId(String movieId) throws DataAccessException {
+            dao.setWinnerMovieId(movieId);
+        }
+
+        @Override
+        public void refreshRoom() throws DataAccessException {
+            // No-op for in-memory testing
+        }
     }
 
     @Test
@@ -79,7 +88,7 @@ public class WinnerInteractorTest {
         }
         TestPresenter presenter = new TestPresenter();
         InMemoryRoomAdapter adapter = new InMemoryRoomAdapter(dao);
-        WinnerInteractor interactor = new WinnerInteractor(adapter, presenter, new StubTmdbGateway());
+        WinnerInteractor interactor = new WinnerInteractor(adapter, presenter, new StubMovieGateway());
         interactor.computeWinner();
         assertNotNull(presenter.last, "Presenter should receive output");
         assertNull(presenter.failure, "Should not report failure");
