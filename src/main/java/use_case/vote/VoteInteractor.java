@@ -38,6 +38,13 @@ public class VoteInteractor implements VoteInputBoundary {
             Ballot ballot = inputData.toBallot();
             // Validate against current shortlist via the Room gateway
             List<String> shortlist = gateway.getShortlist();
+
+            // Verify that all movies in the shortlist are selected
+            if (ballot.getRankedMovieIds().size() != shortlist.size()) {
+                presenter.presentFailure("You must rank all movies before submitting your vote");
+                return;
+            }
+
             if (!ballot.isValidForShortlist(shortlist)) {
                 presenter.presentFailure("Ballot invalid for current shortlist");
                 return;

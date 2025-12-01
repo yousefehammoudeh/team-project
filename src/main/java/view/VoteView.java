@@ -20,6 +20,7 @@ public class VoteView extends JPanel implements java.beans.PropertyChangeListene
     private final JButton submitButton = new JButton("Submit Vote");
     private final JButton computeWinnerButton = new JButton("Compute Winner");
     private final JButton viewWinnerButton = new JButton("View Winner");
+    private final JButton refreshButton = new JButton("Refresh");
     // mapping of label -> movie id and current ranked selection
     private final Map<JLabel, String> labelToMovieId = new HashMap<>();
     private final List<String> rankedSelection = new ArrayList<>();
@@ -58,6 +59,12 @@ public class VoteView extends JPanel implements java.beans.PropertyChangeListene
         });
         // Right side: submit + compute winner (host-only visible) + view winner
         final JPanel rightButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        refreshButton.addActionListener(e -> {
+            if (updateRoomController != null) {
+                updateRoomController.execute();
+            }
+        });
+        rightButtons.add(refreshButton);
         rightButtons.add(submitButton);
         computeWinnerButton.addActionListener(e -> {
             if (onComputeWinner != null) {
@@ -242,6 +249,11 @@ public class VoteView extends JPanel implements java.beans.PropertyChangeListene
 
         // Host-only compute winner button: visible only to host, always enabled
         computeWinnerButton.setVisible(s.isHost());
+
+        // Display error message if present
+        if (s.getError() != null && !s.getError().isBlank()) {
+            JOptionPane.showMessageDialog(this, s.getError(), "Vote Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /** Update UI to display the computed scores for each movie id. */
