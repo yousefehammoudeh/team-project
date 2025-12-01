@@ -3,6 +3,7 @@ package data_access.room;
 import data_access.note_database.DataAccessException;
 import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
+import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
 import use_case.joined_room.JoinedRoomUserDataAccessInterface;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
@@ -26,13 +27,13 @@ import static data_access.HTTPCode.NOT_FOUND_ERROR;
 public class InMemoryRoomDataAccessObject implements
         AddMovieRoomDataAccessInterface,
         RemoveMovieRoomDataAccessInterface,
+        CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
         JoinedRoomUserDataAccessInterface,
-        ToggleLockRoomDataAccessInterface,
-        UpdateRoomDataAccessInterface {
+        ToggleLockRoomDataAccessInterface {
 
-    private Map<String, Room> rooms;
+    private final Map<String, Room> rooms;
     private String username;
     private Room room;
 
@@ -158,11 +159,5 @@ public class InMemoryRoomDataAccessObject implements
         checkRoomLoaded();
         room.removeParticipant(new Participant(username, username));
         room = null;
-    }
-
-    @Override
-    public void refreshRoom() throws DataAccessException {
-        // No-op for in-memory implementation - room is always fresh
-        checkRoomLoaded();
     }
 }

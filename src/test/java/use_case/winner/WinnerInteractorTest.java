@@ -1,6 +1,8 @@
 package use_case.winner;
 
+import data_access.note_database.DataAccessException;
 import data_access.room.InMemoryRoomDataAccessObject;
+import data_access.room.RoomDatabase;
 import data_access.tmdb.TmdbMovieGateway;
 import entity.Ballot;
 import entity.Movie;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +43,7 @@ public class WinnerInteractorTest {
 
     // Adapter to make InMemoryRoomDataAccessObject compatible with
     // WinnerInteractor's expected RoomDatabase
-    private static class InMemoryRoomAdapter extends data_access.room.RoomDatabase {
+    private static class InMemoryRoomAdapter extends RoomDatabase {
         private final InMemoryRoomDataAccessObject dao;
 
         InMemoryRoomAdapter(InMemoryRoomDataAccessObject dao) {
@@ -49,17 +52,12 @@ public class WinnerInteractorTest {
         }
 
         @Override
-        public void refreshRoom() throws data_access.note_database.DataAccessException {
-            dao.refreshRoom();
-        }
-
-        @Override
-        public java.util.List<String> getShortlist() throws data_access.note_database.DataAccessException {
+        public List<String> getShortlist() throws DataAccessException {
             return dao.getShortlist();
         }
 
         @Override
-        public java.util.List<entity.Ballot> getBallots() throws data_access.note_database.DataAccessException {
+        public List<Ballot> getBallots() throws DataAccessException {
             return dao.getBallots();
         }
     }
