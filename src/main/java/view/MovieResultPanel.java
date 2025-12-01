@@ -1,10 +1,10 @@
 package view;
 
-import entity.Movie;
-import interface_adapter.shortlist.AddMovieController;
-
 import javax.swing.*;
 import java.awt.*;
+
+import entity.Movie;
+import interface_adapter.shortlist.AddMovieController;
 
 public class MovieResultPanel extends JPanel {
 
@@ -15,16 +15,17 @@ public class MovieResultPanel extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // poster on the left
-        JLabel posterLabel = new JLabel(poster);
-        posterLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 15)); // adds space to the right
+        final JLabel posterLabel = new JLabel(poster);
+        // adds space to the right
+        posterLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 15));
         add(posterLabel, BorderLayout.WEST);
 
         // panel for the title & description & add button on the right
-        JPanel textPanel = new JPanel();
+        final JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
         // title
-        JLabel titleLabel = new JLabel(movie.getTitle());
+        final JLabel titleLabel = new JLabel(movie.getTitle());
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         textPanel.add(titleLabel);
 
@@ -41,13 +42,14 @@ public class MovieResultPanel extends JPanel {
         textPanel.add(addButton);
 
         // add button action listener
-        addButton.addActionListener((e -> {
+        addButton.addActionListener(e -> {
             if (addMovieController != null) {
                 addMovieController.execute(movie.getId());
-            } else {
+            }
+            else {
                 System.err.println("AddMovieController is not set!");
             }
-        }));
+        });
 
         add(textPanel, BorderLayout.CENTER);
     }

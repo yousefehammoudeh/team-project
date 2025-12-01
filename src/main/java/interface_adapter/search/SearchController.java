@@ -4,7 +4,7 @@ import use_case.search.SearchInputBoundary;
 import use_case.search.SearchInputData;
 
 /**
- * TODO: Accepts search queries and delegates to interactor.
+ *
  */
 public class SearchController {
     private final SearchInputBoundary searchInputBoundary;
