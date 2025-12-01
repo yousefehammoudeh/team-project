@@ -4,7 +4,12 @@ package use_case.create_room;
  * Interactor API for creating a room.
  */
 public interface CreateRoomInputBoundary {
-    //Define method signature(s), e.g., execute(CreateRoomInputData createRoomInputData)
+
+    /**
+     * Constructs the input boundary for a successful create-room use case.
+     *
+     * @param createRoomInputData for input data.
+     */
     void execute(CreateRoomInputData createRoomInputData);
 }
 
