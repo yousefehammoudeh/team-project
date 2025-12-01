@@ -1,12 +1,12 @@
 package use_case.search;
 
-import entity.Movie;
-
-//
 import java.util.List;
 
+import entity.Movie;
+//
+
 /**
- *
+ * Search Interactor.
  */
 public class SearchInteractor implements SearchInputBoundary {
     private final SearchUserDataAccessInterface gateway;
@@ -33,8 +33,8 @@ public class SearchInteractor implements SearchInputBoundary {
 
             // presenter
             outputBoundary.present(outputData);
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             outputBoundary.presentFailure("Search failed: " + e.getMessage());
         }
     }
