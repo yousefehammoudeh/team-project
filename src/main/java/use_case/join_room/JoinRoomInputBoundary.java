@@ -7,8 +7,4 @@ public interface JoinRoomInputBoundary {
      */
     void execute(JoinRoomInputData joinRoomInputData);
 
-    /**
-     * Executes the switch to login view use case.
-     */
-    void switchToCreateRoomView();
 }

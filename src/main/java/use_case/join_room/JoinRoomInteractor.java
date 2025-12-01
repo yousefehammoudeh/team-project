@@ -54,8 +54,4 @@ public class JoinRoomInteractor implements JoinRoomInputBoundary {
 
     }
 
-    @Override
-    public void switchToCreateRoomView() {
-        presenter.switchToCreateRoomView();
-    }
 }

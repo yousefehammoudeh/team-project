@@ -1,8 +1,12 @@
 package use_case.join_room;
 
 import java.util.List;
+
+import data_access.note_database.DataAccessException;
 import data_access.room.InMemoryRoomDataAccessObject;
 import org.junit.jupiter.api.Test;
+
+import static data_access.HTTPCode.CONFLICT_ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -33,10 +37,6 @@ class JoinRoomInteractorTest {
                 fail("Use case failure is unexpected.");
             }
 
-            @Override
-            public void switchToCreateRoomView() {
-
-            }
         };
 
         JoinRoomInputBoundary interactor = new JoinRoomInteractor(db, successPresenter);
@@ -63,10 +63,6 @@ class JoinRoomInteractorTest {
                 assertEquals("Username cannot be empty", error);
             }
 
-            @Override
-            public void switchToCreateRoomView() {
-
-            }
         };
 
         JoinRoomInputBoundary interactor = new JoinRoomInteractor(db, successPresenter);
@@ -92,10 +88,6 @@ class JoinRoomInteractorTest {
                 assertEquals("Room code cannot be empty", error);
             }
 
-            @Override
-            public void switchToCreateRoomView() {
-
-            }
         };
 
         JoinRoomInputBoundary interactor = new JoinRoomInteractor(db, successPresenter);
@@ -121,10 +113,6 @@ class JoinRoomInteractorTest {
                 assertEquals("Room doesn't exist.", error);
             }
 
-            @Override
-            public void switchToCreateRoomView() {
-
-            }
         };
 
         JoinRoomInputBoundary interactor = new JoinRoomInteractor(db, successPresenter);
@@ -155,15 +143,52 @@ class JoinRoomInteractorTest {
                 assertEquals("User already exists.", error);
             }
 
-            @Override
-            public void switchToCreateRoomView() {
-
-            }
         };
 
         JoinRoomInputBoundary interactor = new JoinRoomInteractor(db, successPresenter);
         interactor.execute(input);
 
     }
+
+    @Test
+    void testOtherDataException() {
+        // A fake DAO that forces a non-NOT_FOUND exception (catch-else clause)
+        JoinRoomUserDataAccessInterface fakeDao = new JoinRoomUserDataAccessInterface() {
+
+            @Override
+            public void setUsername(String username) {}
+
+            @Override
+            public boolean joinRoom(String roomcode) throws DataAccessException {
+                // Force a CONFLICT ERROR (not NOT_FOUND)
+                throw new DataAccessException("User or room already exists.", CONFLICT_ERROR);
+            }
+
+            @Override
+            public List<String> getParticipantIDs() {
+                return null;
+            }
+        };
+
+        JoinRoomInputData input = new JoinRoomInputData("Bob", "c4a760");
+
+        JoinRoomOutputBoundary successPresenter = new JoinRoomOutputBoundary() {
+            @Override
+            public void prepareSuccessView(JoinRoomOutputData output) {
+                fail("Use case failure is unexpected.");
+            }
+
+            @Override
+            public void presentFailure(String error) {
+                assertEquals("User or room already exists.", error);
+            }
+
+        };
+
+        JoinRoomInputBoundary interactor = new JoinRoomInteractor(fakeDao, successPresenter);
+        interactor.execute(input);
+
+    }
+
 
 }
