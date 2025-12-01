@@ -6,8 +6,6 @@ import interface_adapter.shortlist.*;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -47,15 +45,25 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
 
         // Top aligned controls row
         final JPanel controlsRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 8));
-        final JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(new ActionListener() {
+
+        final JButton dashboardButton = new JButton("Dashboard");
+        dashboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (viewManagerModel != null)
-                    viewManagerModel.setActiveViewName(ViewManagerModel.SEARCH_VIEW);
+                viewManagerModel.setActiveViewName(ViewManagerModel.CREATED_ROOM_VIEW);
             }
         });
-        controlsRow.add(searchButton);
+        controlsRow.add(dashboardButton);
+
+//        final JButton searchButton = new JButton("Search");
+//        searchButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if (viewManagerModel != null)
+//                    viewManagerModel.setActiveViewName(ViewManagerModel.SEARCH_VIEW);
+//            }
+//        });
+//        controlsRow.add(searchButton);
 
         final JButton removeButton = new JButton("Remove");
         removeButton.addActionListener(new ActionListener() {
@@ -187,14 +195,6 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         return viewName;
     }
 
-    private String getMovieNameByID(String id) {
-        try {
-            return tmdbMovieGateway.fetchDetails(id, null).getTitle();
-        }
-        catch (Exception e) {
-            return "Movie ID: " + id;
-        }
-    }
 
     private class MovieNameIDPair {
         private final String name;
@@ -203,6 +203,15 @@ public class ShortlistView extends JPanel implements PropertyChangeListener {
         public MovieNameIDPair(String id) {
             this.name = getMovieNameByID(id);
             this.id = id;
+        }
+
+        private String getMovieNameByID(String id) {
+            try {
+                return tmdbMovieGateway.fetchDetails(id, null).getTitle();
+            }
+            catch (Exception e) {
+                return "Movie ID: " + id;
+            }
         }
 
         @Override
