@@ -22,8 +22,7 @@ class RoomTest {
         Assertions.assertEquals(userID, participants.get(0).getId());
         Assertions.assertEquals(userName, participants.get(0).getName());
 
-        String newName = UUID.randomUUID().toString();
-        Participant sameParticipant = new Participant(userID, newName);
+        Participant sameParticipant = new Participant(userID, userName);
         boolean addedSame = room.addParticipant(sameParticipant);
         Assertions.assertFalse(addedSame);
         participants = room.getParticipants();
