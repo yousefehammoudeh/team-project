@@ -3,7 +3,9 @@ package interface_adapter.join_room;
 import use_case.join_room.JoinRoomInputBoundary;
 import use_case.join_room.JoinRoomInputData;
 
-/***/
+/**
+ * Pass the input data to the interactor.
+ * */
 public class JoinRoomController {
     private final JoinRoomInputBoundary interactor;
 
