@@ -15,8 +15,7 @@ import use_case.create_room.CreateRoomInputBoundary;
 import use_case.create_room.CreateRoomInteractor;
 import use_case.join_room.JoinRoomInputBoundary;
 import use_case.join_room.JoinRoomInteractor;
-import view.CreateRoomView;
-import view.JoinRoomView;
+import view.*;
 import use_case.add_movie.AddMovieInputBoundary;
 import use_case.add_movie.AddMovieInteractor;
 import use_case.remove_movie.RemoveMovieInputBoundary;
@@ -25,12 +24,6 @@ import use_case.toggle_lock_room.ToggleLockRoomInputBoundary;
 import use_case.toggle_lock_room.ToggleLockRoomInteractor;
 import use_case.update_room.UpdateRoomInputBoundary;
 import use_case.update_room.UpdateRoomInteractor;
-import view.ShortlistView;
-import view.WelcomeView;
-import view.HostDashboardView;
-import view.ParticipantsDashboardView;
-import view.ViewManager;
-import view.WinnerView;
 import interface_adapter.search.*;
 import use_case.search.*;
 import data_access.tmdb.TmdbMovieGateway;
@@ -53,7 +46,7 @@ public class AppBuilder {
     private ShortlistPresenter shortlistPresenter;
     private HostDashboardViewModel hostDashboardViewModel;
     private HostDashboardView hostDashboardView;
-    private ParticipantsDashboardView participantsDashboardView;
+    private JoinedRoomView joinedRoomView;
     private interface_adapter.shortlist.AddMovieController addMovieController;
     private view.SearchView searchView;
     private SearchViewModel searchViewModel;
@@ -83,9 +76,9 @@ public class AppBuilder {
 
         // Participants dashboard (shared JoinedRoomViewModel)
         this.sharedJoinedRoomViewModel = new JoinedRoomViewModel();
-        this.participantsDashboardView = new ParticipantsDashboardView(sharedJoinedRoomViewModel);
-        this.participantsDashboardView.setViewManagerModel(viewManagerModel);
-        cardPanel.add(this.participantsDashboardView, sharedJoinedRoomViewModel.getViewName());
+        this.joinedRoomView = new JoinedRoomView(sharedJoinedRoomViewModel);
+        this.joinedRoomView.setViewManagerModel(viewManagerModel);
+        cardPanel.add(this.joinedRoomView, sharedJoinedRoomViewModel.getViewName());
 
         return this;
     }
@@ -219,8 +212,8 @@ public class AppBuilder {
         if (this.hostDashboardView != null) {
             this.hostDashboardView.setGlobalUpdateController(this.updateRoomController);
         }
-        if (this.participantsDashboardView != null) {
-            this.participantsDashboardView.setGlobalUpdateController(this.updateRoomController);
+        if (this.joinedRoomView != null) {
+            this.joinedRoomView.setGlobalUpdateController(this.updateRoomController);
         }
         if (this.voteView != null) {
             this.voteView.setUpdateRoomController(this.updateRoomController);
