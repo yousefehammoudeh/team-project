@@ -163,4 +163,36 @@ class AddMovieInteractorTest {
         AddMovieInputBoundary interactor = new AddMovieInteractor(dao, shortlistOutputBoundary);
         interactor.execute(inputData);
     }
+
+    @Test
+    void testAddMovieNotHost() {
+        Map<String, Room> rooms = new HashMap<>();
+        InMemoryRoomDataAccessObject dao1 = new InMemoryRoomDataAccessObject("Username1", rooms);
+        InMemoryRoomDataAccessObject dao2 = new InMemoryRoomDataAccessObject("Username2", rooms);
+        try {
+            dao1.createRoom("RoomCode");
+            dao2.joinRoom("RoomCode");
+            dao1.addMovie("MovieID");
+        }
+        catch (DataAccessException e) {
+            fail("Failed to initialize the test.");
+        }
+
+        AddMovieInputData inputData = new AddMovieInputData("MovieID");
+
+        ShortlistOutputBoundary shortlistOutputBoundary = new ShortlistOutputBoundary() {
+            @Override
+            public void present(ShortlistOutputData outputData) {
+                fail("Added a movie as non-host.");
+            }
+
+            @Override
+            public void presentFailure(String message) {
+                assertEquals("Only the host can add movies to the shortlist.", message);
+            }
+        };
+
+        AddMovieInputBoundary interactor = new AddMovieInteractor(dao2, shortlistOutputBoundary);
+        interactor.execute(inputData);
+    }
 }

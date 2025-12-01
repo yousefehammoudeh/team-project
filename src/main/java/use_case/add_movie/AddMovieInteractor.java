@@ -20,6 +20,9 @@ public class AddMovieInteractor implements AddMovieInputBoundary {
             if (roomDataAccessObject.isLocked()) {
                 shortlistPresenter.presentFailure("The room is locked.");
             }
+            else if (!roomDataAccessObject.isHost()) {
+                shortlistPresenter.presentFailure("Only the host can add movies to the shortlist.");
+            }
             else {
                 final boolean success = roomDataAccessObject.addMovie(movieID);
                 if (success) {
