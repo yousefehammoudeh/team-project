@@ -17,6 +17,13 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
     private final CreatedRoomViewModel createdRoomViewModel;
     private final ViewManagerModel viewManagerModel;
 
+    /**
+     * Constructs a presenter for the Create Room use case.
+     *
+     * @param viewModel the ViewModel for the create-room screen
+     * @param createdRoomViewModel the ViewModel for the created-room (dashboard) screen
+     * @param viewManagerModel the manager used to switch between views
+     */
     public CreateRoomPresenter(CreateRoomViewModel viewModel, CreatedRoomViewModel createdRoomViewModel,
             ViewManagerModel viewManagerModel) {
         this.viewModel = viewModel;
@@ -24,6 +31,12 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
         this.viewManagerModel = viewManagerModel;
     }
 
+    /**
+     * Handles a successful room creation by updating the ViewModels and
+     * navigating to the created-room view.
+     *
+     * @param outputData the data returned by the interactor
+     */
     @Override
     public void present(CreateRoomOutputData outputData) {
         CreateRoomState state = viewModel.getState();
@@ -46,6 +59,12 @@ public class CreateRoomPresenter implements CreateRoomOutputBoundary {
         viewManagerModel.setActiveViewName(ViewManagerModel.CREATED_ROOM_VIEW);
     }
 
+    /**
+     * Handles a failure in the room creation process by updating the create-room
+     * ViewModel with an error message.
+     *
+     * @param message the error description
+     */
     @Override
     public void presentFailure(String message) {
         CreateRoomState state = viewModel.getState();
