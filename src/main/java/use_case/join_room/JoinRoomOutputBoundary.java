@@ -13,4 +13,6 @@ public interface JoinRoomOutputBoundary {
      */
     void presentFailure(String message);
 
+    void switchToWelcomeView();
+
 }

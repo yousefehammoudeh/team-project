@@ -23,6 +23,7 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
     private JoinRoomController joinRoomController;
 
     private final JButton toJoin;
+    private final JButton backButton;
 
     // instantiating a view model will also instantiate a new state, and set it to
     // the start state with empty strings
@@ -47,6 +48,9 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
         toJoin = new JButton(JoinRoomViewModel.JOIN_BUTTON_LABEL);
         buttons.add(toJoin);
 
+        backButton = new JButton(JoinRoomViewModel.BACK_BUTTON_LABEL);
+        buttons.add(backButton);
+
         // listen to the join button
         // takes the updated state in the view model and calls the controller when the
         // user clicks the button
@@ -67,6 +71,16 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
                         }
                     }
                 });
+
+        // back button to go back to the welcome view
+        backButton.addActionListener(
+                // This creates an anonymous subclass of ActionListener and instantiates it.
+                new ActionListener() {
+                        public void actionPerformed(ActionEvent evt) {
+                            joinRoomController.switchToWelcomeView();
+                        }
+                    }
+                );
 
         // removed create button from Join view
 
