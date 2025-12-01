@@ -91,7 +91,7 @@ Note: these are UI skeletons. Wiring and behavior are in progress in many places
 - [ ] Finish consistent `present`/`presentFailure` implementations and event firing (in-progress)
 
 9) S01 Create Room — Implementation + Tests [Challenging]
- - [ ] S01 Create Room — implementation in progress (use_case + presenter/controller/view files present; add interactor tests)
+ - [x] S01 Create Room — implementation in progress (use_case + presenter/controller/view files present; add interactor tests)
 
 10) S02 Join Room — Implementation + Tests [Challenging]
  - [ ] S02 Join Room — implementation in progress (JoinRoomView and ParticipantsDashboardView created; interactor and wiring needed)
