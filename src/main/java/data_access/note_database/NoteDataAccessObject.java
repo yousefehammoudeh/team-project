@@ -69,7 +69,7 @@ public class NoteDataAccessObject {
         return null;
     }
 
-    public String saveNote(String username, String password, String note) throws DataAccessException {
+    public void saveNote(String username, String password, String note) throws DataAccessException {
         final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
         final JSONObject requestBody = new JSONObject();
         requestBody.put(USERNAME, username);
@@ -88,17 +88,13 @@ public class NoteDataAccessObject {
 
             final JSONObject responseBody = new JSONObject(response.body().string());
 
-            if (responseBody.getInt(STATUS_CODE_LABEL) == SUCCESS_CODE) {
-                return loadNote(username);
-            }
-            else {
+            if (responseBody.getInt(STATUS_CODE_LABEL) != SUCCESS_CODE) {
                 processErrorResponse(responseBody);
             }
         }
         catch (IOException | JSONException ex) {
             throw new DataAccessException(ex.getMessage());
         }
-        return null;
     }
 
     public String loadNote(String username) throws DataAccessException {

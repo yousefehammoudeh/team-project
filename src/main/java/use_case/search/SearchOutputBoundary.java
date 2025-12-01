@@ -7,6 +7,6 @@ public interface SearchOutputBoundary {
     void present(SearchOutputData outputData);
     void presentFailure(String message);
     void switchToShortlistView();
-    void switchToHostDashboardView();
+    void switchToCreatedRoomView();
 }
 

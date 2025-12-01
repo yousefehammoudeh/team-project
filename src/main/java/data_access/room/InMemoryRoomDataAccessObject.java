@@ -5,10 +5,10 @@ import entity.Room;
 import use_case.add_movie.AddMovieRoomDataAccessInterface;
 import use_case.create_room.CreateRoomUserDataAccessInterface;
 import use_case.join_room.JoinRoomUserDataAccessInterface;
-import use_case.joined_room.JoinedRoomUserDataAccessInterface;
+import use_case.leave_room.LeaveRoomDataAccessInterface;
+import use_case.leave_room.LeaveRoomInputBoundary;
 import use_case.remove_movie.RemoveMovieRoomDataAccessInterface;
 import use_case.toggle_lock_room.ToggleLockRoomDataAccessInterface;
-import use_case.update_room.UpdateRoomDataAccessInterface;
 import use_case.vote.VoteUserDataAccessInterface;
 
 import entity.Ballot;
@@ -30,8 +30,8 @@ public class InMemoryRoomDataAccessObject implements
         CreateRoomUserDataAccessInterface,
         VoteUserDataAccessInterface,
         JoinRoomUserDataAccessInterface,
-        JoinedRoomUserDataAccessInterface,
-        ToggleLockRoomDataAccessInterface {
+        ToggleLockRoomDataAccessInterface,
+        LeaveRoomDataAccessInterface {
 
     private final Map<String, Room> rooms;
     private String username;
@@ -55,6 +55,11 @@ public class InMemoryRoomDataAccessObject implements
     public boolean isHost() throws DataAccessException {
         checkRoomLoaded();
         return username.equals(room.getHostId());
+    }
+
+    public String getHostId() throws DataAccessException {
+        checkRoomLoaded();
+        return room.getHostId();
     }
 
     public boolean isLocked() throws DataAccessException {
@@ -155,7 +160,7 @@ public class InMemoryRoomDataAccessObject implements
         this.username = username;
     }
 
-    public void leaveRoom(String roomCode) throws DataAccessException {
+    public void leaveRoom() throws DataAccessException {
         checkRoomLoaded();
         room.removeParticipant(new Participant(username, username));
         room = null;

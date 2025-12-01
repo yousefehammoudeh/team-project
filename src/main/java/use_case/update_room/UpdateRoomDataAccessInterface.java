@@ -21,6 +21,8 @@ public interface UpdateRoomDataAccessInterface {
 
     public boolean isHost() throws DataAccessException;
 
+    public String getHostId() throws DataAccessException;
+
     /** If a winner was computed and persisted, return its movie id, else null. */
     public String getWinnerMovieId() throws DataAccessException;
 }

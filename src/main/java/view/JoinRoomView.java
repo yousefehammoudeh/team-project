@@ -159,6 +159,9 @@ public class JoinRoomView extends JPanel implements ActionListener, PropertyChan
         if (state.getRoomcodeError() != null) {
             JOptionPane.showMessageDialog(this, state.getRoomcodeError());
         }
+        if (state.getUsernameError() != null) {
+            JOptionPane.showMessageDialog(this, state.getUsernameError());
+        }
     }
 
     public String getViewName() {

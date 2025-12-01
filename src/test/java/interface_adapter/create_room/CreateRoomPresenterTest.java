@@ -1,8 +1,8 @@
 package interface_adapter.create_room;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.host_dashboard.HostDashboardState;
-import interface_adapter.host_dashboard.HostDashboardViewModel;
+import interface_adapter.created_room.CreatedRoomState;
+import interface_adapter.created_room.CreatedRoomViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.create_room.CreateRoomOutputData;
 
@@ -14,7 +14,7 @@ class CreateRoomPresenterTest {
     void testPresenterUpdatesCreatedRoomViewModelAndNavigates() {
 
         CreateRoomViewModel createVM = new CreateRoomViewModel();
-        HostDashboardViewModel createdVM = new HostDashboardViewModel();
+        CreatedRoomViewModel createdVM = new CreatedRoomViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();
 
         CreateRoomPresenter presenter = new CreateRoomPresenter(createVM, createdVM, viewManager);
@@ -24,8 +24,8 @@ class CreateRoomPresenterTest {
 
         presenter.present(output);
 
-        HostDashboardState state = createdVM.getState();
-        assertEquals("ABC123", state.getRoomId());
+        CreatedRoomState state = createdVM.getState();
+        assertEquals("ABC123", state.getRoomCode());
 
         assertEquals("created room", viewManager.getActiveViewName());
     }
@@ -33,7 +33,7 @@ class CreateRoomPresenterTest {
     @Test
     void testPresenterHandlesFailure() {
         CreateRoomViewModel createVM = new CreateRoomViewModel();
-        HostDashboardViewModel createdVM = new HostDashboardViewModel();
+        CreatedRoomViewModel createdVM = new CreatedRoomViewModel();
         ViewManagerModel viewManager = new ViewManagerModel();
 
         CreateRoomPresenter presenter = new CreateRoomPresenter(createVM, createdVM, viewManager);

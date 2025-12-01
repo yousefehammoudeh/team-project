@@ -3,6 +3,10 @@ package view;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.created_room.CreatedRoomViewModel;
 import interface_adapter.created_room.CreatedRoomState;
+import interface_adapter.created_room.LeaveRoomController;
+import interface_adapter.search.SearchState;
+import interface_adapter.search.SearchViewModel;
+import interface_adapter.shortlist.UpdateRoomController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,10 +24,16 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
 
     private final JButton searchButton;
     private final JButton shortlistButton;
-    private final JButton voteButton;
+    private final JButton updateButton;
+    private final JButton leaveButton;
+//    private final JButton voteButton;
 
     private ViewManagerModel viewManagerModel;
     private final CreatedRoomViewModel viewModel;
+    private SearchViewModel searchViewModel;
+
+    private UpdateRoomController updateRoomController;
+    private LeaveRoomController leaveRoomController;
 
     public CreatedRoomView(CreatedRoomViewModel viewModel) {
 
@@ -53,6 +63,10 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
         // BUTTONS
         final JPanel centerPanel = new JPanel();
 
+        leaveButton = new JButton("Leave");
+        leaveButton.addActionListener(this);
+        centerPanel.add(leaveButton);
+
         searchButton = new JButton("\uD83D\uDD0D");  // search icon
         searchButton.addActionListener(this);
         centerPanel.add(searchButton);
@@ -61,9 +75,13 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
         shortlistButton.addActionListener(this);
         centerPanel.add(shortlistButton);
 
-        voteButton = new JButton("Vote");
-        voteButton.addActionListener(this);
-        centerPanel.add(voteButton);
+        updateButton = new JButton("Refresh");
+        updateButton.addActionListener(this);
+        centerPanel.add(updateButton);
+
+//        voteButton = new JButton("Vote");
+//        voteButton.addActionListener(this);
+//        centerPanel.add(voteButton);
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -100,12 +118,29 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
         Object src = e.getSource();
 
         if (src == searchButton) {
-            viewManagerModel.setActiveViewName("search");
-        } else if (src == shortlistButton) {
-            viewManagerModel.setActiveViewName("shortlist");
-        } else if (src == voteButton) {
-            viewManagerModel.setActiveViewName("vote");
+            if (searchViewModel != null && viewModel.getState() != null) {
+                SearchState searchState = searchViewModel.getState();
+                if (searchState == null) {
+                    searchState = new SearchState();
+                    searchViewModel.setState(searchState);
+                }
+                searchState.setRoomId(viewModel.getState().getRoomCode());
+                searchViewModel.firePropertyChanged();
+            }
+            viewManagerModel.setActiveViewName(ViewManagerModel.SEARCH_VIEW);
         }
+        else if (src == shortlistButton) {
+            viewManagerModel.setActiveViewName(ViewManagerModel.SHORTLIST_VIEW);
+        }
+        else if (src == updateButton) {
+            updateRoomController.execute();
+        }
+        else if (src == leaveButton) {
+            leaveRoomController.execute();
+        }
+//        else if (src == voteButton) {
+//            viewManagerModel.setActiveViewName(ViewManagerModel.VOTE_VIEW);
+//        }
 
         viewManagerModel.firePropertyChanged();
     }
@@ -113,13 +148,33 @@ public class CreatedRoomView extends JPanel implements ActionListener, PropertyC
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         CreatedRoomState state = viewModel.getState();
-
-        updateRoomCode(state.getRoomCode());
-        updateHostName(state.getHostName());
-        updateParticipants(state.getParticipants());
+        if (state.getError() != null) {
+            JOptionPane.showMessageDialog(this, state.getError());
+        }
+        if (state.getRoomCode() != null && !state.getRoomCode().isEmpty()) {
+            updateRoomCode(state.getRoomCode());
+        }
+        if (state.getHostName() != null && !state.getRoomCode().isEmpty()) {
+            updateHostName(state.getHostName());
+        }
+        if (state.getParticipants() != null) {
+            updateParticipants(state.getParticipants());
+        }
     }
 
     public void setViewManagerModel(ViewManagerModel vm) {
         this.viewManagerModel = vm;
+    }
+
+    public void setUpdateRoomController(UpdateRoomController updateRoomController) {
+        this.updateRoomController = updateRoomController;
+    }
+
+    public void setLeaveRoomController(LeaveRoomController leaveRoomController) {
+        this.leaveRoomController = leaveRoomController;
+    }
+
+    public void setSearchViewModel(interface_adapter.search.SearchViewModel searchViewModel) {
+        this.searchViewModel = searchViewModel;
     }
 }

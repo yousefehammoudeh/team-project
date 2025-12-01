@@ -45,7 +45,7 @@ public class SearchInteractor implements SearchInputBoundary {
     }
 
     @Override
-    public void switchToHostDashboardView() {
-        presenter.switchToHostDashboardView();
+    public void switchToCreatedRoomView() {
+        presenter.switchToCreatedRoomView();
     }
 }
