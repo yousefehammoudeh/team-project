@@ -1,8 +1,10 @@
 package view;
 
+import interface_adapter.join_room.JoinRoomController;
 import interface_adapter.joined_room.JoinedRoomState;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.joined_room.JoinedRoomViewModel;
+import interface_adapter.joined_room.JoinedRoomController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,15 +20,17 @@ import interface_adapter.shortlist.UpdateRoomController;
 /**
  * Participants dashboard (shows room code).
  */
-public class ParticipantsDashboardView extends JPanel implements ActionListener, PropertyChangeListener {
+public class JoinedRoomView extends JPanel implements ActionListener, PropertyChangeListener {
     @SuppressWarnings("unused")
     private final JoinedRoomViewModel joinedRoomViewModel;
     private ViewManagerModel viewManagerModel;
     private final JLabel roomIdLabel;
     private final JPanel participantsPanel;
+    private final JButton leaveRoom;
     private UpdateRoomController globalUpdateController;
+    private JoinedRoomController joinedRoomController = null;
 
-    public ParticipantsDashboardView(JoinedRoomViewModel joinedRoomViewModel) {
+    public JoinedRoomView(JoinedRoomViewModel joinedRoomViewModel) {
         this.joinedRoomViewModel = joinedRoomViewModel;
         this.joinedRoomViewModel.addPropertyChangeListener(this);
         setLayout(new BorderLayout(10, 10));
@@ -56,6 +60,27 @@ public class ParticipantsDashboardView extends JPanel implements ActionListener,
         });
         navigationPanel.add(shortlistButton);
         add(navigationPanel, BorderLayout.SOUTH);
+
+        // leave room feature
+        final JPanel leavePanel = new JPanel();
+        leaveRoom = new JButton(JoinedRoomViewModel.EXIT_BUTTON_LABEL);
+        leavePanel.add(leaveRoom);
+        leaveRoom.addActionListener(
+                // This creates an anonymous subclass of ActionListener and instantiates it.
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        // check that the event is join button being clicked
+                        if (evt.getSource().equals(leaveRoom)) {
+                            // get the state
+                            final JoinedRoomState currentState = joinedRoomViewModel.getState();
+
+                            // pass the entered username and room code to the controller
+                            // abstraction, calls the interactor inside the controller
+                            joinedRoomController.execute(
+                                    currentState.getRoomcode());
+                        }
+                    }
+                });
 
         // Event-driven refresh on user interaction (no background polling)
         registerUserActivityRefresh(this);

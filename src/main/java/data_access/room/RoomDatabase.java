@@ -199,6 +199,9 @@ public class RoomDatabase implements
 
     public void leaveRoom(String roomCode) throws DataAccessException {
         checkRoomLoaded();
-        // Stub: handled by dedicated leave-room persistence in another PR
+        refreshRoom();
+        room.removeParticipant(new Participant(username, username));
+        saveRoom();
+        room = null;
     }
 }

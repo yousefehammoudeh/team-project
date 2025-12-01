@@ -154,12 +154,10 @@ public class InMemoryRoomDataAccessObject implements
         this.username = username;
     }
 
-    public void leaveRoom(String roomCode) {
-        try {
-            checkRoomLoaded();
-            // Stub: handled by another implementation/PR
-        } catch (DataAccessException ignored) {
-        }
+    public void leaveRoom(String roomCode) throws DataAccessException {
+        checkRoomLoaded();
+        room.removeParticipant(new Participant(username, username));
+        room = null;
     }
 
     @Override

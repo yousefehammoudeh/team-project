@@ -131,8 +131,7 @@ public class SearchView extends JPanel implements PropertyChangeListener {
 
     private static final ImageIcon PLACEHOLDER_ICON = new ImageIcon(
             SearchView.class.getClassLoader().getResource("placeholder.png"),
-                    "placeholder.png not found in resources"
-    );
+            "placeholder.png not found in resources");
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

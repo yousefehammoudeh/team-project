@@ -13,7 +13,6 @@ import interface_adapter.joined_room.JoinedRoomViewModel;
 public class JoinRoomPresenter implements JoinRoomOutputBoundary {
     private final JoinRoomViewModel joinRoomViewModel;
     private final JoinedRoomViewModel joinedRoomViewModel;
-    private final CreateRoomViewModel createRoomViewModel;
     private final ViewManagerModel viewManagerModel;
 
     public JoinRoomPresenter(JoinRoomViewModel joinRoomViewModel,
@@ -22,7 +21,6 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
             ViewManagerModel viewManagerModel) {
         this.joinRoomViewModel = joinRoomViewModel;
         this.joinedRoomViewModel = joinedRoomViewModel;
-        this.createRoomViewModel = createRoomViewModel;
         this.viewManagerModel = viewManagerModel;
     }
 
@@ -48,5 +46,5 @@ public class JoinRoomPresenter implements JoinRoomOutputBoundary {
         joinRoomState.setUsernameError(message);
         joinRoomViewModel.firePropertyChanged();
     }
-    
+
 }

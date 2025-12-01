@@ -8,6 +8,7 @@ public class JoinedRoomState {
     private String roomcode = "";
     private String currentUser = "";
     private boolean locked;
+    private String roomcodeError;
 
     public JoinedRoomState(JoinedRoomState copy) {
         participants = copy.participants;
@@ -33,6 +34,10 @@ public class JoinedRoomState {
 
     public String getRoomcode() {
         return this.roomcode;
+    }
+
+    public void setRoomcodeError(String roomcodeError) {
+        this.roomcodeError = roomcodeError;
     }
 
     public void setCurrentUser(String currentUser) {
