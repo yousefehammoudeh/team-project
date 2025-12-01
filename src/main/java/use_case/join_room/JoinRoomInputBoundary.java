@@ -6,4 +6,6 @@ public interface JoinRoomInputBoundary {
      * @param joinRoomInputData the input data
      */
     void execute(JoinRoomInputData joinRoomInputData);
+
+    void switchToWelcomeView();
 }

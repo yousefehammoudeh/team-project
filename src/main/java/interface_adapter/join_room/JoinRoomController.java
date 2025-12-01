@@ -25,4 +25,8 @@ public class JoinRoomController {
 
         interactor.execute(joinRoomInputData);
     }
+
+    public void switchToWelcomeView() {
+        interactor.switchToWelcomeView();
+    }
 }

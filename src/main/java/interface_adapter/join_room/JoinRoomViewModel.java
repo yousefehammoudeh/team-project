@@ -11,7 +11,7 @@ public class JoinRoomViewModel extends ViewModel<JoinRoomState> {
     public static final String USERNAME_LABEL = "Choose username";
     public static final String ROOM_CODE_LABEL = "Enter room code";
     public static final String JOIN_BUTTON_LABEL = "Join";
-    public static final String CREATE_BUTTON_LABEL = "Create";
+    public static final String BACK_BUTTON_LABEL = "Go back";
 
     public JoinRoomViewModel() {
         super(ViewManagerModel.JOIN_ROOM_VIEW);
