@@ -7,12 +7,13 @@ import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import use_case.search.SearchUserDataAccessInterface;
+import use_case.winner.WinnerMovieDataAccessInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TmdbMovieGateway implements SearchUserDataAccessInterface {
+public class TmdbMovieGateway implements SearchUserDataAccessInterface, WinnerMovieDataAccessInterface {
 
     private static final String DEFAULT_BASE = "https://api.themoviedb.org/3";
     private final String apiKey;

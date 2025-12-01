@@ -2,7 +2,6 @@ package use_case.winner;
 
 import data_access.note_database.DataAccessException;
 import data_access.room.RoomDatabase;
-import data_access.tmdb.TmdbMovieGateway;
 import entity.Ballot;
 
 import javax.swing.ImageIcon;
@@ -14,16 +13,13 @@ import java.util.Map;
 public class WinnerInteractor implements WinnerInputBoundary {
     private final RoomDatabase roomDb;
     private final WinnerOutputBoundary presenter;
-    private final TmdbMovieGateway tmdb;
+    private final WinnerMovieDataAccessInterface movieGateway;
 
-    public WinnerInteractor(RoomDatabase roomDb, WinnerOutputBoundary presenter) {
-        this(roomDb, presenter, null);
-    }
-
-    public WinnerInteractor(RoomDatabase roomDb, WinnerOutputBoundary presenter, TmdbMovieGateway tmdbGateway) {
+    public WinnerInteractor(RoomDatabase roomDb, WinnerOutputBoundary presenter,
+            WinnerMovieDataAccessInterface movieGateway) {
         this.roomDb = roomDb;
         this.presenter = presenter;
-        this.tmdb = (tmdbGateway == null ? new TmdbMovieGateway() : tmdbGateway);
+        this.movieGateway = movieGateway;
     }
 
     @Override
@@ -59,7 +55,7 @@ public class WinnerInteractor implements WinnerInputBoundary {
                     winnerId = movieId;
                 }
             }
-            var movie = tmdb.fetchDetails(winnerId, null);
+            var movie = movieGateway.fetchDetails(winnerId, null);
             ImageIcon icon = null;
             String posterPath = movie.getPosterPath();
             if (posterPath != null && !posterPath.isBlank()) {
@@ -90,7 +86,7 @@ public class WinnerInteractor implements WinnerInputBoundary {
                 return;
             }
 
-            var movie = tmdb.fetchDetails(winnerId, null);
+            var movie = movieGateway.fetchDetails(winnerId, null);
             ImageIcon icon = null;
             String posterPath = movie.getPosterPath();
             if (posterPath != null && !posterPath.isBlank()) {
