@@ -1,7 +1,7 @@
 package use_case.vote;
 
-import data_access.note_database.DataAccessException;
 import entity.Ballot;
+import use_case.UseCaseDataAccessException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +53,7 @@ public class VoteInteractor implements VoteInputBoundary {
             // Current user just voted, so mark them as having voted
             VoteOutputData out = new VoteOutputData(null, new HashMap<>(), ballotsReceived, participantCount, true);
             presenter.present(out);
-        } catch (DataAccessException e) {
+        } catch (UseCaseDataAccessException e) {
             presenter.presentFailure("Database error: " + e.getMessage());
         }
     }

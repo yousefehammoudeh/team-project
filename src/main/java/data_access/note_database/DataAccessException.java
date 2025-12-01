@@ -1,6 +1,8 @@
 package data_access.note_database;
 
-public class DataAccessException extends Exception {
+import use_case.UseCaseDataAccessException;
+
+public class DataAccessException extends UseCaseDataAccessException {
     private final int code;
 
     public DataAccessException(String message, int code) {
