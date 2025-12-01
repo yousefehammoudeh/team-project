@@ -1,8 +1,8 @@
 package interface_adapter.vote;
 
-import data_access.room.RoomDatabase;
 import use_case.vote.VoteInputBoundary;
 import use_case.vote.VoteInteractor;
+import use_case.vote.VoteUserDataAccessInterface;
 
 /**
  * Simple Factory for creating Vote use case components.
@@ -17,16 +17,16 @@ public class VoteComponentFactory {
 
     /**
      * Creates a fully wired VoteController.
-     * 
-     * @param dataAccess the data access object for room operations
-     * @param viewModel  the view model to be updated by the presenter
+     *
+     * @param gateway  the data access gateway for room operations
+     * @param viewModel the view model to be updated by the presenter
      * @return a ready-to-use VoteController
      */
     public static VoteController createVoteController(
-            RoomDatabase dataAccess,
+            VoteUserDataAccessInterface gateway,
             VoteViewModel viewModel) {
         VotePresenter presenter = new VotePresenter(viewModel);
-        VoteInputBoundary interactor = new VoteInteractor(dataAccess, presenter);
+        VoteInputBoundary interactor = new VoteInteractor(gateway, presenter);
         return new VoteController(interactor);
     }
 }

@@ -1,6 +1,6 @@
 package use_case.vote;
 
-import data_access.note_database.DataAccessException;
+import use_case.UseCaseDataAccessException;
 import entity.Ballot;
 
 import java.util.List;
@@ -13,20 +13,20 @@ import java.util.List;
  */
 public interface VoteUserDataAccessInterface {
     /** Save or replace a ballot for a participant. */
-    boolean saveBallot(Ballot ballot) throws DataAccessException;
+    boolean saveBallot(Ballot ballot) throws UseCaseDataAccessException;
 
     /** Return all currently submitted ballots. */
-    List<Ballot> getBallots() throws DataAccessException;
+    List<Ballot> getBallots() throws UseCaseDataAccessException;
 
     /** Return the current shortlist movie ids (order matters for tie-breaking). */
-    List<String> getShortlist() throws DataAccessException;
+    List<String> getShortlist() throws UseCaseDataAccessException;
 
     /** Return number of participants in the room. Used to show expected ballots. */
-    int participantsCount() throws DataAccessException;
+    int participantsCount() throws UseCaseDataAccessException;
 
     /** Is current user host (privileged ops). */
-    boolean isHost() throws DataAccessException;
+    boolean isHost() throws UseCaseDataAccessException;
 
     /** Is shortlist locked (voting allowed only when locked). */
-    boolean isLocked() throws DataAccessException;
+    boolean isLocked() throws UseCaseDataAccessException;
 }
