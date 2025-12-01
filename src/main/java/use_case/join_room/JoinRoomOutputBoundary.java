@@ -12,4 +12,5 @@ public interface JoinRoomOutputBoundary {
      * @param message the explanation of the failure
      */
     void presentFailure(String message);
+
 }
