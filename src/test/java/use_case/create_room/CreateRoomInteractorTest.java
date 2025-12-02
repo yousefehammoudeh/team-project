@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static data_access.HTTPCode.CONFLICT_ERROR;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CreateRoomInteractorTest {
@@ -100,6 +101,57 @@ class CreateRoomInteractorTest {
             @Override
             public void presentFailure(String error) {
                 assertTrue(error.contains("Database exploded"));
+            }
+        };
+
+        CreateRoomInputBoundary interactor = new CreateRoomInteractor(db, presenter);
+        interactor.execute(input);
+    }
+
+    @Test
+    void daoThrowsNonConflictErrorAfterConflictTest() {
+        Map<String, Room> storage = new HashMap<>();
+
+        final String conflictingCode = "ABC123";
+        storage.put(conflictingCode, new Room(conflictingCode, "Bob"));
+
+        CreateRoomUserDataAccessInterface db = new CreateRoomUserDataAccessInterface() {
+            private int callCount = 0;
+
+            @Override
+            public void setUsername(String username) {
+            }
+
+            @Override
+            public void createRoom(String roomCode) throws DataAccessException {
+                callCount++;
+                if (callCount == 1) {
+                    throw new DataAccessException("Room already exists", CONFLICT_ERROR);
+                } else if (callCount == 2) {
+                    throw new DataAccessException("Database connection failed", 500);
+                } else {
+                    throw new DataAccessException("Unexpected call", 500);
+                }
+            }
+
+            @Override
+            public String getUsername() {
+                return "Alice";
+            }
+        };
+
+        CreateRoomInputData input = new CreateRoomInputData("Alice");
+
+        CreateRoomOutputBoundary presenter = new CreateRoomOutputBoundary() {
+            @Override
+            public void present(CreateRoomOutputData output) {
+                fail("Expected failure due to non-conflict error");
+            }
+
+            @Override
+            public void presentFailure(String error) {
+                assertTrue(error.contains("Database connection failed") ||
+                        error.contains("Error creating room"));
             }
         };
 
