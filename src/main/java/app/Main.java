@@ -27,6 +27,12 @@ public class Main {
             application.pack();
             application.setLocationRelativeTo(null);
             application.setVisible(true);
+
+            if (System.getenv("TMDB_API_KEY") == null) {
+                JOptionPane.showMessageDialog(application,
+                        "Warning: TMDB_API_KEY environment variable missing.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 }
